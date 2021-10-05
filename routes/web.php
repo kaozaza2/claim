@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Livewire\Admin;
+use App\Http\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,15 +14,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 });
 
-Route::get('dashboard', function () {
-   return view('dashboard');
-});
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
 
-Route::prefix('admin')->group(function () {
-    Route::get('dashboard', Admin\Dashboard::class)->name('dashboard');
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('dashboard', Admin\Dashboard::class)->name('dashboard');
+    });
 });

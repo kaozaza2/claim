@@ -52,16 +52,52 @@
             </div>
         @endif
 
+        <!-- Title -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="title" value="{{ __('คำนำหน้า') }}" />
+            <x-jet-input id="title" type="text" class="mt-1 block w-full" wire:model.defer="state.title" autocomplete="title" />
+            <x-jet-input-error for="title" class="mt-2" />
+        </div>
+
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
-            <x-jet-label for="name" value="{{ __('Name') }}" />
+            <x-jet-label for="name" value="{{ __('ชื่อ') }}" />
             <x-jet-input id="name" type="text" class="mt-1 block w-full" wire:model.defer="state.name" autocomplete="name" />
             <x-jet-input-error for="name" class="mt-2" />
         </div>
 
+        <!-- Last Name -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="last_name" value="{{ __('นามสกุล') }}" />
+            <x-jet-input id="last_name" type="text" class="mt-1 block w-full"
+                         wire:model.defer="state.last_name" autocomplete="last_name" />
+            <x-jet-input-error for="last_name" class="mt-2" />
+        </div>
+
+        <!-- Identification -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="identification" value="{{ __('เลขบัตรประจำตัวประชาชน') }}" />
+            <x-jet-input id="identification" type="text" class="mt-1 block text-gray-500 w-full"
+                         wire:model.defer="state.identification" readonly />
+        </div>
+
+        <!-- Department -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="department" value="{{ __('หน่วยงาน') }}" />
+            <x-jet-input id="department" type="text" class="mt-1 block text-gray-500 w-full"
+                         value="{{ optional($this->user->department)->name }}" readonly />
+        </div>
+
+        <!-- Sub Department -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="sub_department" value="{{ __('แผนก') }}" />
+            <x-jet-input id="sub_department" type="text" class="mt-1 block text-gray-500 w-full"
+                         value="{{ optional($this->user->sub_department)->name }}" readonly />
+        </div>
+
         <!-- Email -->
         <div class="col-span-6 sm:col-span-4">
-            <x-jet-label for="email" value="{{ __('Email') }}" />
+            <x-jet-label for="email" value="{{ __('อีเมล') }}" />
             <x-jet-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email" />
             <x-jet-input-error for="email" class="mt-2" />
         </div>

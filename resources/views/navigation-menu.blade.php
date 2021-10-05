@@ -5,16 +5,23 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('dashboard') }}" class="border border-gray-300 rounded-md">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
+                    <a href="{{ route('dashboard') }}" class="mx-2 font-bold text-3xl">{{ config('app.name', 'Laravel') }}</a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('หน้าหลัก') }}
                     </x-jet-nav-link>
+
+                    @if (Auth::user()->isAdmin())
+                    <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.*')">
+                        {{ __('หน้าควบคุม') }}
+                    </x-jet-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -24,7 +31,6 @@
                 <div class="ml-3 relative">
                     <x-jet-dropdown align="right" width="48">
                         <x-slot name="trigger">
-                            @auth
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                 <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
                                     <img class="h-8 w-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
@@ -40,18 +46,16 @@
                                     </button>
                                 </span>
                             @endif
-                            @endauth
                         </x-slot>
 
                         <x-slot name="content">
                             <!-- Account Management -->
-                            @auth
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                {{ __('Manage Account') }}
+                                {{ __('บัญชีของฉัน') }}
                             </div>
 
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
-                                {{ __('Profile') }}
+                                {{ __('โปรไฟล์') }}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -69,10 +73,9 @@
                                 <x-jet-dropdown-link href="{{ route('logout') }}"
                                          onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('ออกจากระบบ') }}
                                 </x-jet-dropdown-link>
                             </form>
-                            @endauth
                         </x-slot>
                     </x-jet-dropdown>
                 </div>
@@ -94,13 +97,18 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('หน้าหลัก') }}
             </x-jet-responsive-nav-link>
-        </div>
 
+            @if (Auth::user()->isAdmin())
+            <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
+                {{ __('หน้าควบคุม') }}
+            </x-jet-responsive-nav-link>
+            @endif
+        </div>
+        
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            @auth
             <div class="flex items-center px-4">
                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                     <div class="flex-shrink-0 mr-3">
@@ -117,7 +125,7 @@
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
                 <x-jet-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
-                    {{ __('Profile') }}
+                    {{ __('โปรไฟล์') }}
                 </x-jet-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -133,11 +141,10 @@
                     <x-jet-responsive-nav-link href="{{ route('logout') }}"
                                    onclick="event.preventDefault();
                                     this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('ออกจากระบบ') }}
                     </x-jet-responsive-nav-link>
                 </form>
             </div>
-            @endauth
         </div>
     </div>
 </nav>
