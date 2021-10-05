@@ -55,6 +55,11 @@ class User extends Authenticatable
         return Str::contains($this->role, 'superadmin');
     }
 
+    protected function getFullnameAttribute()
+    {
+        return sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
+    }
+
     public function claims()
     {
         return $this->hasMany(Claim::class);

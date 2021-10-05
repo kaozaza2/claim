@@ -16,9 +16,15 @@ class ClaimSeeder extends Seeder
      */
     public function run()
     {
+        $users = User::where('role', 'member')->get()
+            ->map(function ($user) {
+                return ['user_id' => $user->id];
+            });
+
         Claim::factory()
             ->count(10)
-            ->state(['user_id' => 5, 'admin_id' => 2])
+            ->sequence(...$users)
+            ->state(['admin_id' => 2])
             ->create();
     }
 }
