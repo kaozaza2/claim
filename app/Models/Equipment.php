@@ -11,8 +11,13 @@ class Equipment extends Model
 
     protected $table = 'equipments';
 
-    public function claim()
+    protected $fillable = [
+        'name',
+        'detail',
+    ];
+
+    public function claims()
     {
-        return $this->hasOne(Claim::class);
+        return $this->hasMany(Claim::class);
     }
 }

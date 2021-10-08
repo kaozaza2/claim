@@ -21,7 +21,14 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
 
+    // Admin Dashboard
+    Route::get('admin', function () {
+        return redirect()->route('admin.claims');
+    })->name('admin');
+
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('dashboard', Admin\Dashboard::class)->name('dashboard');
+        Route::get('claims', Admin\Claims::class)->name('claims');
+        Route::get('equipments', Admin\Equipments::class)->name('equipments');
+        Route::get('departments', Admin\Departments::class)->name('departments');
     });
 });
