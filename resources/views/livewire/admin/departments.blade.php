@@ -195,11 +195,11 @@
         <!-- Deletion -->
         <x-jet-dialog-modal wire:model="confirmingDepartmentDeletion">
             <x-slot name="title">
-                {{ Str::replaceArray(':value', ['name' => optional($selected)->name], 'ลบหน่วยงาน :value ?') }}
+                {{ sprintf('ลบหน่วยงาน %s ?', optional($selected)->name) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ Str::replaceArray(':value', ['name' => optional($selected)->name], 'ต้องการที่จะลบหน่วยงาน :value หรือไม่?') }}
+                {{ sprintf('ต้องการที่จะลบหน่วยงาน %s หรือไม่?', optional($selected)->name}}
 
                 @if(optional($selected)->subs && $selected->subs->isNotEmpty())
                     <p class="mt-3">{{ __('แผนกที่จะถูกลบไปด้วย') }}</p>
@@ -222,11 +222,11 @@
         <!-- Sub Deletion -->
         <x-jet-dialog-modal wire:model="confirmingSubDepartmentDeletion">
             <x-slot name="title">
-                {{ Str::replaceArray(':value', ['name' => optional($subSelected)->name], 'ลบแผนก :value ?') }}
+                {{ sprintf('ลบแผนก %s ?', optional($subSelected)->name) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ Str::replaceArray(':value', ['name' => optional($subSelected)->name], 'ต้องการที่จะลบแผนก :value หรือไม่?') }}
+                {{ sprintf('ต้องการที่จะลบแผนก %s หรือไม่?', optional($subSelected)->name) }}
             </x-slot>
 
             <x-slot name="footer">

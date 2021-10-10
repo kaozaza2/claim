@@ -187,12 +187,12 @@
         <!-- Deletion -->
         <x-jet-confirmation-modal wire:model="confirmingEquipmentDeletion">
             <x-slot name="title">
-                {{ Str::replaceArray(':value', ['name' => optional($selected)->name], 'ลบ :value ?') }}
+                {{ sprintf('ลบ %s ?', optional($selected)->name) }}
                 <span class="badge badge-error">{{ optional($selected)->id }}</span>
             </x-slot>
 
             <x-slot name="content">
-                {{ Str::replaceArray(':value', ['name' => optional($selected)->name], 'ต้องการที่จะลบ :value หรือไม่?') }}
+                {{ sprintf('ต้องการที่จะลบ %s หรือไม่?', optional($selected)->name) }}
 
                 @if (optional($selected)->claims && $selected->claims->isNotEmpty())
                     <div class="mt-3">{{ __('ประวัติการเคลม') }}</div>

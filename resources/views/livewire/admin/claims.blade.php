@@ -285,7 +285,7 @@
             </x-slot>
 
             <x-slot name="content">
-                {{ Str::replace(':value', optional($selected)->id, 'ต้องการที่จะลบรายการเคลม :value หรือไม่?') }}
+                {{ sprintf('ต้องการที่จะลบรายการเคลม %s หรือไม่?', optional($selected)->id) }}
             </x-slot>
 
             <x-slot name="footer">
