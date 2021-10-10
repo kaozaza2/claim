@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Equipment;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class EquipmentFactory extends Factory
 {
@@ -23,8 +22,8 @@ class EquipmentFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Computer Set',
-            'serial_number' => Str::random(),
+            'name' => $this->faker->company(),
+            'serial_number' => $this->faker->numerify('####-###-#####-###/####'),
             'detail' => $this->faker->words(5, true),
         ];
     }

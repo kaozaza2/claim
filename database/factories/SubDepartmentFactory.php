@@ -24,7 +24,7 @@ class SubDepartmentFactory extends Factory
     {
         return [
             'department_id' => Department::factory(),
-            'name' => $this->faker->company(),
+            'name' => $this->faker->jobTitle(),
         ];
     }
 }

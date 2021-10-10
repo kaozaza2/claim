@@ -24,7 +24,7 @@ class ClaimSeeder extends Seeder
         Claim::factory()
             ->count(10)
             ->sequence(...$users)
-            ->state(['admin_id' => 2])
+            ->state(['admin_id' => User::admin()->first()->id])
             ->create();
     }
 }
