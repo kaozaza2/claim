@@ -4,7 +4,9 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Claim;
 use App\Models\Equipment;
+use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -61,7 +63,12 @@ class Claims extends Component
     public function showCreate()
     {
         $this->reset('equipment_id', 'user_id', 'admin_id', 'problem');
-        $this->fill(['status' => 'รับเรื่อง']);
+        $this->fill([
+            'equipment_id' => Equipment::first()->id,
+            'user_id' => User::member()->first()->id,
+            'admin_id' => Auth::user()->isSuperAdmin() ? User::admin()->first()->id : Auth::user()->id,
+            'status' => 'กำลังรับเรื่อง',
+        ]);
         $this->showingClaimCreate = true;
     }
 
