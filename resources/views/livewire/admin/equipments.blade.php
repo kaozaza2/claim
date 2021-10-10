@@ -112,6 +112,18 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
+                            <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
+                        </label>
+                        <input type="text" wire:model="serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                               class="input input-bordered">
+                        @error('serial_number')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
                             <span class="label-text">{{ __('รายละเอียด') }}</span>
                         </label>
                         <textarea wire:model="detail" class="textarea h-24 textarea-bordered" placeholder="{{ __('รายละเอียด') }}"></textarea>
