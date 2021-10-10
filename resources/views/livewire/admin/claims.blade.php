@@ -281,11 +281,11 @@
         <!-- Delete -->
         <x-jet-confirmation-modal wire:model="confirmingClaimDeletion">
             <x-slot name="title">
-                {{ optional($selected)->id }}
+                {{ __('ลบรายการเคลม') }}
             </x-slot>
 
             <x-slot name="content">
-                {{ Str::replace(':value', optional($selected)->id, 'ต้องการที่จะลบ :value หรือไม่?') }}
+                {{ Str::replace(':value', optional($selected)->id, 'ต้องการที่จะลบรายการเคลม :value หรือไม่?') }}
             </x-slot>
 
             <x-slot name="footer">
