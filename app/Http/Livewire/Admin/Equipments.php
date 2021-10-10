@@ -19,6 +19,7 @@ class Equipments extends Component
     public bool $showingEquipmentPicture = false;
 
     public ?string $name = null;
+    public ?string $serial_number = null;
     public ?string $detail = null;
     public ?string $search = null;
 
@@ -37,6 +38,7 @@ class Equipments extends Component
             $equipments = $equipments->filter(function ($item) use ($search) {
                 return Str::contains($item->name, $search)
                     || Str::contains($item->detail, $search)
+                    || Str::contains($item->serial_number, $search)
                     || Str::contains($item->id, $search);
             });
         }
@@ -52,13 +54,14 @@ class Equipments extends Component
     public function showCreate()
     {
         $this->showingEquipmentCreate = true;
-        $this->reset('name', 'detail');
+        $this->reset('name', 'serial_number', 'detail');
     }
 
     public function storeEquipment()
     {
         $validateData = $this->validate([
             'name' => 'required',
+            'serial_number' => 'nullable',
             'detail' => 'nullable',
         ]);
 
@@ -70,6 +73,7 @@ class Equipments extends Component
     {
         $this->selected = Equipment::find($id);
         $this->name = $this->selected->name;
+        $this->serial_number = $this->selected->serial_number;
         $this->detail = $this->selected->detail;
         $this->resetErrorBag();
         $this->showingEquipmentUpdate = true;
@@ -79,6 +83,7 @@ class Equipments extends Component
     {
         $validateData = $this->validate([
             'name' => 'required',
+            'serial_number' => 'nullable',
             'detail' => 'nullable',
         ]);
 

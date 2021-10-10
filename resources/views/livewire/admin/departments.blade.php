@@ -11,7 +11,7 @@
                 {{ __('หน่วยงานและแผนก') }}
             </a>
             @if(auth()->user()->isSuperAdmin())
-                <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
+                <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
                     {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
                 </a>
             @endif
@@ -50,7 +50,7 @@
                                     <button class="btn btn-sm" wire:click="showUpdate('{{ $department->id }}')">
                                         {{ __('แก้ไข') }}
                                     </button>
-                                    <button class="btn btn-success btn-sm" wire:click="showUpdate('{{ $department->id }}')">
+                                    <button class="btn btn-success btn-sm" wire:click="showSubCreate('{{ $department->id }}')">
                                         {{ __('เพิ่มแผนก') }}
                                     </button>
                                     <button wire:click="confirmDeletion('{{ $department->id }}')" class="btn btn-sm btn-error">
@@ -67,10 +67,10 @@
                                         {{ $sub->name }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm" wire:click="showUpdate('{{ $department->id }}')">
+                                        <button class="btn btn-sm" wire:click="showSubUpdate('{{ $department->id }}')">
                                             {{ __('แก้ไข') }}
                                         </button>
-                                        <button wire:click="confirmDeletion('{{ $department->id }}')" class="btn btn-sm btn-error">
+                                        <button wire:click="confirmSubDeletion('{{ $sub->id }}')" class="btn btn-sm btn-error">
                                             {{ __('ลบ') }}
                                         </button>
                                     </td>
@@ -83,6 +83,114 @@
                 </div>
             </div>
         </div>
+
+        <!-- Show Create -->
+        <x-jet-modal wire:model="showingDepartmentCreate">
+            <form wire:submit.prevent="storeDepartment">
+                <div class="p-5">
+                    @csrf
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ชื่อหน่วยงาน') }}</span>
+                        </label>
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
+                               class="input input-bordered">
+                        @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingDepartmentCreate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
+        </x-jet-modal>
+
+        <!-- Show Sub Create -->
+        <x-jet-modal wire:model="showingSubDepartmentCreate">
+            <form wire:submit.prevent="storeSubDepartment">
+                <div class="p-5">
+                    @csrf
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ชื่อแผนก') }}</span>
+                        </label>
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อแผนก') }}"
+                               class="input input-bordered">
+                        @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingSubDepartmentCreate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
+        </x-jet-modal>
+
+        <!-- Show Update -->
+        <x-jet-modal wire:model="showingDepartmentUpdate">
+            <form wire:submit.prevent="updateDepartment">
+                <div class="p-5">
+                    @csrf
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ชื่อหน่วยงาน') }}</span>
+                        </label>
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
+                               class="input input-bordered">
+                        @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingDepartmentUpdate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
+        </x-jet-modal>
+
+        <!-- Show Sub Update -->
+        <x-jet-modal wire:model="showingSubDepartmentUpdate">
+            <form wire:submit.prevent="updateSubDepartment">
+                <div class="p-5">
+                    @csrf
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ชื่อแผนก') }}</span>
+                        </label>
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อแผนก') }}"
+                               class="input input-bordered">
+                        @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingSubDepartmentUpdate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
+        </x-jet-modal>
 
         <!-- Deletion -->
         <x-jet-dialog-modal wire:model="confirmingDepartmentDeletion">
@@ -110,5 +218,42 @@
                 </button>
             </x-slot>
         </x-jet-dialog-modal>
+
+        <!-- Sub Deletion -->
+        <x-jet-dialog-modal wire:model="confirmingSubDepartmentDeletion">
+            <x-slot name="title">
+                {{ Str::replaceArray(':value', ['name' => optional($subSelected)->name], 'ลบแผนก :value ?') }}
+            </x-slot>
+
+            <x-slot name="content">
+                {{ Str::replaceArray(':value', ['name' => optional($subSelected)->name], 'ต้องการที่จะลบแผนก :value หรือไม่?') }}
+            </x-slot>
+
+            <x-slot name="footer">
+                <button wire:click="$toggle('confirmingSubDepartmentDeletion')" class="btn btn-ghost bg-white ml-auto">
+                    {{ __('ยกเลิก') }}
+                </button>
+                <button class="btn btn-error ml-2" wire:click="deleteSubDepartment" wire:loading.attr="disabled">
+                    {{ __('ลบ') }}
+                </button>
+            </x-slot>
+        </x-jet-dialog-modal>
+
+        <!-- Error -->
+        <x-jet-confirmation-modal wire:model="showingErrorMessage">
+            <x-slot name="title">
+                {{ __('ข้อผิดพลาด') }}
+            </x-slot>
+
+            <x-slot name="content">
+                {{ $errorMessage }}
+            </x-slot>
+
+            <x-slot name="footer">
+                <button class="btn btn-ghost" wire:click="$toggle('showingErrorMessage')">
+                    {{ __('ปิด') }}
+                </button>
+            </x-slot>
+        </x-jet-confirmation-modal>
     </div>
 </div>

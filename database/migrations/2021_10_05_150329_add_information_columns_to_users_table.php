@@ -18,7 +18,6 @@ class AddInformationColumnsToUsersTable extends Migration
             $table->string('last_name')->after('name');
             $table->string('sex');
             $table->bigInteger('identification');
-            $table->bigInteger('department_id')->nullable();
             $table->bigInteger('sub_department_id')->nullable();
         });
     }

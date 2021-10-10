@@ -21,6 +21,7 @@
                                     <span class="hidden lg:block">{{__('เลขที่การเคลม')}}</span>
                                 </th>
                                 <th>{{__('อุปกร์ที่เคลม')}}</th>
+                                <th>{{__('เลขครุภัณฑ์')}}</th>
                                 <th>{{__('ปัญหาที่พบ')}}</th>
                                 <th>{{__('สถานะการเคลม')}}</th>
                             </tr>
@@ -29,7 +30,8 @@
                             @foreach ($claims as $claim)
                                 <tr>
                                     <th>{{ $claim->id }}</th>
-                                    <td>{{ $claim->equipment->name }}</td>
+                                    <td class="w-full">{{ $claim->equipment->name }}</td>
+                                    <td class="font-mono">{{ $claim->equipment->serial_number ?: '-' }}</td>
                                     <td>{{ $claim->problem }}</td>
                                     <td>{{ $claim->status }}</td>
                                 </tr>

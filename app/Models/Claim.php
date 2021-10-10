@@ -9,6 +9,14 @@ class Claim extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'equipment_id',
+        'user_id',
+        'admin_id',
+        'problem',
+        'status',
+    ];
+
     public function equipment()
     {
         return $this->belongsTo(Equipment::class);

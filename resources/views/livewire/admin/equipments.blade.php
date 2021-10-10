@@ -11,7 +11,7 @@
                 {{ __('หน่วยงานและแผนก') }}
             </a>
             @if(auth()->user()->isSuperAdmin())
-                <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
+                <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
                     {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
                 </a>
             @endif
@@ -39,6 +39,7 @@
                             </th>
                             <th>{{__('รูป')}}</th>
                             <th>{{__('ชื่ออุปกรณ์')}}</th>
+                            <th>{{__('เลขครุภัณฑ์')}}</th>
                             <th>{{__('รายละเอียด')}}</th>
                             <th></th>
                         </tr>
@@ -56,6 +57,7 @@
                                     </button>
                                 </td>
                                 <td class="w-full">{{ $equipment->name }}</td>
+                                <td class="font-mono">{{ $equipment->serial_number ?: '-' }}</td>
                                 <td>{{ $equipment->detail }}</td>
                                 <td>
                                     <button class="btn btn-sm" wire:click="showUpdate('{{ $equipment->id }}')">
@@ -81,30 +83,27 @@
             </x-slot>
 
             <x-slot name="content">
-                @if (optional($selected)->picture)
-                    <img src="{{ Storage::url($selected->picture) }}" alt="{{ $selected->name }}">
-                @else
-                    <p>{{ __('ไม่มีรูปภาพ') }}</p>
-                @endif
+                <img class="border mx-auto max-w-xs" src="{{ optional($selected)->picture_url }}" alt="{{ optional($selected)->name }}">
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-secondary-button wire:click="$toggle('showingEquipmentPicture')" wire:loading.attr="disabled">
+                <button class="btn btn-ghost" wire:click="$toggle('showingEquipmentPicture')" wire:loading.attr="disabled">
                     {{ __('ปิด') }}
-                </x-jet-secondary-button>
+                </button>
             </x-slot>
         </x-jet-dialog-modal>
 
         <!-- Show Create -->
         <x-jet-modal wire:model="showingEquipmentCreate">
-            <div class="p-5">
-                <form wire:submit.prevent="storeEquipment">
+            <form wire:submit.prevent="storeEquipment">
+                <div class="p-5">
                     @csrf
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ชื่ออุปกรณ์') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}" class="input input-bordered">
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}"
+                               class="input input-bordered">
                         @error('name')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
@@ -113,30 +112,31 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รายระเอียด') }}</span>
+                            <span class="label-text">{{ __('รายละเอียด') }}</span>
                         </label>
-                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered" placeholder="{{ __('รายระเอียด') }}"></textarea>
+                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered" placeholder="{{ __('รายละเอียด') }}"></textarea>
                     </div>
-                    <div class="flex mt-2">
-                        <button type="button" wire:click="$toggle('showingEquipmentCreate')" class="btn btn-ghost ml-auto">
-                            {{ __('ยกเลิก') }}
-                        </button>
-                        <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingEquipmentCreate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
         </x-jet-modal>
 
         <!-- Show Update -->
         <x-jet-modal wire:model="showingEquipmentUpdate">
-            <div class="p-5">
-                <form wire:submit.prevent="updateEquipment">
-                    @csrf
+            <form wire:submit.prevent="updateEquipment">
+                @csrf
+                <div class="p-5">
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ชื่ออุปกรณ์') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}" class="input input-bordered">
+                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}"
+                               class="input input-bordered">
                         @error('name')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
@@ -145,22 +145,35 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รายระเอียด') }}</span>
+                            <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
                         </label>
-                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered" placeholder="{{ __('รายระเอียด') }}"></textarea>
+                        <input type="text" wire:model="serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                               class="input input-bordered">
+                        @error('serial_number')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
                     </div>
-                    <div class="flex mt-2">
-                        <button type="button" wire:click="$toggle('showingEquipmentUpdate')" class="btn btn-ghost ml-auto">
-                            {{ __('ยกเลิก') }}
-                        </button>
-                        <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('รายละเอียด') }}</span>
+                        </label>
+                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered"
+                                  placeholder="{{ __('รายละเอียด') }}"></textarea>
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <button type="button" wire:click="$toggle('showingEquipmentUpdate')" class="btn btn-ghost ml-auto">
+                        {{ __('ยกเลิก') }}
+                    </button>
+                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                </div>
+            </form>
         </x-jet-modal>
 
         <!-- Deletion -->
-        <x-jet-dialog-modal wire:model="confirmingEquipmentDeletion">
+        <x-jet-confirmation-modal wire:model="confirmingEquipmentDeletion">
             <x-slot name="title">
                 {{ Str::replaceArray(':value', ['name' => optional($selected)->name], 'ลบ :value ?') }}
                 <span class="badge badge-error">{{ optional($selected)->id }}</span>
@@ -178,13 +191,13 @@
             </x-slot>
 
             <x-slot name="footer">
-                <button wire:click="$toggle('confirmingEquipmentDeletion')" class="btn btn-ghost bg-white ml-auto">
+                <button wire:click="$toggle('confirmingEquipmentDeletion')" class="btn btn-ghost ml-auto">
                     {{ __('ยกเลิก') }}
                 </button>
                 <button class="btn btn-error ml-2" wire:click="deleteEquipment" wire:loading.attr="disabled">
                     {{ __('ลบ') }}
                 </button>
             </x-slot>
-        </x-jet-dialog-modal>
+        </x-jet-confirmation-modal>
     </div>
 </div>

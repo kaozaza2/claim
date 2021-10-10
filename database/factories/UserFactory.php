@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Department;
 use App\Models\SubDepartment;
 use App\Models\Team;
 use App\Models\User;
@@ -32,7 +31,6 @@ class UserFactory extends Factory
             'last_name' => $this->faker->lastName(),
             'sex' => 'male',
             'identification' => rand(1000000000000, 9999999999999),
-            'department_id' => Department::factory(),
             'sub_department_id' => SubDepartment::factory(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),

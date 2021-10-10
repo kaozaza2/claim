@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -60,14 +61,20 @@ class User extends Authenticatable
         return sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
     }
 
+    protected function scopeAdmin(Builder $query)
+    {
+        return $query->where('role', 'admin')
+            ->orWhere('role', 'superadmin');
+    }
+
+    protected function scopeMember(Builder $query)
+    {
+        return $query->where('role', 'member');
+    }
+
     public function claims()
     {
         return $this->hasMany(Claim::class);
-    }
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function sub_department()
