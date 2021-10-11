@@ -199,7 +199,7 @@
             </x-slot>
 
             <x-slot name="content">
-                {{ sprintf('ต้องการที่จะลบหน่วยงาน %s หรือไม่?', optional($selected)->name}}
+                {{ sprintf('ต้องการที่จะลบหน่วยงาน %s หรือไม่?', optional($selected)->name) }}
 
                 @if(optional($selected)->subs && $selected->subs->isNotEmpty())
                     <p class="mt-3">{{ __('แผนกที่จะถูกลบไปด้วย') }}</p>
