@@ -67,7 +67,7 @@ class Claims extends Component
         $this->fill([
             'equipment_id' => Equipment::first()->id,
             'user_id' => User::member()->first()->id,
-            'admin_id' => Auth::user()->isSuperAdmin() ? User::admin()->first()->id : Auth::user()->id,
+            'admin_id' => Auth::user()->id,
             'status' => 'กำลังรับเรื่อง',
         ]);
         $this->showingClaimCreate = true;

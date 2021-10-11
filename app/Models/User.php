@@ -48,12 +48,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return Str::contains($this->role, ['admin', 'superadmin']);
-    }
-
-    public function isSuperAdmin(): bool
-    {
-        return Str::contains($this->role, 'superadmin');
+        return Str::contains($this->role, 'admin');
     }
 
     protected function getFullnameAttribute()
@@ -77,7 +72,7 @@ class User extends Authenticatable
         return $this->hasMany(Claim::class);
     }
 
-    public function sub_department()
+    public function subDepartment()
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }

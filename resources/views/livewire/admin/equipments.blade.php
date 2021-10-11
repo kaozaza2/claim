@@ -10,11 +10,9 @@
             <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
                 {{ __('หน่วยงานและแผนก') }}
             </a>
-            @if(auth()->user()->isSuperAdmin())
-                <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
-                    {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
-                </a>
-            @endif
+            <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
+                {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
+            </a>
         </div>
 
         <div class="max-w-7xl sm:rounded-lg bg-white mx-auto sm:px-6 lg:px-8">

@@ -10,11 +10,9 @@
             <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
                 {{ __('หน่วยงานและแผนก') }}
             </a>
-            @if(auth()->user()->isSuperAdmin())
-                <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
-                    {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
-                </a>
-            @endif
+            <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
+                {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
+            </a>
         </div>
 
         <div class="max-w-7xl sm:rounded-lg bg-white mx-auto sm:px-6 lg:px-8">
@@ -158,13 +156,9 @@
                             <span class="label-text">{{ __('ผู้รับเรื่อง') }}</span>
                         </label>
                         <select wire:model="admin_id" class="select select-bordered w-full">
-                            @if(auth()->user()->isSuperAdmin())
-                                @foreach(\App\Models\User::admin()->cursor() as $e)
-                                    <option value="{{ $e->id }}">{{ $e->fullname }}</option>
-                                @endforeach
-                            @else
-                                <option value="{{ auth()->user()->id }}">{{ auth()->user()->fullname }}</option>
-                            @endif
+                            @foreach(\App\Models\User::admin()->cursor() as $e)
+                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @endforeach
                         </select>
                         @error('admin_id')
                         <label class="label">
@@ -227,7 +221,7 @@
                             <span class="label-text">{{ __('ผู้แจ้งเคลม') }}</span>
                         </label>
                         <select wire:model="user_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::member()->cursor() as $e)
+                            @foreach(\App\Models\User::all() as $e)
                                 <option value="{{ $e->id }}">{{ $e->fullname }}</option>
                             @endforeach
                         </select>
@@ -242,13 +236,9 @@
                             <span class="label-text">{{ __('ผู้รับเรื่อง') }}</span>
                         </label>
                         <select wire:model="admin_id" class="select select-bordered w-full">
-                            @if(auth()->user()->isSuperAdmin())
-                                @foreach(\App\Models\User::admin()->cursor() as $e)
-                                    <option value="{{ $e->id }}">{{ $e->fullname }}</option>
-                                @endforeach
-                            @elseif ($selected)
-                                <option value="{{ $selected->admin->id }}">{{ $selected->admin->fullname }}</option>
-                            @endif
+                            @foreach(\App\Models\User::admin()->cursor() as $e)
+                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @endforeach
                         </select>
                         @error('admin_id')
                         <label class="label">

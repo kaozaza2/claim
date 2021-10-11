@@ -8,6 +8,7 @@
         </div>
         <div class="flex-none px-2 ml-auto mr-0 flex">
             <div class="items-stretch flex">
+
                 <a href="{{ route('dashboard') }}" class="btn btn-ghost btn-sm rounded-btn">
                     {{ __('หน้าหลัก') }}
                 </a>

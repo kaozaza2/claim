@@ -85,14 +85,14 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="department" value="{{ __('หน่วยงาน') }}" />
             <input id="department" type="text" class="input input-bordered mt-1 block text-gray-500 w-full"
-                         value="{{ $this->user->sub_department->department->name }}" readonly />
+                         value="{{ $this->user->subDepartment->department->name }}" readonly />
         </div>
 
         <!-- Sub Department -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="sub_department" value="{{ __('แผนก') }}" />
             <input id="sub_department" type="text" class="input input-bordered mt-1 block text-gray-500 w-full"
-                         value="{{ $this->user->sub_department->name }}" readonly />
+                         value="{{ $this->user->subDepartment->name }}" readonly />
         </div>
 
         <!-- Email -->
