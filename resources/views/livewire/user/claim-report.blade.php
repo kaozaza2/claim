@@ -9,7 +9,7 @@
                     </label>
                     <select wire:model="equipment_id" class="select select-bordered w-full">
                         <option disabled="disabled" selected="selected">{{ __('เลือก') }}</option>
-                        @foreach(\App\Models\Equipment::whereSubDepartment()->cursor() as $e)
+                        @foreach($equipments as $e)
                             <option value="{{ $e->id }}">{{ $e->name }} : {{ $e->serial_number }}</option>
                         @endforeach
                     </select>

@@ -84,7 +84,6 @@ class Claims extends Component
         ]);
 
         $claim = Claim::create($validatedData);
-        $this->notify($claim);
         $this->showingClaimCreate = false;
     }
 
@@ -112,7 +111,6 @@ class Claims extends Component
         ]);
 
         $this->selected->update($validatedData);
-        $this->notify($this->selected);
         $this->showingClaimUpdate = false;
     }
 
@@ -126,22 +124,5 @@ class Claims extends Component
     {
         $this->selected->delete();
         $this->confirmingClaimDeletion = false;
-    }
-
-    private function notify(Claim $claim)
-    {
-        $message = "เลขที่เคลม: $claim->id\n"
-            . "อุปกรณ์ที่เคลม: [{$claim->equipment->id}] {$claim->equipment->name}\n"
-            . "เลขครุภัณฑ์: {$claim->equipment->serial_number}\n"
-            . "อาการเสีย: $claim->problem\n"
-            . "ผู้แจ้งเคลม: {$claim->user->fullname}\n"
-            . "ผู้รับเรื่อง: {$claim->admin->fullname}\n"
-            . "สถานะ: $claim->status";
-
-        Http::withToken(config('line.token'))
-            ->asForm()
-            ->post( 'https://notify-api.line.me/api/notify', [
-                'message' => $message,
-            ]);
     }
 }
