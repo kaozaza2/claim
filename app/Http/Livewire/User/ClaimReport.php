@@ -56,12 +56,9 @@ class ClaimReport extends Component
 
     public function render()
     {
-        if (Auth::user()->isAdmin()) {
-            $this->equipments = Equipment::all()->keyBy('id');
-        } else {
-            $this->equipments = Equipment::whereSubDepartment()->get()
-                ->keyBy('id');
-        }
+        $this->equipments = Auth::user()->isAdmin()
+            ? Equipment::all()->keyBy('id')
+            : Equipment::whereSubDepartment()->get()->keyBy('id');
         return view('livewire.user.claim-report');
     }
 
