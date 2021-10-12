@@ -21,10 +21,10 @@ class UserSeeder extends Seeder
         User::factory()
             ->count(4)
             ->sequence(
-                ['name' => 'Super', 'last_name' => 'Admin', 'email' => 'superadmin@email.com', 'role' => 'superadmin'],
-                ['email' => 'admin@email.com', 'role' => 'admin'],
-                ['email' => 'user1@email.com', 'role' => 'member'],
-                ['email' => 'user2@email.com', 'role' => 'member'],
+                ['username' => 'admin1', 'email' => 'admin1@email.com', 'role' => 'admin'],
+                ['username' => 'admin2', 'email' => 'admin2@email.com', 'role' => 'admin'],
+                ['username' => 'user1', 'email' => 'user1@email.com', 'role' => 'member'],
+                ['username' => 'user2', 'email' => 'user2@email.com', 'role' => 'member'],
             )->state([
                 'password' => '$2y$10$gT9kx/47k8LIyMZdvSVdd.JVi2K4N.5v6JbqNF3RRt4bdS8QtLKuO',
                 'sub_department_id' => SubDepartment::factory()->state(['department_id' => $dep->id]),

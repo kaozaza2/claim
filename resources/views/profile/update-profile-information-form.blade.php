@@ -28,7 +28,8 @@
 
                 <!-- Current Profile Photo -->
                 <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full h-20 w-20 object-cover">
+                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}"
+                         class="rounded-full h-20 w-20 object-cover">
                 </div>
 
                 <!-- New Profile Photo Preview -->
@@ -55,14 +56,16 @@
         <!-- Title -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="title" value="{{ __('คำนำหน้า') }}" />
-            <input id="title" type="text" class="input input-bordered mt-1 block w-full" wire:model.defer="state.title" autocomplete="title" />
+            <input id="title" type="text" class="input input-bordered mt-1 block w-full"
+                   wire:model.defer="state.title" autocomplete="title" />
             <input-error for="title" class="mt-2" />
         </div>
 
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="name" value="{{ __('ชื่อ') }}" />
-            <input id="name" type="text" class="input input-bordered mt-1 block w-full" wire:model.defer="state.name" autocomplete="name" />
+            <input id="name" type="text" class="input input-bordered mt-1 block w-full"
+                   wire:model.defer="state.name" autocomplete="name" />
             <input-error for="name" class="mt-2" />
         </div>
 
@@ -70,7 +73,7 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="last_name" value="{{ __('นามสกุล') }}" />
             <input id="last_name" type="text" class="input input-bordered mt-1 block w-full"
-                         wire:model.defer="state.last_name" autocomplete="last_name" />
+                   wire:model.defer="state.last_name" autocomplete="last_name" />
             <input-error for="last_name" class="mt-2" />
         </div>
 
@@ -78,21 +81,29 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="identification" value="{{ __('เลขบัตรประจำตัวประชาชน') }}" />
             <input id="identification" type="text" class="input input-bordered mt-1 block text-gray-500 w-full"
-                         wire:model.defer="state.identification" readonly />
+                   wire:model.defer="state.identification" readonly />
         </div>
 
         <!-- Department -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="department" value="{{ __('หน่วยงาน') }}" />
             <input id="department" type="text" class="input input-bordered mt-1 block text-gray-500 w-full"
-                         value="{{ $this->user->subDepartment->department->name }}" readonly />
+                   value="{{ $this->user->subDepartment->department->name }}" readonly />
         </div>
 
         <!-- Sub Department -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="sub_department" value="{{ __('แผนก') }}" />
             <input id="sub_department" type="text" class="input input-bordered mt-1 block text-gray-500 w-full"
-                         value="{{ $this->user->subDepartment->name }}" readonly />
+                   value="{{ $this->user->subDepartment->name }}" readonly />
+        </div>
+
+        <!-- Username -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-jet-label for="username" value="{{ __('ชื่อผู้ใช้') }}" />
+            <input id="username" type="text" class="input input-bordered mt-1 block w-full"
+                   wire:model.defer="state.username">
+            <input-error for="username" class="mt-2" />
         </div>
 
         <!-- Email -->

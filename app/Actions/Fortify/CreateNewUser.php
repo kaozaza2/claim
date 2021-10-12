@@ -26,6 +26,7 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'sex' => ['required'],
             'identification' => ['required', new Identification()],
@@ -36,6 +37,7 @@ class CreateNewUser implements CreatesNewUsers
         return User::create([
             'title' => $input['title'],
             'name' => $input['name'],
+            'username' => $input['username'],
             'last_name' => $input['last_name'],
             'sex' => $input['sex'],
             'identification' => $input['identification'],

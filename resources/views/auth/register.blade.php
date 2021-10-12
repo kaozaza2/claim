@@ -65,6 +65,12 @@
             </div>
 
             <div class="mt-4">
+                <x-jet-label for="username" value="{{ __('ชื่อผู้ใช้') }}"/>
+                <x-jet-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')"
+                             required/>
+            </div>
+
+            <div class="mt-4">
                 <x-jet-label for="email" value="{{ __('อีเมล') }}"/>
                 <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
                              required/>

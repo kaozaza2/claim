@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\PatchedAttemptToAuthenticate;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(AttemptToAuthenticate::class, PatchedAttemptToAuthenticate::class);
     }
 
     /**
