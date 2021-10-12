@@ -10,7 +10,7 @@ class PreClaim extends Model
     use HasFactory;
 
     protected $fillable = [
-        'equiopment_id',
+        'equipment_id',
         'user_id',
         'problem',
     ];
