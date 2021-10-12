@@ -13,7 +13,7 @@ class ClaimTable extends Component
 
     public function mount()
     {
-        $this->claims = Claim::where('user_id', Auth::user()->id)
+        $this->claims = Claim::whereHas('equipment', fn($q) => $q->where('sub_department_id', Auth::user()->sub_department_id))
             ->get()
             ->keyBy('id');
     }
