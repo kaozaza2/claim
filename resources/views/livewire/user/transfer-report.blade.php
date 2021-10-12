@@ -23,12 +23,12 @@
                     <label class="label">
                         <span class="label-text">{{ __('แผนกที่จะย้าย') }}</span>
                     </label>
-                    <select wire:model="sub_department_id" class="select select-bordered w-full">
+                    <select wire:model="to_sub_department_id" class="select select-bordered w-full">
                         @foreach(\App\Models\SubDepartment::all() as $s)
                             <option value="{{ $s->id }}">{{ $s->name }}</option>
                         @endforeach
                     </select>
-                    @error('sub_department_id')
+                    @error('to_sub_department_id')
                     <label class="label">
                         <span class="text-error label-text-alt">{{ $message }}</span>
                     </label>

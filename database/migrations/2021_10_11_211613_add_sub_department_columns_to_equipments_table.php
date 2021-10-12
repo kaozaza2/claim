@@ -14,7 +14,7 @@ class AddSubDepartmentColumnsToEquipmentsTable extends Migration
     public function up()
     {
         Schema::table('equipments', function (Blueprint $table) {
-            $table->bigInteger('old_sub_department_id');
+            $table->bigInteger('old_sub_department_id')->nullable();
             $table->bigInteger('sub_department_id');
         });
     }
