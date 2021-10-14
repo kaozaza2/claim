@@ -18,7 +18,7 @@ class CreatePreClaimsTable extends Migration
             $table->string('equipment_id');
             $table->bigInteger('user_id');
             $table->bigInteger('admin_id')->nullable();
-            $table->string('problem');
+            $table->string('problem')->nullable();
             $table->timestamps();
         });
     }
