@@ -15,7 +15,7 @@ class ClaimTable extends Component
     {
         $this->claims = Claim::whereHas('equipment', function ($query) {
             $query->where('sub_department_id', Auth::user()->sub_department_id);
-        })->get();
+        })->orWhere('user_id', Auth::user()->id)->get();
     }
 
     public function render()
