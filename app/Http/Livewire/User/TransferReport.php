@@ -43,15 +43,15 @@ class TransferReport extends Component
             ],
             'to_sub_department_id' => [
                 'required',
-                Rule::unique('users', 'sub_department_id')->where('id', Auth::user()->id)
+                Rule::unique('equipments', 'sub_department_id')->where('id', $this->equipment_id)
             ],
         ], [
-            'exists' => Equipment::find($this->equipment_id)->name . ' is not exists',
-            'unique' => Equipment::find($this->equipment_id)->name . ' is already in '
-                . SubDepartment::find( $this->to_sub_department_id)->name,
+            'exists' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' is not exists',
+            'unique' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' is already in '
+                . SubDepartment::find($this->to_sub_department_id)->name,
         ]);
 
-        $equipment = Equipment::find($validatedData['equipment_id']);
+        $equipment = $this->equipments->firstWhere('id', $validatedData['equipment_id']);
 
         $transfer = Transfer::create([
             'equipment_id' => $validatedData['equipment_id'],
@@ -65,13 +65,24 @@ class TransferReport extends Component
         $this->sendMessage($transfer);
     }
 
+    public function updated($propertyName)
+    {
+        if ($propertyName == 'equipment_id') {
+            $equipment = $this->equipments->firstWhere('id', $this->equipment_id);
+            $this->subDepartments = SubDepartment::where('id', '!=', $equipment->sub_department_id)
+                ->get()
+                ->keyBy('id');
+        }
+    }
+
     public function render()
     {
-
         $this->equipments = Auth::user()->isAdmin()
             ? Equipment::all()->keyBy('id')
             : Equipment::whereSubDepartment()->get()->keyBy('id');
-        $this->subDepartments = SubDepartment::all()->keyBy('id');
+        if (!isset($this->subDepartments)) {
+            $this->subDepartments = SubDepartment::all()->keyBy('id');
+        }
         return view('livewire.user.transfer-report');
     }
 
