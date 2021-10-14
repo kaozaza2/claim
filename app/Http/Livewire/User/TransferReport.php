@@ -41,16 +41,18 @@ class TransferReport extends Component
                 'required',
                 Auth::user()->isAdmin()
                     ? Rule::exists('equipments', 'id')
-                    : Rule::exists('equipments', 'id')->where('sub_department_id', Auth::user()->sub_department_id)
+                    : Rule::exists('equipments', 'id')->where('sub_department_id', Auth::user()->sub_department_id),
+                Rule::unique('transfers')->where('user_id', Auth::user()->id)->whereNull('admin_id'),
             ],
             'to_sub_department_id' => [
                 'required',
                 Rule::unique('equipments', 'sub_department_id')->where('id', $this->equipment_id)
             ],
         ], [
-            'exists' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' is not exists',
-            'unique' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' is already in '
-                . SubDepartment::find($this->to_sub_department_id)->name,
+            'equipment_id.exists' => 'ไม่พบ ' . $this->equipments->firstWhere('id', $this->equipment_id)->name,
+            'equipment_id.unique' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' แจ้งย้ายไว้แล้ว',
+            'to_sub_department_id.unique' => $this->equipments->firstWhere('id', $this->equipment_id)->name . ' อยู่ในแผนก '
+                . SubDepartment::find($this->to_sub_department_id)->name . ' อยู่แล้ว',
         ]);
 
         $equipment = $this->equipments->firstWhere('id', $validatedData['equipment_id']);

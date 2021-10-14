@@ -37,10 +37,12 @@ class ClaimReport extends Component
                 Auth::user()->isAdmin()
                     ? Rule::exists('equipments', 'id')
                     : Rule::exists('equipments', 'id')->where('sub_department_id', Auth::user()->sub_department_id),
+                Rule::unique('pre_claims')->where('user_id', Auth::user()->id)->whereNull('admin_id'),
             ],
             'problem' => ['nullable'],
         ], [
-            'exists' => $this->equipments->firstWhere('id' ,$this->equipment_id)->name . ' is not exists',
+            'equipment_id.exists' => 'ไม่พบ ' . $this->equipments->firstWhere('id' ,$this->equipment_id)->name,
+            'equipment_id.unique' => 'ได้แจ้งซ่อม ' . $this->equipments->firstWhere('id' ,$this->equipment_id)->name . ' ไว้แล้ว',
         ]);
 
         $claim = PreClaim::create([

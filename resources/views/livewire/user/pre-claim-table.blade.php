@@ -15,6 +15,7 @@
                     <th>{{__('เลขครุภัณฑ์')}}</th>
                     <th>{{__('ปัญหาที่พบ')}}</th>
                     <th>{{__('วันที่ยื่นเรื่อง')}}</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -25,10 +26,32 @@
                         <td class="font-mono">{{ $pre->equipment->serial_number ?: '-' }}</td>
                         <td>{{ $pre->problem }}</td>
                         <td>{{ $pre->created_at->format('Y-m-d') }}</td>
+                        <td>
+                            <button class="btn btn-sm" wire:click="showCancel('{{ $pre->id }}')">
+                                {{ __('ยกเลิก') }}
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
         </div>
+
+        <x-jet-confirmation-modal wire:model="confirmingCancel">
+            <x-slot name="title">
+                {{ __('ยกเลิกแจ้งซ่อม ?') }}
+            </x-slot>
+
+            <x-slot name="content">
+                {{ sprintf('ยกเลิกแจ้งซ่อม %s ?', $selected->equipment->name ?? '') }}
+            </x-slot>
+
+            <x-slot name="footer">
+                <button type="button" wire:click="$toggle('confirmingCancel')" class="btn btn-ghost ml-auto">
+                    {{ __('ยกเลิก') }}
+                </button>
+                <button class="btn btn-error ml-2" wire:click="confirmCancel">{{ __('ตกลง') }}</button>
+            </x-slot>
+        </x-jet-confirmation-modal>
     @endif
 </div>
