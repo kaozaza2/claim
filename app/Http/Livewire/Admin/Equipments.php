@@ -42,12 +42,12 @@ class Equipments extends Component
                     || Str::contains($item->id, $search);
             });
         }
-        $this->equipments = $equipments->keyBy('id');
+        $this->equipments = $equipments;
     }
 
     public function showPicture(string $id)
     {
-        $this->selected = Equipment::find($id);
+        $this->selected = $this->equipments->firstWhere('id', $id);
         $this->showingEquipmentPicture = true;
     }
 
@@ -71,7 +71,7 @@ class Equipments extends Component
 
     public function showUpdate(string $id)
     {
-        $this->selected = Equipment::find($id);
+        $this->selected = $this->equipments->firstWhere('id', $id);
         $this->name = $this->selected->name;
         $this->serial_number = $this->selected->serial_number;
         $this->detail = $this->selected->detail;
@@ -93,7 +93,7 @@ class Equipments extends Component
 
     public function confirmDeletion(string $id)
     {
-        $this->selected = Equipment::find($id);
+        $this->selected = $this->equipments->firstWhere('id', $id);
         $this->confirmingEquipmentDeletion = true;
     }
 

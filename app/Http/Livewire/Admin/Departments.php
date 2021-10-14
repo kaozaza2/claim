@@ -49,7 +49,7 @@ class Departments extends Component
                     });
             });
         }
-        $this->departments = $departments->keyBy('id');
+        $this->departments = $departments;
     }
 
     public function showErrorMessage(string $message)
@@ -60,7 +60,7 @@ class Departments extends Component
 
     public function confirmDeletion(string $id)
     {
-        $this->selected = Department::find($id);
+        $this->selected = $this->departments->firstWhere('id', $id);
         if ($this->selected->subs->contains(function ($s) {
             return $s->users->isNotEmpty();
         })) {
@@ -130,7 +130,7 @@ class Departments extends Component
     public function showUpdate(string $id)
     {
         $this->reset('name');
-        $this->selected = Department::find($id);
+        $this->selected = $this->departments->firstWhere('id', $id);
         $this->name = $this->selected->name;
         $this->showingDepartmentUpdate = true;
     }

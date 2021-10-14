@@ -7,7 +7,6 @@ use App\Models\Equipment;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -52,7 +51,7 @@ class Claims extends Component
                     || Str::contains($item->admin->name, $search);
             });
         }
-        $this->claims = $claims->keyBy('id');
+        $this->claims = $claims;
     }
 
     public function showEquipment(string $id)
@@ -83,13 +82,13 @@ class Claims extends Component
             'status' => 'required',
         ]);
 
-        $claim = Claim::create($validatedData);
+        Claim::create($validatedData);
         $this->showingClaimCreate = false;
     }
 
     public function showUpdate(string $id)
     {
-        $this->selected = Claim::find($id);
+        $this->selected = $this->claims->firstWhere('id', $id);
         $this->fill([
             'equipment_id' => $this->selected->equipment_id,
             'user_id' => $this->selected->user_id,
@@ -116,7 +115,7 @@ class Claims extends Component
 
     public function confirmDeletion(string $id)
     {
-        $this->selected = Claim::find($id);
+        $this->selected = $this->claims->firstWhere('id', $id);
         $this->confirmingClaimDeletion = true;
     }
 

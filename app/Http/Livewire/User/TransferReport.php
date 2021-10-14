@@ -28,7 +28,9 @@ class TransferReport extends Component
     public function showTransferReport()
     {
         $this->equipment_id = $this->equipments->first()->id;
-        $this->to_sub_department_id = SubDepartment::first()->id;
+        $this->to_sub_department_id = $this->subDepartments
+            ? $this->subDepartments->first()->id
+            : SubDepartment::first()->id;
         $this->showingTransferReport = true;
     }
 
@@ -69,19 +71,17 @@ class TransferReport extends Component
     {
         if ($propertyName == 'equipment_id') {
             $equipment = $this->equipments->firstWhere('id', $this->equipment_id);
-            $this->subDepartments = SubDepartment::where('id', '!=', $equipment->sub_department_id)
-                ->get()
-                ->keyBy('id');
+            $this->subDepartments = SubDepartment::where('id', '!=', $equipment->sub_department_id)->get();
         }
     }
 
     public function render()
     {
         $this->equipments = Auth::user()->isAdmin()
-            ? Equipment::all()->keyBy('id')
-            : Equipment::whereSubDepartment()->get()->keyBy('id');
+            ? Equipment::all()
+            : Equipment::whereSubDepartment()->get();
         if (!isset($this->subDepartments)) {
-            $this->subDepartments = SubDepartment::all()->keyBy('id');
+            $this->subDepartments = SubDepartment::all();
         }
         return view('livewire.user.transfer-report');
     }

@@ -40,7 +40,7 @@ class ClaimReport extends Component
             ],
             'problem' => ['nullable'],
         ], [
-            'exists' => Equipment::find($this->equipment_id)->name . ' is not exists',
+            'exists' => $this->equipments->firstWhere('id' ,$this->equipment_id)->name . ' is not exists',
         ]);
 
         $claim = PreClaim::create([
@@ -57,8 +57,8 @@ class ClaimReport extends Component
     public function render()
     {
         $this->equipments = Auth::user()->isAdmin()
-            ? Equipment::all()->keyBy('id')
-            : Equipment::whereSubDepartment()->get()->keyBy('id');
+            ? Equipment::all()
+            : Equipment::whereSubDepartment()->get();
         return view('livewire.user.claim-report');
     }
 

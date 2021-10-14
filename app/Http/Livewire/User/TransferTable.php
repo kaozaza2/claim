@@ -17,9 +17,7 @@ class TransferTable extends Component
 
     public function loadTransfers()
     {
-        $this->transfers = Transfer::where('user_id', Auth::user()->id)
-            ->get()
-            ->keyBy('id');
+        $this->transfers = Transfer::where('user_id', Auth::user()->id)->get();
     }
 
     public function render()

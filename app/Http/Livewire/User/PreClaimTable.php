@@ -17,9 +17,7 @@ class PreClaimTable extends Component
 
     public function loadPreClaims()
     {
-        $this->preClaims = PreClaim::where('user_id', Auth::user()->id)
-            ->get()
-            ->keyBy('id');
+        $this->preClaims = PreClaim::where('user_id', Auth::user()->id)->get();
     }
 
     public function render()
