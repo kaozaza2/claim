@@ -36,10 +36,12 @@ class Equipments extends Component
         if ($this->search != null) {
             $search = $this->search;
             $equipments = $equipments->filter(function ($item) use ($search) {
-                return Str::contains($item->name, $search)
-                    || Str::contains($item->detail, $search)
-                    || Str::contains($item->serial_number, $search)
-                    || Str::contains($item->id, $search);
+                return Str::any([
+                    $item->name,
+                    $item->detail,
+                    $item->serial_number,
+                    $item->id,
+                ], fn($s) => Str::contains($s, $search));
             });
         }
         $this->equipments = $equipments;

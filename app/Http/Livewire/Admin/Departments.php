@@ -40,13 +40,13 @@ class Departments extends Component
         $departments = Department::all();
         if ($this->search != null) {
             $search = $this->search;
-            $departments = $departments->filter(function ($i) use ($search) {
-                return Str::contains($i->id, $search)
-                    || Str::contains($i->name, $search)
-                    || $i->subs->contains(function ($s) use ($search) {
-                        return Str::contains($s->id, $search)
-                            || Str::contains($s->name, $search);
-                    });
+            $departments = $departments->map(function ($i) use ($search) {
+                $i->subs = $i->subs->filter(function ($f) use ($search) {
+                    return Str::any([$f->id, $f->name], fn($s) => Str::contains($s, $search));
+                });
+                return $i;
+            })->reject(function ($i) use ($search) {
+                return !Str::any([$i->id, $i->name], fn($s) => Str::contains($s, $search)) && $i->subs->isEmpty();
             });
         }
         $this->departments = $departments;

@@ -42,13 +42,15 @@ class Claims extends Component
         if ($this->search) {
             $search = $this->search;
             $claims = $claims->filter(function ($item) use ($search) {
-                return Str::contains($item->equipment->name, $search)
-                    || Str::contains($item->equipment->serial_number, $search)
-                    || Str::contains($item->problem, $search)
-                    || Str::contains($item->id, $search)
-                    || Str::contains($item->status, $search)
-                    || Str::contains($item->user->name, $search)
-                    || Str::contains($item->admin->name, $search);
+                return Str::any([
+                    $item->equipment->name,
+                    $item->equipment->serial_number,
+                    $item->problem,
+                    $item->id,
+                    $item->status,
+                    $item->user->name,
+                    $item->admin->name,
+                ], fn($s) => Str::contains($s, $search));
             });
         }
         $this->claims = $claims;
