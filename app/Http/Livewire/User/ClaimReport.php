@@ -25,6 +25,9 @@ class ClaimReport extends Component
 
     public function showClaimReport()
     {
+        if ($this->equipments->isEmpty()) {
+            return;
+        }
         $this->equipment_id = $this->equipments->first()->id;
         $this->showingClaimReport = true;
     }

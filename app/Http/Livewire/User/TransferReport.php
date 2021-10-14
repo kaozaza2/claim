@@ -27,6 +27,9 @@ class TransferReport extends Component
 
     public function showTransferReport()
     {
+        if ($this->equipments->isEmpty()) {
+            return;
+        }
         $this->equipment_id = $this->equipments->first()->id;
         $this->to_sub_department_id = $this->subDepartments
             ? $this->subDepartments->first()->id
