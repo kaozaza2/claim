@@ -43,23 +43,17 @@
             </div>
 
             <div class="mt-4">
-                <x-jet-label for="department" value="{{ __('หน่วยงาน') }}"/>
+                <x-jet-label for="sub_department_id" value="{{ __('หน่วยงาน/แผนก') }}"/>
                 <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="department" name="department" required>
-                    <option selected disabled>เลือก</option>
+                    id="sub_department_id" name="sub_department_id" required>
                     @foreach (\App\Models\Department::all() as $dep)
-                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mt-4">
-                <x-jet-label for="sub_department" value="{{ __('แผนก') }}"/>
-                <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="sub_department" name="sub_department" required>
-                    <option selected disabled>เลือก</option>
-                    @foreach (\App\Models\SubDepartment::all() as $dep)
-                        <option value="{{ $dep->id }}">{{ $dep->name }}</option>
+                        @if ($dep->subs->isEmpty())
+                            @continue
+                        @endif
+                        <option disabled>{{ $dep->name }}</option>
+                        @foreach ($dep->subs as $sub)
+                            <option value="{{ $sub->id }}"> - {{ $sub->name }}</option>
+                        @endforeach
                     @endforeach
                 </select>
             </div>
