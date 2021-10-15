@@ -5,13 +5,13 @@
         <p>{{__('ยังไม่มีรายการที่รอย้าย')}}</p>
     @else
         <div class="overflow-x-auto">
-            <table class="table border w-full table-zebra">
+            <table class="table table-compact border w-full table-zebra">
                 <thead>
                 <tr>
                     <th>
                         <span class="hidden lg:block">{{__('No.')}}</span>
                     </th>
-                    <th>{{__('อุปกร์ที่เคลม')}}</th>
+                    <th colspan="3">{{__('อุปกร์ที่เคลม')}}</th>
                     <th>{{__('เลขครุภัณฑ์')}}</th>
                     <th>{{__('ย้ายจากแผนก')}}</th>
                     <th>{{__('ย้ายไปยังแผนก')}}</th>
@@ -23,7 +23,9 @@
                 @foreach ($transfers as $transfer)
                     <tr>
                         <th>{{ $loop->index + 1 }}</th>
-                        <td class="w-full">{{ $transfer->equipment->name }}</td>
+                        <td>{{ $transfer->equipment->name }}</td>
+                        <td>{{ $transfer->equipment->brand }}</td>
+                        <td>{{ $transfer->equipment->category }}</td>
                         <td class="font-mono">{{ $transfer->equipment->serial_number ?: '-' }}</td>
                         <td>{{ $transfer->fromSub->name }}</td>
                         <td>{{ $transfer->toSub->name }}</td>

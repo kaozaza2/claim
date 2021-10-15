@@ -49,7 +49,7 @@
                                 <th>{{ $claim->id }}</th>
                                 <td>
                                     <button class="btn btn-sm btn-ghost capitalize" wire:click="showEquipment('{{ $claim->equipment->id }}')">
-                                        {{ $claim->equipment->name }}
+                                        {{ $claim->equipment->name }} : {{ $claim->equipment->category }}
                                     </button>
                                 </td>
                                 <td class="font-mono">{{ $claim->equipment->serial_number ?: '-' }}</td>
@@ -86,8 +86,16 @@
                         <td class="border">{{ optional($equipment)->id }}</td>
                     </tr>
                     <tr>
-                        <th scope="col" class="border">{{ __('ชื่ออุปกรณ์') }}</th>
+                        <th scope="col" class="border">{{ __('รุ่น') }}</th>
                         <td class="border">{{ optional($equipment)->name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="border">{{ __('ยี่ห้อ') }}</th>
+                        <td class="border">{{ optional($equipment)->brand }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="col" class="border">{{ __('ประเภท') }}</th>
+                        <td class="border">{{ optional($equipment)->category }}</td>
                     </tr>
                     <tr>
                         <th scope="col" class="border">{{ __('เลขครุภัณฑ์') }}</th>

@@ -40,7 +40,7 @@ class ClaimReport extends Component
                 Auth::user()->isAdmin()
                     ? Rule::exists('equipments', 'id')
                     : Rule::exists('equipments', 'id')->where('sub_department_id', Auth::user()->sub_department_id),
-                Rule::unique('pre_claims')->where('user_id', Auth::user()->id)->whereNull('admin_id'),
+                Rule::unique('pre_claims')->where('user_id', Auth::user()->id),
             ],
             'problem' => ['nullable'],
         ], [

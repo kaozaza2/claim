@@ -21,13 +21,16 @@ class Equipments extends Component
     public ?string $name = null;
     public ?string $serial_number = null;
     public ?string $detail = null;
+    public ?string $brand = null;
+    public ?string $category = null;
     public ?string $search = null;
 
     public function render()
     {
         $this->loadEquipments();
-        return view('livewire.admin.equipments')
-            ->layout('layouts.admin');
+        return view('livewire.admin.equipments', [
+            'equipments' => $this->equipments->take(10),
+        ])->layout('layouts.admin');
     }
 
     private function loadEquipments()
@@ -56,7 +59,7 @@ class Equipments extends Component
     public function showCreate()
     {
         $this->showingEquipmentCreate = true;
-        $this->reset('name', 'serial_number', 'detail');
+        $this->reset('name', 'serial_number', 'detail', 'brand', 'category');
     }
 
     public function storeEquipment()
@@ -65,6 +68,8 @@ class Equipments extends Component
             'name' => 'required',
             'serial_number' => 'nullable',
             'detail' => 'nullable',
+            'brand' => 'nullable',
+            'category' => 'nullable',
         ]);
 
         Equipment::create($validateData);
@@ -74,9 +79,13 @@ class Equipments extends Component
     public function showUpdate(string $id)
     {
         $this->selected = $this->equipments->firstWhere('id', $id);
-        $this->name = $this->selected->name;
-        $this->serial_number = $this->selected->serial_number;
-        $this->detail = $this->selected->detail;
+        $this->fill([
+            'name' => $this->selected->name,
+            'serial_number' => $this->selected->serial_number,
+            'detail' => $this->selected->detail,
+            'brand' => $this->selected->brand,
+            'category' => $this->selected->category,
+        ]);
         $this->resetErrorBag();
         $this->showingEquipmentUpdate = true;
     }
@@ -87,6 +96,8 @@ class Equipments extends Component
             'name' => 'required',
             'serial_number' => 'nullable',
             'detail' => 'nullable',
+            'brand' => 'nullable',
+            'category' => 'nullable',
         ]);
 
         $this->selected->update($validateData);

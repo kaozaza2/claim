@@ -5,13 +5,13 @@
         <p>{{__('ยังไม่มีรายการรายการรอซ่อม')}}</p>
     @else
         <div class="overflow-x-auto">
-            <table class="table border w-full table-zebra">
+            <table class="table table-compact border w-full table-zebra">
                 <thead>
                 <tr>
                     <th>
                         <span class="hidden lg:block">{{__('No.')}}</span>
                     </th>
-                    <th>{{__('อุปกร์ที่ส่งซ่อม')}}</th>
+                    <th colspan="3">{{__('อุปกร์ที่ส่งซ่อม')}}</th>
                     <th>{{__('เลขครุภัณฑ์')}}</th>
                     <th>{{__('ปัญหาที่พบ')}}</th>
                     <th>{{__('วันที่ยื่นเรื่อง')}}</th>
@@ -22,7 +22,9 @@
                 @foreach ($preClaims as $pre)
                     <tr>
                         <th>{{ $loop->index + 1 }}</th>
-                        <td class="w-full">{{ $pre->equipment->name }}</td>
+                        <td>{{ $pre->equipment->name }}</td>
+                        <td>{{ $pre->equipment->brand }}</td>
+                        <td>{{ $pre->equipment->category }}</td>
                         <td class="font-mono">{{ $pre->equipment->serial_number ?: '-' }}</td>
                         <td>{{ $pre->problem }}</td>
                         <td>{{ $pre->created_at->format('Y-m-d') }}</td>

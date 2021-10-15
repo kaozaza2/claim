@@ -20,9 +20,7 @@ class PreClaimTable extends Component
 
     public function loadPreClaims()
     {
-        $this->preClaims = PreClaim::where('user_id', Auth::user()->id)
-            ->whereNull('admin_id')
-            ->get();
+        $this->preClaims = PreClaim::where('user_id', Auth::user()->id)->get();
         if (!isset($this->selected) && $this->preClaims->isNotEmpty()) {
             $this->selected = $this->preClaims->first();
         }

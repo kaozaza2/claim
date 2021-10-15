@@ -10,7 +10,7 @@
                     <select wire:model="equipment_id" class="select select-bordered w-full">
                         <option disabled="disabled" selected="selected">{{ __('เลือก') }}</option>
                         @foreach($equipments as $e)
-                            <option value="{{ $e->id }}">{{ $e->name }} : {{ $e->serial_number }}</option>
+                            <option value="{{ $e->id }}">{{ sprintf('%s : %s : %s : %s', $e->name, $e->brand, $e->category, $e->serial_number) }}</option>
                         @endforeach
                     </select>
                     @error('equipment_id')

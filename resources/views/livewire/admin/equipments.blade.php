@@ -36,7 +36,9 @@
                                 <span class="hidden lg:block">{{__('รหัสอุปกรณ์')}}</span>
                             </th>
                             <th>{{__('รูป')}}</th>
-                            <th>{{__('ชื่ออุปกรณ์')}}</th>
+                            <th>{{__('รุ่น')}}</th>
+                            <th>{{__('ยี่ห้อ')}}</th>
+                            <th>{{__('ประเภท')}}</th>
                             <th>{{__('เลขครุภัณฑ์')}}</th>
                             <th>{{__('รายละเอียด')}}</th>
                             <th></th>
@@ -55,6 +57,8 @@
                                     </button>
                                 </td>
                                 <td class="w-full">{{ $equipment->name }}</td>
+                                <td class="w-full">{{ $equipment->brand }}</td>
+                                <td class="w-full">{{ $equipment->category }}</td>
                                 <td class="font-mono">{{ $equipment->serial_number ?: '-' }}</td>
                                 <td>{{ $equipment->detail }}</td>
                                 <td>
@@ -98,11 +102,35 @@
                     @csrf
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ชื่ออุปกรณ์') }}</span>
+                            <span class="label-text">{{ __('รุ่น') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}"
+                        <input type="text" wire:model="name" placeholder="{{ __('รุ่น') }}"
                                class="input input-bordered">
                         @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ยี่ห้อ') }}</span>
+                        </label>
+                        <input type="text" wire:model="brand" placeholder="{{ __('ยี่ห้อ') }}"
+                               class="input input-bordered">
+                        @error('brand')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ประเภท') }}</span>
+                        </label>
+                        <input type="text" wire:model="category" placeholder="{{ __('ประเภท') }}"
+                               class="input input-bordered">
+                        @error('category')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
                         </label>
@@ -143,11 +171,35 @@
                 <div class="p-5">
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ชื่ออุปกรณ์') }}</span>
+                            <span class="label-text">{{ __('รุ่น') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่ออุปกรณ์') }}"
+                        <input type="text" wire:model="name" placeholder="{{ __('รุ่น') }}"
                                class="input input-bordered">
                         @error('name')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ยี่ห้อ') }}</span>
+                        </label>
+                        <input type="text" wire:model="brand" placeholder="{{ __('ยี่ห้อ') }}"
+                               class="input input-bordered">
+                        @error('brand')
+                        <label class="label">
+                            <span class="text-error label-text-alt">{{ $message }}</span>
+                        </label>
+                        @enderror
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('ประเภท') }}</span>
+                        </label>
+                        <input type="text" wire:model="category" placeholder="{{ __('ประเภท') }}"
+                               class="input input-bordered">
+                        @error('category')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
                         </label>
