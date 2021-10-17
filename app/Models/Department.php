@@ -9,13 +9,13 @@ class Department extends Model
 {
     use HasFactory;
 
-
-    protected $fillable = [
-        'name',
-    ];
-
     public function subs()
     {
         return $this->hasMany(SubDepartment::class);
+    }
+
+    public function users()
+    {
+        return $this->hasManyThrough(User::class, SubDepartment::class);
     }
 }

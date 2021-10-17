@@ -2,12 +2,24 @@
 
 namespace App\Providers;
 
+use App\Actions\CreateDepartment;
 use App\Actions\CreateEquipments;
+use App\Actions\CreateSubDepartment;
+use App\Actions\DeleteDepartment;
 use App\Actions\DeleteEquipment;
+use App\Actions\DeleteSubDepartment;
+use App\Actions\UpdateDepartment;
 use App\Actions\UpdateEquipment;
+use App\Actions\UpdateSubDepartment;
+use App\Contracts\CreatesDepartments;
 use App\Contracts\CreatesEquipments;
+use App\Contracts\CreatesSubDepartments;
+use App\Contracts\DeletesDepartments;
 use App\Contracts\DeletesEquipments;
+use App\Contracts\DeletesSubDepartments;
+use App\Contracts\UpdatesDepartments;
 use App\Contracts\UpdatesEquipments;
+use App\Contracts\UpdatesSubDepartments;
 use App\Http\Middleware\PatchedAttemptToAuthenticate;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\ServiceProvider;
@@ -34,9 +46,15 @@ class AppServiceProvider extends ServiceProvider
 
     private function registerSingletons()
     {
+        $this->app->singleton(CreatesDepartments::class, CreateDepartment::class);
         $this->app->singleton(CreatesEquipments::class, CreateEquipments::class);
+        $this->app->singleton(CreatesSubDepartments::class, CreateSubDepartment::class);
+        $this->app->singleton(UpdatesDepartments::class, UpdateDepartment::class);
         $this->app->singleton(UpdatesEquipments::class, UpdateEquipment::class);
+        $this->app->singleton(UpdatesSubDepartments::class, UpdateSubDepartment::class);
+        $this->app->singleton(DeletesDepartments::class, DeleteDepartment::class);
         $this->app->singleton(DeletesEquipments::class, DeleteEquipment::class);
+        $this->app->singleton(DeletesSubDepartments::class, DeleteSubDepartment::class);
     }
 
     /**

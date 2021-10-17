@@ -2,20 +2,32 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Contracts\CreatesDepartments;
+use App\Contracts\CreatesSubDepartments;
+use App\Contracts\DeletesDepartments;
+use App\Contracts\DeletesSubDepartments;
+use App\Contracts\UpdatesDepartments;
+use App\Contracts\UpdatesSubDepartments;
 use App\Models\Department;
 use App\Models\SubDepartment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
+
+/**
+ * @property Department $department
+ * @property SubDepartment sub_department
+ */
 class Departments extends Component
 {
-    /** @var Collection<Department> */
     public Collection $departments;
-    public Department $selected;
-    public SubDepartment $subSelected;
 
-    public bool $showingErrorMessage = false;
+    public ?string $selectedId = null;
+    public ?string $selectedSubId = null;
+
+    public array $state = [];
+
     public bool $showingDepartmentCreate = false;
     public bool $showingSubDepartmentCreate = false;
     public bool $showingDepartmentUpdate = false;
@@ -23,9 +35,6 @@ class Departments extends Component
     public bool $confirmingDepartmentDeletion = false;
     public bool $confirmingSubDepartmentDeletion = false;
 
-    public ?string $errorMessage = null;
-    public ?string $name = null;
-    public ?string $department_id = null;
     public ?string $search = null;
 
     public function render()
@@ -33,6 +42,16 @@ class Departments extends Component
         $this->loadDepartments();
         return view('livewire.admin.departments')
             ->layout('layouts.admin');
+    }
+
+    public function getDepartmentProperty()
+    {
+        return Department::find($this->selectedId);
+    }
+
+    public function getSubDepartmentProperty()
+    {
+        return SubDepartment::find($this->selectedSubId);
     }
 
     private function loadDepartments()
@@ -52,114 +71,95 @@ class Departments extends Component
         $this->departments = $departments;
     }
 
-    public function showErrorMessage(string $message)
-    {
-        $this->errorMessage = $message;
-        $this->showingErrorMessage = true;
-    }
-
-    public function confirmDeletion(string $id)
-    {
-        $this->selected = $this->departments->firstWhere('id', $id);
-        if ($this->selected->subs->contains(function ($s) {
-            return $s->users->isNotEmpty();
-        })) {
-            $this->showErrorMessage('ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่');
-            return;
-        }
-        $this->confirmingDepartmentDeletion = true;
-    }
-
-    public function deleteDepartment()
-    {
-        $this->selected->subs()->delete();
-        $this->selected->delete();
-        $this->confirmingDepartmentDeletion = false;
-    }
-
-    public function confirmSubDeletion(string $id)
-    {
-        $this->subSelected = SubDepartment::find($id);
-        if ($this->subSelected->users->isNotEmpty()) {
-            $this->showErrorMessage('ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่');
-            return;
-        }
-        $this->confirmingSubDepartmentDeletion = true;
-    }
-
-    public function deleteSubDepartment()
-    {
-        $this->subSelected->delete();
-        $this->confirmingSubDepartmentDeletion = false;
-    }
-
     public function showCreate()
     {
-        $this->reset('name');
+        $this->state = [];
         $this->showingDepartmentCreate = true;
     }
 
-    public function storeDepartment()
+    public function storeDepartment(CreatesDepartments $creator)
     {
-        $validatedData = $this->validate([
-            'name' => 'required',
-        ]);
-
-        Department::create($validatedData);
+        $creator->create($this->state);
         $this->showingDepartmentCreate = false;
-    }
-
-    public function showSubCreate(string $id)
-    {
-        $this->reset('name');
-        $this->department_id = $id;
-        $this->showingSubDepartmentCreate = true;
-    }
-
-    public function storeSubDepartment()
-    {
-        $validatedData = $this->validate([
-            'name' => 'required',
-            'department_id' => 'required|exists:departments,id',
-        ]);
-
-        SubDepartment::create($validatedData);
-        $this->showingSubDepartmentCreate = false;
     }
 
     public function showUpdate(string $id)
     {
-        $this->reset('name');
-        $this->selected = $this->departments->firstWhere('id', $id);
-        $this->name = $this->selected->name;
+        $dep = Department::find($id);
+        $this->selectedId = $dep->id;
+        $this->state = $dep->withoutRelations()->toArray();
         $this->showingDepartmentUpdate = true;
     }
 
-    public function updateDepartment()
+    public function updateDepartment(UpdatesDepartments $updater)
     {
-        $validatedData = $this->validate([
-            'name' => 'required',
-        ]);
-
-        $this->selected->update($validatedData);
+        $updater->update(Department::find($this->selectedId), $this->state);
         $this->showingDepartmentUpdate = false;
+    }
+
+    public function confirmDeletion(string $id)
+    {
+        $dep = Department::find($id);
+        if ($dep->users()->exists()) {
+            $this->emit('show-error-modal', [
+                'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
+            ]);
+            return;
+        }
+
+        $this->selectedId = $dep->id;
+        $this->confirmingDepartmentDeletion = true;
+    }
+
+    public function deleteDepartment(DeletesDepartments $deleter)
+    {
+        $deleter->delete(Department::find($this->selectedId));
+        $this->confirmingDepartmentDeletion = false;
+    }
+
+    public function showSubCreate(string $id)
+    {
+        $this->state = ['department_id' => $id];
+        $this->showingSubDepartmentCreate = true;
+    }
+
+    public function storeSubDepartment(CreatesSubDepartments $creator)
+    {
+        $creator->create($this->state);
+        $this->showingSubDepartmentCreate = false;
     }
 
     public function showSubUpdate(string $id)
     {
-        $this->reset('name', 'department_id');
-        $this->subSelected = SubDepartment::find($id);
-        $this->name = $this->subSelected->name;
+        $sub = SubDepartment::find($id);
+        $this->selectedSubId = $sub->id;
+        $this->state = $sub->withoutRelations()->toArray();
         $this->showingSubDepartmentUpdate = true;
     }
 
-    public function updateSubDepartment()
+    public function updateSubDepartment(UpdatesSubDepartments $updater)
     {
-        $validatedData = $this->validate([
-            'name' => 'required',
-        ]);
-
-        $this->subSelected->update($validatedData);
+        $updater->update(SubDepartment::find($this->selectedSubId), $this->state);
         $this->showingSubDepartmentUpdate = false;
+    }
+
+    public function confirmSubDeletion(string $id)
+    {
+        $sub = SubDepartment::find($id);
+        if ($sub->users()->exists()) {
+            $this->emit('show-error-modal', [
+                'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
+            ]);
+            return;
+        }
+
+        $this->selectedSubId = $id;
+        $this->confirmingSubDepartmentDeletion = true;
+    }
+
+    public function deleteSubDepartment(DeletesSubDepartments $deleter)
+    {
+        $deleter->delete(SubDepartment::find($this->selectedSubId));
+        $this->confirmingSubDepartmentDeletion = false;
     }
 }

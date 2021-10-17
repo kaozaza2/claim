@@ -65,7 +65,7 @@
                                         {{ $sub->name }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm" wire:click="showSubUpdate('{{ $department->id }}')">
+                                        <button class="btn btn-sm" wire:click="showSubUpdate('{{ $sub->id }}')">
                                             {{ __('แก้ไข') }}
                                         </button>
                                         <button wire:click="confirmSubDeletion('{{ $sub->id }}')" class="btn btn-sm btn-error">
@@ -91,20 +91,16 @@
                         <label class="label">
                             <span class="label-text">{{ __('ชื่อหน่วยงาน') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingDepartmentCreate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" class="btn btn-success ml-2" wire:loading.attr="disabled">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -118,20 +114,16 @@
                         <label class="label">
                             <span class="label-text">{{ __('ชื่อแผนก') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อแผนก') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('ชื่อแผนก') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingSubDepartmentCreate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" class="btn btn-success ml-2" wire:loading.attr="disabled">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -145,20 +137,16 @@
                         <label class="label">
                             <span class="label-text">{{ __('ชื่อหน่วยงาน') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('ชื่อหน่วยงาน') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingDepartmentUpdate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" class="btn btn-success ml-2" wire:loading.attr="disabled">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -172,20 +160,16 @@
                         <label class="label">
                             <span class="label-text">{{ __('ชื่อแผนก') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('ชื่อแผนก') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('ชื่อแผนก') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingSubDepartmentUpdate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" class="btn btn-success ml-2" wire:loading.attr="disabled">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -193,16 +177,16 @@
         <!-- Deletion -->
         <x-jet-dialog-modal wire:model="confirmingDepartmentDeletion">
             <x-slot name="title">
-                {{ sprintf('ลบหน่วยงาน %s ?', optional($selected)->name) }}
+                {{ sprintf('ลบหน่วยงาน %s ?', optional($this->department)->name) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ sprintf('ต้องการที่จะลบหน่วยงาน %s หรือไม่?', optional($selected)->name) }}
+                {{ sprintf('ต้องการที่จะลบหน่วยงาน %s หรือไม่?', optional($this->department)->name) }}
 
-                @if(optional($selected)->subs && $selected->subs->isNotEmpty())
+                @if(optional($this->department)->subs() && optional($this->department)->subs()->exists())
                     <p class="mt-3">{{ __('แผนกที่จะถูกลบไปด้วย') }}</p>
                     <ul>
-                        @each('components.li', $selected->subs->pluck('name'), 'slot')
+                        @each('components.li', $this->department->subs->pluck('name'), 'slot')
                     </ul>
                 @endif
             </x-slot>
@@ -220,11 +204,11 @@
         <!-- Sub Deletion -->
         <x-jet-dialog-modal wire:model="confirmingSubDepartmentDeletion">
             <x-slot name="title">
-                {{ sprintf('ลบแผนก %s ?', optional($subSelected)->name) }}
+                {{ sprintf('ลบแผนก %s ?', optional($this->sub_department)->name) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ sprintf('ต้องการที่จะลบแผนก %s หรือไม่?', optional($subSelected)->name) }}
+                {{ sprintf('ต้องการที่จะลบแผนก %s หรือไม่?', optional($this->sub_department)->name) }}
             </x-slot>
 
             <x-slot name="footer">
@@ -236,22 +220,5 @@
                 </button>
             </x-slot>
         </x-jet-dialog-modal>
-
-        <!-- Error -->
-        <x-jet-confirmation-modal wire:model="showingErrorMessage">
-            <x-slot name="title">
-                {{ __('ข้อผิดพลาด') }}
-            </x-slot>
-
-            <x-slot name="content">
-                {{ $errorMessage }}
-            </x-slot>
-
-            <x-slot name="footer">
-                <button class="btn btn-ghost" wire:click="$toggle('showingErrorMessage')">
-                    {{ __('ปิด') }}
-                </button>
-            </x-slot>
-        </x-jet-confirmation-modal>
     </div>
 </div>
