@@ -47,6 +47,8 @@ class Equipments extends Component
             $equipments = $equipments->filter(function ($item) use ($search) {
                 return Str::any([
                     $item->name,
+                    $item->brand,
+                    $item->category,
                     $item->detail,
                     $item->serial_number,
                     $item->id,

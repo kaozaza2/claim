@@ -44,6 +44,8 @@ class Claims extends Component
             $claims = $claims->filter(function ($item) use ($search) {
                 return Str::any([
                     $item->equipment->name,
+                    $item->equipment->brand,
+                    $item->equipment->category,
                     $item->equipment->serial_number,
                     $item->problem,
                     $item->id,
