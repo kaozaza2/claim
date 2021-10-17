@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,13 +14,33 @@ class Equipment extends Model
 
     protected $table = 'equipments';
 
-    protected $fillable = [
-        'name',
-        'category',
-        'brand',
-        'serial_number',
-        'detail',
-    ];
+    public function updatePicture(UploadedFile $picture)
+    {
+        tap($this->picture, function ($previous) use ($picture) {
+            $this->forceFill([
+                'picture' => $picture->storePublicly(
+                    'equipment-photos', ['disk' => $this->pictureStorageDisk()]
+                ),
+            ])->save();
+
+            if ($previous) {
+                Storage::disk($this->pictureStorageDisk())->delete($previous);
+            }
+        });
+
+    }
+
+    public function deletePicture()
+    {
+        if ($this->picture) {
+            Storage::disk($this->pictureStorageDisk())->delete($this->picture);
+        }
+    }
+
+    protected function pictureStorageDisk(): string
+    {
+        return 'public';
+    }
 
     public function claims()
     {
@@ -48,8 +69,8 @@ class Equipment extends Model
 
     protected function getPictureUrlAttribute()
     {
-        if ($this->pucture) {
-            return Storage::url($this->pucture);
+        if ($this->picture) {
+            return Storage::disk($this->pictureStorageDisk())->url($this->picture);
         }
 
         return asset('images/no_image.jpg');

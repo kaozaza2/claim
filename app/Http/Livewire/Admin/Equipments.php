@@ -2,27 +2,33 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Contracts\CreatesEquipments;
+use App\Contracts\DeletesEquipments;
+use App\Contracts\UpdatesEquipmentsInformation;
 use App\Models\Equipment;
+use App\Models\SubDepartment;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Equipments extends Component
 {
-    /** @var Collection<Equipment> */
+    use WithFileUploads;
+
     public Collection $equipments;
-    public Equipment $selected;
 
     public bool $confirmingEquipmentDeletion = false;
     public bool $showingEquipmentUpdate = false;
     public bool $showingEquipmentCreate = false;
     public bool $showingEquipmentPicture = false;
 
-    public ?string $name = null;
-    public ?string $serial_number = null;
-    public ?string $detail = null;
-    public ?string $brand = null;
-    public ?string $category = null;
+    public ?string $selectedId = null;
+    public array $state = [];
+    /** @var UploadedFile|string|null */
+    public $picture;
+
     public ?string $search = null;
 
     public function render()
@@ -48,72 +54,76 @@ class Equipments extends Component
             });
         }
         $this->equipments = $equipments;
+
+        if (!$this->selectedId) {
+            $equipment = $this->equipment;
+            $this->selectedId = $equipment->id;
+            $this->state = $equipment->withoutRelations()->toArray();
+        }
     }
 
     public function showPicture(string $id)
     {
-        $this->selected = $this->equipments->firstWhere('id', $id);
+        $this->selectedId = $id;
         $this->showingEquipmentPicture = true;
     }
 
     public function showCreate()
     {
+        $this->state = [];
         $this->showingEquipmentCreate = true;
-        $this->reset('name', 'serial_number', 'detail', 'brand', 'category');
     }
 
-    public function storeEquipment()
+    public function storeEquipment(CreatesEquipments $creator)
     {
-        $validateData = $this->validate([
-            'name' => 'required',
-            'serial_number' => 'nullable',
-            'detail' => 'nullable',
-            'brand' => 'nullable',
-            'category' => 'nullable',
-        ]);
-
-        Equipment::create($validateData);
+        $creator->create(
+            $this->picture
+                ? array_merge($this->state, ['picture' => $this->picture])
+                : $this->state
+        );
         $this->showingEquipmentCreate = false;
+    }
+
+    public function getEquipmentProperty()
+    {
+        return Equipment::find($this->selectedId)
+            ?: Equipment::first();
+    }
+
+    public function getSubDepartmentsProperty()
+    {
+        return SubDepartment::all();
     }
 
     public function showUpdate(string $id)
     {
-        $this->selected = $this->equipments->firstWhere('id', $id);
-        $this->fill([
-            'name' => $this->selected->name,
-            'serial_number' => $this->selected->serial_number,
-            'detail' => $this->selected->detail,
-            'brand' => $this->selected->brand,
-            'category' => $this->selected->category,
-        ]);
+        $this->selectedId = $id;
+        $this->state = $this->equipment->withoutRelations()->toArray();
         $this->resetErrorBag();
         $this->showingEquipmentUpdate = true;
     }
 
-    public function updateEquipment()
+    public function updateEquipment(UpdatesEquipmentsInformation $updater)
     {
-        $validateData = $this->validate([
-            'name' => 'required',
-            'serial_number' => 'nullable',
-            'detail' => 'nullable',
-            'brand' => 'nullable',
-            'category' => 'nullable',
-        ]);
+        $updater->update(
+            $this->equipment,
+            $this->picture
+                ? array_merge($this->state, ['picture' => $this->picture])
+                : $this->state
+        );
 
-        $this->selected->update($validateData);
         $this->showingEquipmentUpdate = false;
     }
 
     public function confirmDeletion(string $id)
     {
-        $this->selected = $this->equipments->firstWhere('id', $id);
+        $this->selectedId = $id;
         $this->confirmingEquipmentDeletion = true;
     }
 
-    public function deleteEquipment()
+    public function deleteEquipment(DeletesEquipments $deleter)
     {
-        $this->selected->claim()->delete();
-        $this->selected->delete();
+        $deleter->delete($this->equipment);
         $this->confirmingEquipmentDeletion = false;
     }
 }

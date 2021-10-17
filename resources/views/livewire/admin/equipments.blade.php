@@ -45,27 +45,27 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($equipments as $equipment)
+                        @foreach ($equipments as $e)
                             <tr>
-                                <th>{{ $equipment->id }}</th>
+                                <th>{{ $e->id }}</th>
                                 <td>
-                                    <button wire:click="showPicture('{{ $equipment->id }}')" class="btn px-1 btn-sm btn-ghost">
+                                    <button wire:click="showPicture('{{ $e->id }}')" class="btn px-1 btn-sm btn-ghost">
                                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                                             <path d="M0 0h24v24H0V0z" fill="none"/>
                                             <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
                                         </svg>
                                     </button>
                                 </td>
-                                <td class="w-full">{{ $equipment->name }}</td>
-                                <td class="w-full">{{ $equipment->brand }}</td>
-                                <td class="w-full">{{ $equipment->category }}</td>
-                                <td class="font-mono">{{ $equipment->serial_number ?: '-' }}</td>
-                                <td>{{ $equipment->detail }}</td>
+                                <td class="w-full">{{ $e->name }}</td>
+                                <td class="w-full">{{ $e->brand }}</td>
+                                <td class="w-full">{{ $e->category }}</td>
+                                <td class="font-mono">{{ $e->serial_number ?: '-' }}</td>
+                                <td>{{ $e->detail }}</td>
                                 <td>
-                                    <button class="btn btn-sm" wire:click="showUpdate('{{ $equipment->id }}')">
+                                    <button class="btn btn-sm" wire:click="showUpdate('{{ $e->id }}')">
                                         {{ __('แก้ไข') }}
                                     </button>
-                                    <button wire:click="confirmDeletion('{{ $equipment->id }}')" class="btn btn-sm btn-error">
+                                    <button wire:click="confirmDeletion('{{ $e->id }}')" class="btn btn-sm btn-error">
                                         {{ __('ลบ') }}
                                     </button>
                                 </td>
@@ -80,12 +80,12 @@
         <!-- Show Picture -->
         <x-jet-dialog-modal wire:model="showingEquipmentPicture">
             <x-slot name="title">
-                {{ optional($selected)->name }}
-                <span class="badge badge-success">{{ optional($selected)->id }}</span>
+                {{ $this->equipment->name }}
+                <span class="badge badge-success">{{ $this->equipment->id }}</span>
             </x-slot>
 
             <x-slot name="content">
-                <img class="border mx-auto max-w-xs" src="{{ optional($selected)->picture_url }}" alt="{{ optional($selected)->name }}">
+                <img class="border mx-auto max-w-xs" src="{{ $this->equipment->picture_url }}" alt="{{ $this->equipment->name }}">
             </x-slot>
 
             <x-slot name="footer">
@@ -101,65 +101,71 @@
                 <div class="p-5">
                     @csrf
                     <div class="form-control">
+                        <span class="label label-text">{{ __('รูปภาพ') }}</span>
+                        <label class="label input input-bordered w-full">
+                            <span>{{ __('เลือกรูปภาพ') }}</span>
+                            <input type="file" wire:model="picture" class="hidden">
+                        </label>
+                        <x-jet-input-error for="picture" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('รุ่น') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('รุ่น') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('รุ่น') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ยี่ห้อ') }}</span>
                         </label>
-                        <input type="text" wire:model="brand" placeholder="{{ __('ยี่ห้อ') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('ยี่ห้อ') }}"
                                class="input input-bordered">
-                        @error('brand')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ประเภท') }}</span>
                         </label>
-                        <input type="text" wire:model="category" placeholder="{{ __('ประเภท') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('ประเภท') }}"
                                class="input input-bordered">
-                        @error('category')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
                         </label>
-                        <input type="text" wire:model="serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
                                class="input input-bordered">
-                        @error('serial_number')
+                        <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
                         <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
+                            <span class="label-text">{{ __('แผนก') }}</span>
                         </label>
-                        @enderror
+                        <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                id="department" wire:model="state.sub_department_id">
+                            @foreach ($this->sub_departments as $sub)
+                                <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-jet-input-error for="sub_department_id" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('รายละเอียด') }}</span>
                         </label>
-                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered" placeholder="{{ __('รายละเอียด') }}"></textarea>
+                        <textarea wire:model.defer="state.detail" class="textarea h-24 textarea-bordered"
+                                  placeholder="{{ __('รายละเอียด') }}"></textarea>
+                        <x-jet-input-error for="detail" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingEquipmentCreate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -170,66 +176,71 @@
                 @csrf
                 <div class="p-5">
                     <div class="form-control">
+                        <span class="label label-text">{{ __('รูปภาพ') }}</span>
+                        <label class="label input input-bordered w-full">
+                            <span>{{ __('เลือกรูปภาพ') }}</span>
+                            <input type="file" wire:model="picture" class="hidden">
+                        </label>
+                        <x-jet-input-error for="picture" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('รุ่น') }}</span>
                         </label>
-                        <input type="text" wire:model="name" placeholder="{{ __('รุ่น') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('รุ่น') }}"
                                class="input input-bordered">
-                        @error('name')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ยี่ห้อ') }}</span>
                         </label>
-                        <input type="text" wire:model="brand" placeholder="{{ __('ยี่ห้อ') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('ยี่ห้อ') }}"
                                class="input input-bordered">
-                        @error('brand')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('ประเภท') }}</span>
                         </label>
-                        <input type="text" wire:model="category" placeholder="{{ __('ประเภท') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('ประเภท') }}"
                                class="input input-bordered">
-                        @error('category')
-                        <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
-                        </label>
-                        @enderror
+                        <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
                         </label>
-                        <input type="text" wire:model="serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
                                class="input input-bordered">
-                        @error('serial_number')
+                        <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
                         <label class="label">
-                            <span class="text-error label-text-alt">{{ $message }}</span>
+                            <span class="label-text">{{ __('แผนก') }}</span>
                         </label>
-                        @enderror
+                        <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
+                                id="department" wire:model="state.sub_department_id">
+                            @foreach ($this->sub_departments as $sub)
+                                <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-jet-input-error for="sub_department_id" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('รายละเอียด') }}</span>
                         </label>
-                        <textarea wire:model="detail" class="textarea h-24 textarea-bordered"
+                        <textarea wire:model.defer="state.detail" class="textarea h-24 textarea-bordered"
                                   placeholder="{{ __('รายละเอียด') }}"></textarea>
+                        <x-jet-input-error for="detail" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingEquipmentUpdate')" class="btn btn-ghost ml-auto">
                         {{ __('ยกเลิก') }}
                     </button>
-                    <button type="submit" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit"  wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -237,17 +248,17 @@
         <!-- Deletion -->
         <x-jet-confirmation-modal wire:model="confirmingEquipmentDeletion">
             <x-slot name="title">
-                {{ sprintf('ลบ %s ?', optional($selected)->name) }}
-                <span class="badge badge-error">{{ optional($selected)->id }}</span>
+                {{ sprintf('ลบ %s ?', $this->equipment->name) }}
+                <span class="badge badge-error">{{ $this->equipment->id }}</span>
             </x-slot>
 
             <x-slot name="content">
-                {{ sprintf('ต้องการที่จะลบ %s หรือไม่?', optional($selected)->name) }}
+                {{ sprintf('ต้องการที่จะลบ %s หรือไม่?', $this->equipment->name) }}
 
-                @if (optional($selected)->claims && $selected->claims->isNotEmpty())
+                @if ($this->equipment->claims->isNotEmpty())
                     <div class="mt-3">{{ __('ประวัติการเคลม') }}</div>
                     <ul>
-                        @each('components.li', $selected->claims->map(function($i){return"$i->id : $i->problem";}), 'slot')
+                        @each('components.li', $this->equipment->claims->map(fn($i)=>"$i->id : $i->problem"), 'slot')
                     </ul>
                 @endif
             </x-slot>
