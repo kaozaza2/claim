@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class CreateEquipments implements CreatesEquipments
+class CreateEquipment implements CreatesEquipments
 {
     public function create(array $input)
     {

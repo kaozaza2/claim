@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\CreateDepartment;
-use App\Actions\CreateEquipments;
+use App\Actions\CreateEquipment;
 use App\Actions\CreateSubDepartment;
 use App\Actions\DeleteDepartment;
 use App\Actions\DeleteEquipment;
@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
     private function registerSingletons()
     {
         $this->app->singleton(CreatesDepartments::class, CreateDepartment::class);
-        $this->app->singleton(CreatesEquipments::class, CreateEquipments::class);
+        $this->app->singleton(CreatesEquipments::class, CreateEquipment::class);
         $this->app->singleton(CreatesSubDepartments::class, CreateSubDepartment::class);
         $this->app->singleton(UpdatesDepartments::class, UpdateDepartment::class);
         $this->app->singleton(UpdatesEquipments::class, UpdateEquipment::class);
