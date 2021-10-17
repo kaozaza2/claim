@@ -41,6 +41,10 @@
             </main>
         </div>
 
+        @push('modals')
+            <livewire:error-modal />
+        @endpush
+
         @stack('modals')
 
         @livewireScripts
