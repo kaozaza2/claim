@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+/**
+ * @property Collection<SubDepartment> $sub_departments
+ */
 class Equipments extends Component
 {
     use WithFileUploads;
@@ -27,7 +30,7 @@ class Equipments extends Component
     public ?string $selectedId = null;
     public array $state = [];
     /** @var UploadedFile|string|null */
-    public $picture;
+    public $picture = null;
 
     public ?string $search = null;
 
@@ -56,12 +59,6 @@ class Equipments extends Component
             });
         }
         $this->equipments = $equipments;
-
-        if (!$this->selectedId) {
-            $equipment = $this->equipment;
-            $this->selectedId = $equipment->id;
-            $this->state = $equipment->withoutRelations()->toArray();
-        }
     }
 
     public function showPicture(string $id)
@@ -88,8 +85,7 @@ class Equipments extends Component
 
     public function getEquipmentProperty()
     {
-        return Equipment::find($this->selectedId)
-            ?: Equipment::first();
+        return optional(Equipment::find($this->selectedId));
     }
 
     public function getSubDepartmentsProperty()
@@ -99,8 +95,9 @@ class Equipments extends Component
 
     public function showUpdate(string $id)
     {
+        $equipment = Equipment::find($id);
         $this->selectedId = $id;
-        $this->state = $this->equipment->withoutRelations()->toArray();
+        $this->state = $equipment->withoutRelations()->toArray();
         $this->resetErrorBag();
         $this->showingEquipmentUpdate = true;
     }
@@ -108,7 +105,7 @@ class Equipments extends Component
     public function updateEquipment(UpdatesEquipments $updater)
     {
         $updater->update(
-            $this->equipment,
+            Equipment::find($this->selectedId),
             $this->picture
                 ? array_merge($this->state, ['picture' => $this->picture])
                 : $this->state
@@ -125,7 +122,7 @@ class Equipments extends Component
 
     public function deleteEquipment(DeletesEquipments $deleter)
     {
-        $deleter->delete($this->equipment);
+        $deleter->delete(Equipment::find($this->selectedId));
         $this->confirmingEquipmentDeletion = false;
     }
 }

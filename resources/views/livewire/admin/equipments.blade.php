@@ -255,7 +255,7 @@
             <x-slot name="content">
                 {{ sprintf('ต้องการที่จะลบ %s หรือไม่?', $this->equipment->name) }}
 
-                @if ($this->equipment->claims->isNotEmpty())
+                @if ($this->equipment->claims() && $this->equipment->claims()->exists())
                     <div class="mt-3">{{ __('ประวัติการเคลม') }}</div>
                     <ul>
                         @each('components.li', $this->equipment->claims->map(fn($i)=>"$i->id : $i->problem"), 'slot')
