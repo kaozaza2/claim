@@ -101,9 +101,7 @@ class Departments extends Component
     {
         $dep = Department::find($id);
         if ($dep->users()->exists()) {
-            $this->emit('show-error-modal', [
-                'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
-            ]);
+            $this->showErrorInUseModal();
             return;
         }
 
@@ -147,9 +145,7 @@ class Departments extends Component
     {
         $sub = SubDepartment::find($id);
         if ($sub->users()->exists()) {
-            $this->emit('show-error-modal', [
-                'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
-            ]);
+            $this->showErrorInUseModal();
             return;
         }
 
@@ -161,5 +157,12 @@ class Departments extends Component
     {
         $deleter->delete(SubDepartment::find($this->selectedSubId));
         $this->confirmingSubDepartmentDeletion = false;
+    }
+
+    private function showErrorInUseModal()
+    {
+        $this->emit('show-error-modal', [
+            'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
+        ]);
     }
 }
