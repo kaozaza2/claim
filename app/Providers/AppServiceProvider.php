@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Actions\CreateEquipments;
 use App\Actions\DeleteEquipment;
-use App\Actions\UpdateEquipmentsInformation;
+use App\Actions\UpdateEquipment;
 use App\Contracts\CreatesEquipments;
 use App\Contracts\DeletesEquipments;
-use App\Contracts\UpdatesEquipmentsInformation;
+use App\Contracts\UpdatesEquipments;
 use App\Http\Middleware\PatchedAttemptToAuthenticate;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\ServiceProvider;
@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
     private function registerSingletons()
     {
         $this->app->singleton(CreatesEquipments::class, CreateEquipments::class);
-        $this->app->singleton(UpdatesEquipmentsInformation::class, UpdateEquipmentsInformation::class);
+        $this->app->singleton(UpdatesEquipments::class, UpdateEquipment::class);
         $this->app->singleton(DeletesEquipments::class, DeleteEquipment::class);
     }
 

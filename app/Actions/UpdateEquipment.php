@@ -2,12 +2,12 @@
 
 namespace App\Actions;
 
-use App\Contracts\UpdatesEquipmentsInformation;
+use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class UpdateEquipmentsInformation implements UpdatesEquipmentsInformation
+class UpdateEquipment implements UpdatesEquipments
 {
     public function update(Equipment $equipment, array $input)
     {

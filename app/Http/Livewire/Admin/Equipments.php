@@ -4,7 +4,7 @@ namespace App\Http\Livewire\Admin;
 
 use App\Contracts\CreatesEquipments;
 use App\Contracts\DeletesEquipments;
-use App\Contracts\UpdatesEquipmentsInformation;
+use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
 use App\Models\SubDepartment;
 use Illuminate\Http\UploadedFile;
@@ -103,7 +103,7 @@ class Equipments extends Component
         $this->showingEquipmentUpdate = true;
     }
 
-    public function updateEquipment(UpdatesEquipmentsInformation $updater)
+    public function updateEquipment(UpdatesEquipments $updater)
     {
         $updater->update(
             $this->equipment,

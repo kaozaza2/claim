@@ -4,7 +4,7 @@ namespace App\Contracts;
 
 use App\Models\Equipment;
 
-interface UpdatesEquipmentsInformation
+interface UpdatesEquipments
 {
     public function update(Equipment $equipment, array $input);
 }
