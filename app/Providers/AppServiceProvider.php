@@ -22,6 +22,7 @@ use App\Contracts\UpdatesEquipments;
 use App\Contracts\UpdatesSubDepartments;
 use App\Http\Middleware\PatchedAttemptToAuthenticate;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -64,8 +65,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Str::macro('any', function ($haystacks, $callback) {
+        Validator::extend('identified', function ($attribute, $value, $parameters) {
+            if (strlen($value) != 13)
+                return false;
 
+            $calculate = (substr($value, 0, 1) * 13)
+                + (substr($value, 1, 1) * 12)
+                + (substr($value, 2, 1) * 11)
+                + (substr($value, 3, 1) * 10)
+                + (substr($value, 4, 1) * 9)
+                + (substr($value, 5, 1) * 8)
+                + (substr($value, 6, 1) * 7)
+                + (substr($value, 7, 1) * 6)
+                + (substr($value, 8, 1) * 5)
+                + (substr($value, 9, 1) * 4)
+                + (substr($value, 10, 1) * 3)
+                + (substr($value, 11, 1) * 2);
+
+            return 11 - ($calculate % 11) == substr($value, 12, 1);
+        }, 'The :attribute id is invalid');
+
+        Str::macro('any', function ($haystacks, $callback) {
             if ($haystacks instanceof Arrayable) {
                 $haystacks = $haystacks->toArray();
             }
