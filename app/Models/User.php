@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
+
+    public static function roles(): array
+    {
+        return ['admin', 'member'];
+    }
 }

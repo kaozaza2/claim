@@ -5,21 +5,29 @@ namespace App\Providers;
 use App\Actions\CreateDepartment;
 use App\Actions\CreateEquipment;
 use App\Actions\CreateSubDepartment;
+use App\Actions\CreateUser;
 use App\Actions\DeleteDepartment;
 use App\Actions\DeleteEquipment;
 use App\Actions\DeleteSubDepartment;
+use App\Actions\DeleteUser;
+use App\Actions\PromoteUser;
 use App\Actions\UpdateDepartment;
 use App\Actions\UpdateEquipment;
 use App\Actions\UpdateSubDepartment;
+use App\Actions\UpdateUser;
 use App\Contracts\CreatesDepartments;
 use App\Contracts\CreatesEquipments;
 use App\Contracts\CreatesSubDepartments;
+use App\Contracts\CreatesUsers;
 use App\Contracts\DeletesDepartments;
 use App\Contracts\DeletesEquipments;
 use App\Contracts\DeletesSubDepartments;
+use App\Contracts\DeletesUsers;
+use App\Contracts\PromotesUsers;
 use App\Contracts\UpdatesDepartments;
 use App\Contracts\UpdatesEquipments;
 use App\Contracts\UpdatesSubDepartments;
+use App\Contracts\UpdatesUsers;
 use App\Http\Middleware\PatchedAttemptToAuthenticate;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Validator;
@@ -56,6 +64,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(DeletesDepartments::class, DeleteDepartment::class);
         $this->app->singleton(DeletesEquipments::class, DeleteEquipment::class);
         $this->app->singleton(DeletesSubDepartments::class, DeleteSubDepartment::class);
+
+        $this->app->singleton(CreatesUsers::class, CreateUser::class);
+        $this->app->singleton(PromotesUsers::class, PromoteUser::class);
+        $this->app->singleton(UpdatesUsers::class, UpdateUser::class);
+        $this->app->singleton(DeletesUsers::class, DeleteUser::class);
     }
 
     /**
