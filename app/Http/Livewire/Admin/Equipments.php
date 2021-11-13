@@ -20,24 +20,50 @@ class Equipments extends Component
 {
     use WithFileUploads;
 
+    /**
+     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Equipment[]|null
+     */
     public Collection $equipments;
 
+    /**
+     * @var bool
+     */
     public bool $confirmingEquipmentDeletion = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingEquipmentUpdate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingEquipmentCreate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingEquipmentPicture = false;
 
+    /**
+     * @var string|null
+     */
     public ?string $selectedId = null;
+
+    /**
+     * @var mixed[]|mixed
+     */
     public array $state = [];
+
     /** @var UploadedFile|string|null */
-    public $picture = null;
+    public $picture;
 
     public ?string $search = null;
 
     public function render()
     {
         $this->loadEquipments();
-        return view('livewire.admin.equipments', [
+        return \view('livewire.admin.equipments', [
             'equipments' => $this->equipments->take(10),
         ])->layout('layouts.admin');
     }
@@ -58,6 +84,7 @@ class Equipments extends Component
                 ], fn($s) => Str::contains($s, $search));
             });
         }
+
         $this->equipments = $equipments;
     }
 
@@ -77,7 +104,7 @@ class Equipments extends Component
     {
         $creator->create(
             $this->picture
-                ? array_merge($this->state, ['picture' => $this->picture])
+                ? \array_merge($this->state, ['picture' => $this->picture])
                 : $this->state
         );
         $this->showingEquipmentCreate = false;
@@ -85,9 +112,12 @@ class Equipments extends Component
 
     public function getEquipmentProperty()
     {
-        return optional(Equipment::find($this->selectedId));
+        return \optional(Equipment::find($this->selectedId));
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection&\App\Models\SubDepartment[]
+     */
     public function getSubDepartmentsProperty()
     {
         return SubDepartment::all();
@@ -107,7 +137,7 @@ class Equipments extends Component
         $updater->update(
             Equipment::find($this->selectedId),
             $this->picture
-                ? array_merge($this->state, ['picture' => $this->picture])
+                ? \array_merge($this->state, ['picture' => $this->picture])
                 : $this->state
         );
 

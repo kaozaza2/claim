@@ -9,6 +9,9 @@ class Transfer extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'equipment_id',
         'from_sub_department_id',
@@ -16,26 +19,41 @@ class Transfer extends Model
         'user_id',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function equipment()
     {
         return $this->belongsTo(Equipment::class, 'equipment_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function fromSub()
     {
         return $this->belongsTo(SubDepartment::class, 'from_sub_department_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function toSub()
     {
         return $this->belongsTo(SubDepartment::class, 'to_sub_department_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');

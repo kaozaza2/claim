@@ -7,6 +7,9 @@ use Laravel\Fortify\Fortify;
 
 class PatchedAttemptToAuthenticate extends AttemptToAuthenticate
 {
+    /**
+     * @return mixed|void
+     */
     public function handle($request, $next)
     {
         if (Fortify::$authenticateUsingCallback) {
@@ -16,7 +19,7 @@ class PatchedAttemptToAuthenticate extends AttemptToAuthenticate
         $request->only(Fortify::username(), 'password');
 
         $authKey = Fortify::username();
-        if ($authKey != Fortify::email() && filter_var($request->input($authKey), FILTER_VALIDATE_EMAIL)) {
+        if ($authKey !== Fortify::email() && \filter_var($request->input($authKey), FILTER_VALIDATE_EMAIL)) {
             $authKey = Fortify::email();
         }
 

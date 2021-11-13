@@ -19,6 +19,9 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'title',
         'name',
@@ -32,6 +35,9 @@ class User extends Authenticatable
         'password',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -39,10 +45,16 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
+    /**
+     * @var array<string, class-string<\datetime>>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $appends = [
         'profile_photo_url',
     ];
@@ -52,32 +64,50 @@ class User extends Authenticatable
         return Str::contains($this->role, 'admin');
     }
 
+    /**
+     * @return string
+     */
     protected function getFullnameAttribute()
     {
-        return sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
+        return \sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     protected function scopeAdmin(Builder $query)
     {
         return $query->where('role', 'admin')
             ->orWhere('role', 'superadmin');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     protected function scopeMember(Builder $query)
     {
         return $query->where('role', 'member');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function claims()
     {
         return $this->hasMany(Claim::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function subDepartment()
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
+    /**
+     * @return string[]
+     */
     public static function roles(): array
     {
         return ['admin', 'member'];

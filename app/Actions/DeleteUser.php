@@ -12,6 +12,9 @@ class DeleteUser implements DeletesUsers
 {
     use Authorized;
 
+    /**
+     * @return bool|null
+     */
     public function delete(User $user)
     {
         if (!$this->authorized()) {

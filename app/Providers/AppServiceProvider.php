@@ -74,29 +74,24 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @return void
+     * @return mixed
      */
     public function boot()
     {
         Validator::extend('identified', function ($attribute, $value, $parameters) {
-            if (strlen($value) != 13)
+            if (\strlen($value) !== 13)
                 return false;
 
-            $calculate = (substr($value, 0, 1) * 13)
-                + (substr($value, 1, 1) * 12)
-                + (substr($value, 2, 1) * 11)
-                + (substr($value, 3, 1) * 10)
-                + (substr($value, 4, 1) * 9)
-                + (substr($value, 5, 1) * 8)
-                + (substr($value, 6, 1) * 7)
-                + (substr($value, 7, 1) * 6)
-                + (substr($value, 8, 1) * 5)
-                + (substr($value, 9, 1) * 4)
-                + (substr($value, 10, 1) * 3)
-                + (substr($value, 11, 1) * 2);
+            $index = 13;
+            $value = \str_split($value);
+            $calculate = \array_reduce($value, function ($carry, $item) use (&$index) {
+                if ($index !== 1)
+                    return $carry + ($item * $index--);
+                return \substr(11 - ($carry % 11), -1);
+            });
 
-            return 11 - ($calculate % 11) == substr($value, 12, 1);
-        }, 'The :attribute id is invalid');
+            return $calculate === $value[12];
+        }, 'The :attribute is not valid ID');
 
         Str::macro('any', function ($haystacks, $callback) {
             if ($haystacks instanceof Arrayable) {
@@ -108,6 +103,7 @@ class AppServiceProvider extends ServiceProvider
                     return true;
                 }
             }
+
             return false;
         });
     }

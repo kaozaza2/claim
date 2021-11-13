@@ -12,8 +12,13 @@ use Illuminate\Support\Facades\Http;
 
 class SendLineNotify implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    /**
+     * @var string
+     */
     protected string $message;
 
     /**
@@ -33,7 +38,7 @@ class SendLineNotify implements ShouldQueue
      */
     public function handle()
     {
-        Http::withToken(config('line.token'))
+        Http::withToken(\config('line.token'))
             ->asForm()
             ->post( 'https://notify-api.line.me/api/notify', [
                 'message' => $this->message,

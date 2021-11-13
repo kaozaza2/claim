@@ -12,6 +12,9 @@ class UpdateUser implements UpdatesUsers
 {
     use Authorized;
 
+    /**
+     * @return bool|mixed
+     */
     public function update(User $user, array $input)
     {
         if (!$this->authorized()) {
@@ -24,14 +27,14 @@ class UpdateUser implements UpdatesUsers
             'last_name' => ['string', 'max:255'],
             'email' => ['string', 'email', 'max:255', 'unique:users'],
             'username' => ['string', 'max:255', 'unique:users'],
-            'role' => [Rule::in(['admin', 'member'])]
+            'role' => [Rule::in(['admin', 'member'])],
             'sex' => ['string'],
             'identification' => ['identified'],
             'sub_department_id' => ['exists:sub_departments,id'],
         ])->validated();
 
-        return tap($user, function ($user) use ($validated) {
+        return \tap($user, function ($user) use ($validated) {
             $user->update($validated);
-        })
+        });
     }
 }

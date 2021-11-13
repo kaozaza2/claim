@@ -8,6 +8,6 @@ trait Authorized
 {
     protected function authorized(): bool
     {
-        return (bool) optional(Auth::user())->isAdmin();
+        return (bool) \optional(Auth::user())->isAdmin();
     }
 }

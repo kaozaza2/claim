@@ -12,15 +12,25 @@ use Livewire\Component;
 
 class ClaimReport extends Component
 {
+    /**
+     * @var string[]
+     */
     protected $listeners = [
         'showClaimReport',
     ];
 
+    /**
+     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Equipment[]|mixed|null
+     */
     public Collection $equipments;
 
+    /**
+     * @var bool
+     */
     public bool $showingClaimReport = false;
 
     public ?string $equipment_id = null;
+
     public ?string $problem = null;
 
     public function showClaimReport()
@@ -28,6 +38,7 @@ class ClaimReport extends Component
         if ($this->equipments->isEmpty()) {
             return;
         }
+
         $this->equipment_id = $this->equipments->first()->id;
         $this->showingClaimReport = true;
     }
@@ -59,17 +70,20 @@ class ClaimReport extends Component
         $this->sendMessage($claim);
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
         $this->equipments = Auth::user()->isAdmin()
             ? Equipment::all()
             : Equipment::whereSubDepartment()->get();
-        return view('livewire.user.claim-report');
+        return \view('livewire.user.claim-report');
     }
 
     private function sendMessage(PreClaim $claim)
     {
-        $message = sprintf(
+        $message = \sprintf(
             "แจ้งซ่อม\nอุปกรณ์ที่แจ้ง: %s\nเลขครุภัณฑ์: %s\nแจ้งโดย: %s\nอาการเสีย: %s",
             $claim->equipment->name,
             $claim->equipment->serial_number,

@@ -10,7 +10,7 @@ class EquipmentFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\App\Models\Equipment>|string
      */
     protected $model = Equipment::class;
 

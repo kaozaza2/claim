@@ -11,10 +11,24 @@ use Livewire\Component;
 
 class ProfileDepartmentForm extends Component
 {
+    /**
+     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Department[]|null
+     */
     public Collection $departments;
+
+    /**
+     * @var mixed|null
+     */
     public Collection $subDepartments;
 
+    /**
+     * @var mixed|null
+     */
     public $department;
+
+    /**
+     * @var mixed|null
+     */
     public $sub_department_id;
 
     public function mount()
@@ -38,9 +52,12 @@ class ProfileDepartmentForm extends Component
         }
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
-        return view('profile.profile-department-form', [
+        return \view('profile.profile-department-form', [
             'departments' => $this->departments,
             'subDepartments' => $this->subDepartments,
         ]);

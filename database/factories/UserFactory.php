@@ -14,7 +14,7 @@ class UserFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\App\Models\User>|string
      */
     protected $model = User::class;
 
@@ -30,10 +30,10 @@ class UserFactory extends Factory
             'name' => $this->faker->firstNameMale(),
             'last_name' => $this->faker->lastName(),
             'sex' => 'male',
-            'identification' => rand(1000000000000, 9999999999999),
+            'identification' => \rand(1000000000000, 9999999999999),
             'sub_department_id' => SubDepartment::factory(),
             'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
+            'email_verified_at' => \now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ];

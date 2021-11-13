@@ -12,11 +12,14 @@ class Equipment extends Model
 {
     use HasFactory;
 
+    /**
+     * @var string
+     */
     protected $table = 'equipments';
 
     public function updatePicture(UploadedFile $picture)
     {
-        tap($this->picture, function ($previous) use ($picture) {
+        \tap($this->picture, function ($previous) use ($picture) {
             $this->forceFill([
                 'picture' => $picture->storePublicly(
                     'equipment-photos', ['disk' => $this->pictureStorageDisk()]
@@ -42,21 +45,33 @@ class Equipment extends Model
         return 'public';
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function claims()
     {
         return $this->hasMany(Claim::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function preClaims()
     {
         return $this->hasMany(PreClaim::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function oldSubDepartment()
     {
         return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function subDepartment()
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
@@ -67,12 +82,15 @@ class Equipment extends Model
         return $query->where('sub_department_id', $subId ?: Auth::user()->subDepartment->id);
     }
 
+    /**
+     * @return mixed|string
+     */
     protected function getPictureUrlAttribute()
     {
         if ($this->picture) {
             return Storage::disk($this->pictureStorageDisk())->url($this->picture);
         }
 
-        return asset('images/no_image.jpg');
+        return \asset('images/no_image.jpg');
     }
 }

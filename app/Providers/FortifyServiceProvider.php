@@ -27,7 +27,7 @@ class FortifyServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @return void
+     * @return mixed
      */
     public function boot()
     {

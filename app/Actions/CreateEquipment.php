@@ -28,7 +28,7 @@ class CreateEquipment implements CreatesEquipments
             'sub_department_id.exists' => 'ไม่พบแผนกที่เลือก',
         ])->validate();
 
-        $equipment = tap(new Equipment, function ($equipment) use ($input) {
+        $equipment = \tap(new Equipment, function ($equipment) use ($input) {
             $equipment->forceFill([
                 'name' => $input['name'],
                 'serial_number' => $input['serial_number'] ?? null,

@@ -9,11 +9,21 @@ use Livewire\Component;
 
 class TransferTable extends Component
 {
+    /**
+     * @var mixed|null
+     */
     public Collection $transfers;
+
     public ?Transfer $selected = null;
 
+    /**
+     * @var bool
+     */
     public bool $confirmingCancel = false;
 
+    /**
+     * @var array<string, string>
+     */
     protected $listeners = [
         'reloadTransferTable' => '$refresh',
     ];
@@ -28,10 +38,13 @@ class TransferTable extends Component
         }
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
         $this->loadTransfers();
-        return view('livewire.user.transfer-table', [
+        return \view('livewire.user.transfer-table', [
             'transfers' => $this->transfers,
             'selected' => $this->selected,
         ]);

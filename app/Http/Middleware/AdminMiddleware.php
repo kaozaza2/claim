@@ -11,9 +11,7 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
+     * @return mixed|void
      */
     public function handle(Request $request, Closure $next)
     {
@@ -21,6 +19,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        abort(403, 'You don\'t have permission to access.');
+        \abort(403, 'You don\'t have permission to access.');
     }
 }

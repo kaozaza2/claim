@@ -21,18 +21,51 @@ use Livewire\Component;
  */
 class Departments extends Component
 {
+    /**
+     * @var \Illuminate\Support\Collection|null
+     */
     public Collection $departments;
 
     public ?string $selectedId = null;
+
+    /**
+     * @var mixed|string|null
+     */
     public ?string $selectedSubId = null;
 
+    /**
+     * @var mixed[]|array<string, string>|mixed
+     */
     public array $state = [];
 
+    /**
+     * @var bool
+     */
     public bool $showingDepartmentCreate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingSubDepartmentCreate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingDepartmentUpdate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingSubDepartmentUpdate = false;
+
+    /**
+     * @var bool
+     */
     public bool $confirmingDepartmentDeletion = false;
+
+    /**
+     * @var bool
+     */
     public bool $confirmingSubDepartmentDeletion = false;
 
     public ?string $search = null;
@@ -40,7 +73,7 @@ class Departments extends Component
     public function render()
     {
         $this->loadDepartments();
-        return view('livewire.admin.departments')
+        return \view('livewire.admin.departments')
             ->layout('layouts.admin');
     }
 
@@ -68,6 +101,7 @@ class Departments extends Component
                 return !Str::any([$i->id, $i->name], fn($s) => Str::contains($s, $search)) && $i->subs->isEmpty();
             });
         }
+
         $this->departments = $departments;
     }
 

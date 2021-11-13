@@ -14,6 +14,9 @@ class CreateUser implements CreatesUsers
     use Authorized;
     use PasswordValidationRules;
 
+    /**
+     * @return bool|mixed
+     */
     public function create(array $input)
     {
         if (!$this->authorized()) {
@@ -26,7 +29,7 @@ class CreateUser implements CreatesUsers
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'role' => ['required', Rule::in(['admin', 'member'])]
+            'role' => ['required', Rule::in(['admin', 'member'])],
             'password' => $this->passwordRules(),
             'sex' => ['required', 'string'],
             'identification' => ['required', 'identified'],

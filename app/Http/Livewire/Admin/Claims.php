@@ -12,27 +12,55 @@ use Livewire\Component;
 
 class Claims extends Component
 {
-    /** @var Collection<Claim> */
+    /** @var \Illuminate\Database\Eloquent\Collection&\App\Models\Claim[]|null */
     public Collection $claims;
+
+    /**
+     * @var mixed|null
+     */
     public Claim $selected;
+
+    /**
+     * @var mixed|null
+     */
     public Equipment $equipment;
 
+    /**
+     * @var bool
+     */
     public bool $confirmingClaimDeletion = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingEquipmentDetail = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingClaimCreate = false;
+
+    /**
+     * @var bool
+     */
     public bool $showingClaimUpdate = false;
 
     public ?string $search = null;
+
     public ?string $equipment_id = null;
+
     public ?string $user_id = null;
+
     public ?string $admin_id = null;
+
     public ?string $problem = null;
+
     public ?string $status = null;
 
     public function render()
     {
         $this->loadClaims();
-        return view('livewire.admin.claims')
+        return \view('livewire.admin.claims')
             ->layout('layouts.admin');
     }
 
@@ -55,6 +83,7 @@ class Claims extends Component
                 ], fn($s) => Str::contains($s, $search));
             });
         }
+
         $this->claims = $claims;
     }
 

@@ -9,11 +9,21 @@ use Livewire\Component;
 
 class PreClaimTable extends Component
 {
+    /**
+     * @var mixed|null
+     */
     public Collection $preClaims;
+
     public ?PreClaim $selected = null;
 
+    /**
+     * @var bool
+     */
     public bool $confirmingCancel = false;
 
+    /**
+     * @var array<string, string>
+     */
     protected $listeners = [
         'reloadPreClaimTable' => '$refresh',
     ];
@@ -26,10 +36,13 @@ class PreClaimTable extends Component
         }
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
         $this->loadPreClaims();
-        return view('livewire.user.pre-claim-table', [
+        return \view('livewire.user.pre-claim-table', [
             'preClaims' => $this->preClaims,
             'selected' => $this->selected,
         ]);
