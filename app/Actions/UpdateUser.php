@@ -4,23 +4,16 @@ namespace App\Actions;
 
 use App\Contracts\UpdatesUsers;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UpdateUser implements UpdatesUsers
 {
-    use Authorized;
-
     /**
      * @return bool|mixed
      */
     public function update(User $user, array $input)
     {
-        if (!$this->authorized()) {
-            return false;
-        }
-
         $validated = Validator::make($input, [
             'title' => ['string'],
             'name' => ['string', 'max:255'],

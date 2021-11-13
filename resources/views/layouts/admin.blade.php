@@ -6,8 +6,4 @@
     </x-slot>
 
     {{ $slot }}
-
-    @push('modals')
-        <livewire:admin.accounts />
-    @endpush
 </x-app-layout>

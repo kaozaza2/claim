@@ -5,13 +5,11 @@ namespace App\Actions;
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Contracts\CreatesUsers;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class CreateUser implements CreatesUsers
 {
-    use Authorized;
     use PasswordValidationRules;
 
     /**
@@ -19,10 +17,6 @@ class CreateUser implements CreatesUsers
      */
     public function create(array $input)
     {
-        if (!$this->authorized()) {
-            return false;
-        }
-
         $validated = Validator::make($input, [
             'title' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],

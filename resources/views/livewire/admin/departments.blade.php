@@ -10,7 +10,7 @@
             <a href="{{ route('admin.departments') }}" class="tab tab-lifted tab-active">
                 {{ __('หน่วยงานและแผนก') }}
             </a>
-            <a wire:click="$emit('showAccounts')" class="tab tab-lifted">
+            <a href="{{ route('admin.accounts') }}" class="tab tab-lifted">
                 {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
             </a>
         </div>

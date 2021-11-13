@@ -87,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
             $calculate = \array_reduce($value, function ($carry, $item) use (&$index) {
                 if ($index !== 1)
                     return $carry + ($item * $index--);
+                
                 return \substr(11 - ($carry % 11), -1);
             });
 

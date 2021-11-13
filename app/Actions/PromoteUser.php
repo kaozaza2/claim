@@ -7,15 +7,13 @@ use App\Models\User;
 
 class PromoteUser implements PromotesUsers
 {
-    use Authorized;
-
     /**
      * @return bool
      */
     public function promote(User $target, string $role)
     {
-        if ($this->authorized() && \in_array($role, User::roles())) {
-            return $target->update(['role' => $role]);
+        if (\in_array($role, User::roles())) {
+            return $target->forceFill(['role' => $role])->save();
         }
 
         return false;
