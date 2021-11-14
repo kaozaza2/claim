@@ -10,18 +10,18 @@
             <div class="items-stretch flex">
 
                 <a href="{{ route('dashboard') }}" class="btn btn-ghost btn-sm rounded-btn">
-                    {{ __('หน้าหลัก') }}
+                    {{ __('app.nav.dashboard') }}
                 </a>
 
                 @if (auth()->user()->isAdmin())
                     <a href="{{ route('admin') }}" class="btn btn-ghost btn-sm rounded-btn">
-                        {{ __('หน้าควบคุม') }}
+                        {{ __('app.nav.control') }}
                     </a>
                 @endif
 
                 <div class="dropdown dropdown-end">
                     <div tabindex="0" class="btn btn-ghost btn-sm rounded-btn">
-                        {{ __('โปรไฟล์') }}
+                        {{ __('app.nav.profile') }}
                     </div>
                     <div tabindex="0" class="card compact border shadow dropdown-content bg-base-100 rounded w-56">
                         <div class="card-body p-3">
@@ -30,14 +30,14 @@
                             <hr class="my-2"/>
                             <div>
                                 <a href="{{ route('profile.show') }}" class="w-full text-left btn btn-sm btn-ghost">
-                                    {{ __('โปรไฟล์') }}
+                                    {{ __('app.profile') }}
                                 </a>
                                 <form method="post" action="{{ route('logout') }}">
                                     @csrf
 
                                     <a href="{{ route('logout') }}" class="w-full text-left btn btn-sm btn-ghost"
                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                        {{ __('ออกจากระบบ') }}
+                                        {{ __('app.logout') }}
                                     </a>
                                 </form>
                             </div>

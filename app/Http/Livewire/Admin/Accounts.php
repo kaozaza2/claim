@@ -30,7 +30,7 @@ class Accounts extends Component
             return;
         }
 
-        unset($this->state['confirm']);
+        $this->state['confirm'] = null;
         Session::put('user', $user);
         $this->showingPromotePromptDialog = true;
     }
@@ -42,7 +42,7 @@ class Accounts extends Component
     {
         if (!Hash::check($this->state['confirm'], Auth::user()->password)) {
             throw ValidationException::withMessages([
-                'confirm' => [\__('รหัสผ่านไม่ถูกต้อง.')],
+                'confirm' => [\__('app.validation.wrong-password')],
             ]);
         }
 

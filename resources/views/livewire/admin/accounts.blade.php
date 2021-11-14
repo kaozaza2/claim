@@ -2,16 +2,16 @@
     <div class="py-12">
         <div class="tabs max-w-7xl mx-auto lg:px-8">
             <a href="{{ route('admin.claims') }}" class="tab tab-lifted">
-                {{ __('รายการเคลมอุปกรณ์') }}
+                {{ __('app.tab.claims') }}
             </a>
             <a href="{{ route('admin.equipments') }}" class="tab tab-lifted">
-                {{ __('รายการอุปกรณ์') }}
+                {{ __('app.tab.equipments') }}
             </a>
             <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
-                {{ __('หน่วยงานและแผนก') }}
+                {{ __('app.tab.departments') }}
             </a>
             <a href="{{ route('admin.accounts') }}" class="tab tab-lifted tab-active">
-                {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
+                {{ __('app.tab.accounts') }}
             </a>
         </div>
 
@@ -26,7 +26,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="transform rotate-45 inline-block w-6 h-6 mr-2 stroke-current">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
-                        {{ __('เพิ่ม') }}
+                        {{ __('app.add') }}
                     </button>
                     --}}
                 </div>
@@ -35,10 +35,10 @@
                         <thead>
                         <tr>
                             <th>
-                                <span class="hidden lg:block">{{__('ไอดี')}}</span>
+                                <span class="hidden lg:block">{{__('app.id')}}</span>
                             </th>
-                            <th>{{__('ชื่อ')}}</th>
-                            <th>{{__('ยศ')}}</th>
+                            <th>{{__('app.name')}}</th>
+                            <th class="text-center">{{__('app.role')}}</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -48,9 +48,9 @@
                                 <th>{{ $account->id }}</th>
                                 <td class="w-full">{{ $account->fullname }}</td>
                                 <td>
-                                    <div data-tip="เปลี่ยนเป็น {{ $account->isAdmin() ? 'ผู้ใช้ทั่วไป' : 'ผู้ดูแลระบบ' }}" class="tooltip tooltip-left tooltip-success">
-                                        <button class="btn btn-ghost" wire:click="promotePrompt({{ $account->id }}, '{{ $account->isAdmin() ? 'member' : 'admin' }}')">
-                                            {{ $account->isAdmin() ? 'ผู้ดูแลระบบ' : 'ผู้ใช้ทั่วไป' }}
+                                    <div data-tip="{{ trans_choice('app.choice.tip-role', !$account->isAdmin()) }}" class="w-full tooltip">
+                                        <button class="btn btn-sm btn-ghost" wire:click="promotePrompt({{ $account->id }}, '{{ $account->isAdmin() ? 'member' : 'admin' }}')">
+                                            {{ trans_choice('app.choice.role', $account->isAdmin()) }}
                                         </button>
                                     </div>
                                 </td>
@@ -64,15 +64,15 @@
         </div>
 
         <x-jet-dialog-modal wire:model="showingPromotePromptDialog">
-            <x-slot name="title">{{ __('เตือน') }}</x-slot>
+            <x-slot name="title">{{ __('app.modal.title-warning') }}</x-slot>
 
             <x-slot name="content">
-                {{ __('กรุณาใส่รหัสผ่านเพื่อยืนยันการเปลี่ยนบัญชี :user เป็นผู้ดูแลระบบ.', ['user' => session('user.fullname', '')]) }}
+                {{ __('app.modal.confirm-role', ['user' => session('user.fullname', '')]) }}
 
                 <div class="mt-4" x-data="{}"
                      x-on:confirming-promote-user.window="setTimeout(() => $refs.password.focus(), 250)">
-                    <input type="password" class="input input-bordered w-3/4 mt-1 block"
-                           placeholder="{{ __('รหัสผ่าน') }}"
+                    <input type="password" class="input input-bordered w-full lg:w-3/4 mt-1 block"
+                           placeholder="{{ __('app.password') }}"
                            x-ref="password"
                            wire:model.defer="state.confirm"
                            wire:keydown.enter="promotePromptAccept"/>
@@ -84,11 +84,11 @@
             <x-slot name="footer">
                 <button class="btn btn-ghost" wire:click="$toggle('showingPromotePromptDialog')"
                         wire:loading.attr="disabled">
-                    {{ __('ยกเลิก') }}
+                    {{ __('app.cancel') }}
                 </button>
 
                 <button class="ml-2 btn btn-error" wire:click="promotePromptAccept" wire:loading.attr="disabled">
-                    {{ __('ยืนยัน') }}
+                    {{ __('app.confirm') }}
                 </button>
             </x-slot>
         </x-jet-dialog-modal>

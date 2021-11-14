@@ -2,16 +2,16 @@
     <div class="py-12">
         <div class="tabs max-w-7xl mx-auto lg:px-8">
             <a href="{{ route('admin.claims') }}" class="tab tab-lifted">
-                {{ __('รายการเคลมอุปกรณ์') }}
+                {{ __('app.tab.claims') }}
             </a>
             <a href="{{ route('admin.equipments') }}" class="tab tab-lifted tab-active">
-                {{ __('รายการอุปกรณ์') }}
+                {{ __('app.tab.equipments') }}
             </a>
             <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
-                {{ __('หน่วยงานและแผนก') }}
+                {{ __('app.tab.departments') }}
             </a>
             <a href="{{ route('admin.accounts') }}" class="tab tab-lifted">
-                {{ __('จัดการบัญชีผู้ใช้และแอดมิน') }}
+                {{ __('app.tab.accounts') }}
             </a>
         </div>
 
@@ -19,13 +19,13 @@
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
                     <div class="form-control w-full mr-2">
-                        <input type="text" wire:model="search" placeholder="ค้นหา" class="input input-bordered">
+                        <input type="text" wire:model="search" placeholder="{{ __('app.search') }}" class="input input-bordered">
                     </div>
                     <button wire:click="showCreate" class="btn btn-success ml-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="transform rotate-45 inline-block w-6 h-6 mr-2 stroke-current">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
-                        {{ __('เพิ่ม') }}
+                        {{ __('app.add') }}
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -35,12 +35,12 @@
                             <th>
                                 <span class="hidden lg:block">{{__('รหัสอุปกรณ์')}}</span>
                             </th>
-                            <th>{{__('รูป')}}</th>
-                            <th>{{__('รุ่น')}}</th>
-                            <th>{{__('ยี่ห้อ')}}</th>
-                            <th>{{__('ประเภท')}}</th>
-                            <th>{{__('เลขครุภัณฑ์')}}</th>
-                            <th>{{__('รายละเอียด')}}</th>
+                            <th>{{__('app.image')}}</th>
+                            <th>{{__('app.model')}}</th>
+                            <th>{{__('app.brand')}}</th>
+                            <th>{{__('app.type')}}</th>
+                            <th>{{__('app.serial')}}</th>
+                            <th>{{__('app.details')}}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -63,10 +63,10 @@
                                 <td>{{ $e->detail }}</td>
                                 <td>
                                     <button class="btn btn-sm" wire:click="showUpdate('{{ $e->id }}')">
-                                        {{ __('แก้ไข') }}
+                                        {{ __('app.edit') }}
                                     </button>
                                     <button wire:click="confirmDeletion('{{ $e->id }}')" class="btn btn-sm btn-error">
-                                        {{ __('ลบ') }}
+                                        {{ __('app.delete') }}
                                     </button>
                                 </td>
                             </tr>
@@ -90,7 +90,7 @@
 
             <x-slot name="footer">
                 <button class="btn btn-ghost" wire:click="$toggle('showingEquipmentPicture')" wire:loading.attr="disabled">
-                    {{ __('ปิด') }}
+                    {{ __('app.close') }}
                 </button>
             </x-slot>
         </x-jet-dialog-modal>
@@ -101,48 +101,48 @@
                 <div class="p-5">
                     @csrf
                     <div class="form-control">
-                        <span class="label label-text">{{ __('รูปภาพ') }}</span>
+                        <span class="label label-text">{{ __('app.image') }}</span>
                         <label class="label input input-bordered w-full">
-                            <span>{{ __('เลือกรูปภาพ') }}</span>
+                            <span>{{ __('app.image.select') }}</span>
                             <input type="file" wire:model="picture" class="hidden">
                         </label>
                         <x-jet-input-error for="picture" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รุ่น') }}</span>
+                            <span class="label-text">{{ __('app.model') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('รุ่น') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.model') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ยี่ห้อ') }}</span>
+                            <span class="label-text">{{ __('app.brand') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('ยี่ห้อ') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.brand') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ประเภท') }}</span>
+                            <span class="label-text">{{ __('app.type') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('ประเภท') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.type') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
+                            <span class="label-text">{{ __('app.serial') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.serial') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('แผนก') }}</span>
+                            <span class="label-text">{{ __('app.sub-department') }}</span>
                         </label>
                         <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 id="department" wire:model="state.sub_department_id">
@@ -154,18 +154,18 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รายละเอียด') }}</span>
+                            <span class="label-text">{{ __('app.details') }}</span>
                         </label>
                         <textarea wire:model.defer="state.detail" class="textarea h-24 textarea-bordered"
-                                  placeholder="{{ __('รายละเอียด') }}"></textarea>
+                                  placeholder="{{ __('app.details') }}"></textarea>
                         <x-jet-input-error for="detail" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingEquipmentCreate')" class="btn btn-ghost ml-auto">
-                        {{ __('ยกเลิก') }}
+                        {{ __('app.cancel') }}
                     </button>
-                    <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit" wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('app.save') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -176,48 +176,48 @@
                 @csrf
                 <div class="p-5">
                     <div class="form-control">
-                        <span class="label label-text">{{ __('รูปภาพ') }}</span>
+                        <span class="label label-text">{{ __('app.image') }}</span>
                         <label class="label input input-bordered w-full">
-                            <span>{{ __('เลือกรูปภาพ') }}</span>
+                            <span>{{ __('app.image.select') }}</span>
                             <input type="file" wire:model="picture" class="hidden">
                         </label>
                         <x-jet-input-error for="picture" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รุ่น') }}</span>
+                            <span class="label-text">{{ __('app.model') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('รุ่น') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.model') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ยี่ห้อ') }}</span>
+                            <span class="label-text">{{ __('app.brand') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('ยี่ห้อ') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.brand') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('ประเภท') }}</span>
+                            <span class="label-text">{{ __('app.type') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('ประเภท') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.type') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('เลขครุภัณฑ์') }}</span>
+                            <span class="label-text">{{ __('app.serial') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('เลขครุภัณฑ์') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.serial') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('แผนก') }}</span>
+                            <span class="label-text">{{ __('app.sub-department') }}</span>
                         </label>
                         <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
                                 id="department" wire:model="state.sub_department_id">
@@ -229,18 +229,18 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('รายละเอียด') }}</span>
+                            <span class="label-text">{{ __('app.details') }}</span>
                         </label>
                         <textarea wire:model.defer="state.detail" class="textarea h-24 textarea-bordered"
-                                  placeholder="{{ __('รายละเอียด') }}"></textarea>
+                                  placeholder="{{ __('app.details') }}"></textarea>
                         <x-jet-input-error for="detail" class="text-error label-text-alt" />
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-100 text-right">
                     <button type="button" wire:click="$toggle('showingEquipmentUpdate')" class="btn btn-ghost ml-auto">
-                        {{ __('ยกเลิก') }}
+                        {{ __('app.cancel') }}
                     </button>
-                    <button type="submit"  wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('บันทึก') }}</button>
+                    <button type="submit"  wire:loading.attr="disabled" class="btn btn-success ml-2">{{ __('app.save') }}</button>
                 </div>
             </form>
         </x-jet-modal>
@@ -248,15 +248,15 @@
         <!-- Deletion -->
         <x-jet-confirmation-modal wire:model="confirmingEquipmentDeletion">
             <x-slot name="title">
-                {{ sprintf('ลบ %s ?', $this->equipment->name) }}
+                {{ __('app.modal.title-delete', ['name' => $this->equipment->name]) }}
                 <span class="badge badge-error">{{ $this->equipment->id }}</span>
             </x-slot>
 
             <x-slot name="content">
-                {{ sprintf('ต้องการที่จะลบ %s หรือไม่?', $this->equipment->name) }}
+                {{ __('app.modal.msg-delete', ['name' => $this->equipment->name]) }}
 
                 @if ($this->equipment->claims() && $this->equipment->claims()->exists())
-                    <div class="mt-3">{{ __('ประวัติการเคลม') }}</div>
+                    <div class="mt-3">{{ __('app.claim-history') }}</div>
                     <ul>
                         @each('components.li', $this->equipment->claims->map(fn($i)=>"$i->id : $i->problem"), 'slot')
                     </ul>
@@ -265,10 +265,10 @@
 
             <x-slot name="footer">
                 <button wire:click="$toggle('confirmingEquipmentDeletion')" class="btn btn-ghost ml-auto">
-                    {{ __('ยกเลิก') }}
+                    {{ __('app.cancel') }}
                 </button>
                 <button class="btn btn-error ml-2" wire:click="deleteEquipment" wire:loading.attr="disabled">
-                    {{ __('ลบ') }}
+                    {{ __('app.delete') }}
                 </button>
             </x-slot>
         </x-jet-confirmation-modal>
