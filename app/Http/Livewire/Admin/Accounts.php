@@ -32,6 +32,7 @@ class Accounts extends Component
 
         $this->state['confirm'] = null;
         Session::put('user', $user);
+        $this->dispatchBrowserEvent('confirming-promote-user');
         $this->showingPromotePromptDialog = true;
     }
 
