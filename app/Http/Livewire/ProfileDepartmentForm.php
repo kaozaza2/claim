@@ -11,44 +11,23 @@ use Livewire\Component;
 
 class ProfileDepartmentForm extends Component
 {
-    /**
-     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Department[]|null
-     */
-    public Collection $departments;
-
-    /**
-     * @var mixed|null
-     */
-    public Collection $subDepartments;
-
-    /**
-     * @var mixed|null
-     */
-    public $department;
-
-    /**
-     * @var mixed|null
-     */
-    public $sub_department_id;
+    public $state = [];
 
     public function mount()
     {
-        $depId = Auth::user()->subDepartment->department->id;
-        $this->departments = Department::all();
-        $this->subDepartments = SubDepartment::whereHas('department', function ($query) use ($depId) {
-            $query->where('department_id', $depId);
-        })->get();
-        $this->department = $depId;
-        $this->sub_department_id = Auth::user()->sub_department_id;
+        $user = Auth::user();
+        $this->state = [
+            'department' => $user->subDepartment->department->id,
+            'sub_department' => $user->subDepartment->id,
+        ];
     }
 
-    public function updated($propertyName)
+    public function updated($property)
     {
-        if ($propertyName == 'department') {
-            $depId = $this->department;
-            $this->subDepartments = SubDepartment::whereHas('department', function ($query) use ($depId) {
-                $query->where('department_id', $depId);
-            })->get();
+        if ($property == 'state.department') {
+            if ($sub = SubDepartment::whereDepartment($this->state['department'])->first()) {
+                $this->state['sub_department'] = $sub->id;
+            }
         }
     }
 
@@ -57,27 +36,24 @@ class ProfileDepartmentForm extends Component
      */
     public function render()
     {
-        return \view('profile.profile-department-form', [
-            'departments' => $this->departments,
-            'subDepartments' => $this->subDepartments,
-        ]);
+        return \view('profile.profile-department-form');
     }
 
     public function updateDepartment()
     {
-        $this->validate([
+        \validator($this->state, [
             'department' => [
                 'required',
                 Rule::exists('departments', 'id'),
             ],
-            'sub_department_id' => [
+            'sub_department' => [
                 'required',
-                Rule::exists('sub_departments', 'id')->where('department_id', $this->department),
+                Rule::exists('sub_departments', 'id')->where('department_id', $this->state['department']),
             ],
-        ]);
+        ])->validated();
 
         Auth::user()->update([
-            'sub_department_id' => $this->sub_department_id,
+            'sub_department_id' => $this->state['sub_department'],
         ]);
 
         $this->emit('saved');

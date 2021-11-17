@@ -196,7 +196,7 @@ class Departments extends Component
     private function showErrorInUseModal()
     {
         $this->emit('show-error-modal', [
-            'message' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
+            'message' => __('app.modal.msg-error-inuse'),
         ]);
     }
 }

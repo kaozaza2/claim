@@ -11,12 +11,9 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="department" value="{{ __('หน่วยงาน') }}" />
             <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="department" wire:model="department">
-                @foreach ($departments as $dep)
-                    @if ($dep->subs->isEmpty())
-                        @continue
-                    @endif
-                    <option value="{{ $dep->id }}">{{ $dep->name }}</option>
+                    wire:model.lazy="state.department">
+                @foreach (\App\Models\Department::has('subs')->get() as $dep)
+                    <option value="{{ $dep->id }}">{{ $dep }}</option>
                 @endforeach
             </select>
             <x-jet-input-error for="department" class="mt-2" />
@@ -25,12 +22,12 @@
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="sub_department_id" value="{{ __('แผนก') }}" />
             <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="sub_department_id" wire:model="sub_department_id">
-                    @foreach ($subDepartments as $sub)
-                        <option value="{{ $sub->id }}">{{ $sub->name }}</option>
-                    @endforeach
+                    wire:model.defer="state.sub_department">
+                @foreach (\App\Models\SubDepartment::whereDepartment($this->state['department'])->get() as $sub)
+                    <option value="{{ $sub->id }}">{{ $sub }}</option>
+                @endforeach
             </select>
-            <x-jet-input-error for="sub_department_id" class="mt-2" />
+            <x-jet-input-error for="sub_department" class="mt-2" />
         </div>
     </x-slot>
 

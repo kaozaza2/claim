@@ -84,7 +84,7 @@ class Claims extends Component
             });
         }
 
-        $this->claims = $claims;
+        $this->claims = $claims->sortByDesc('id');
     }
 
     public function showEquipment(string $id)
@@ -121,15 +121,19 @@ class Claims extends Component
 
     public function showUpdate(string $id)
     {
-        $this->selected = $this->claims->firstWhere('id', $id);
-        $this->fill([
-            'equipment_id' => $this->selected->equipment_id,
-            'user_id' => $this->selected->user_id,
-            'admin_id' => $this->selected->admin_id,
-            'problem' => $this->selected->problem,
-            'status' => $this->selected->status,
-        ]);
+        $claim = $this->claims->firstWhere('id', $id);
+        $this->fill(
+            $claim->only('equipment_id', 'user_id', 'admin_id', 'problem', 'status')
+        );
+        $this->selected = $claim;
         $this->showingClaimUpdate = true;
+    }
+
+    public function setCompleted($claimId, bool $complete)
+    {
+        if ($claim = Claim::find($claimId)) {
+            $claim->update(['complete' => $complete]);
+        }
     }
 
     public function updateClaim()

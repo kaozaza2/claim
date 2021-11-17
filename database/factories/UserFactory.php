@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'title' => $this->faker->titleMale(),
             'name' => $this->faker->firstNameMale(),
             'last_name' => $this->faker->lastName(),
-            'sex' => 'male',
+            'sex' => User::SEX_MALE,
             'identification' => \rand(1000000000000, 9999999999999),
             'sub_department_id' => SubDepartment::factory(),
             'email' => $this->faker->unique()->safeEmail(),

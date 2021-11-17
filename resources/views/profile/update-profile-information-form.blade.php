@@ -87,8 +87,8 @@
         <!-- Username -->
         <div class="col-span-6 sm:col-span-4">
             <x-jet-label for="username" value="{{ __('ชื่อผู้ใช้') }}" />
-            <input id="username" type="text" class="input input-bordered mt-1 block w-full"
-                   wire:model.defer="state.username">
+            <input id="username" type="text" class="input input-bordered mt-1 text-gray-500 block w-full"
+                   wire:model.defer="state.username" readonly>
             <input-error for="username" class="mt-2" />
         </div>
 

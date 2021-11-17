@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use App\Contracts\Nameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Department extends Model implements Nameable
 {
     use HasFactory;
 
@@ -23,5 +24,10 @@ class Department extends Model
     public function users()
     {
         return $this->hasManyThrough(User::class, SubDepartment::class);
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

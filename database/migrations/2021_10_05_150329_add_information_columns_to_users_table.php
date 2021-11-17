@@ -16,7 +16,7 @@ class AddInformationColumnsToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('title')->nullable()->after('id');
             $table->string('last_name')->after('name');
-            $table->string('sex');
+            $table->integer('sex');
             $table->bigInteger('identification');
             $table->bigInteger('sub_department_id')->nullable();
         });

@@ -25,7 +25,7 @@ class CreateUser implements CreatesUsers
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'role' => ['required', Rule::in(['admin', 'member'])],
             'password' => $this->passwordRules(),
-            'sex' => ['required', 'string'],
+            'sex' => ['required'],
             'identification' => ['required', 'identified'],
             'sub_department_id' => ['required', 'exists:sub_departments,id'],
         ])->validated();

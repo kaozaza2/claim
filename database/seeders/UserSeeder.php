@@ -21,6 +21,9 @@ class UserSeeder extends Seeder
         User::factory()
             ->count(4)
             ->sequence(
+                ['sex' => User::SEX_MALE],
+                ['sex' => User::SEX_FEMALE],
+            )->sequence(
                 ['username' => 'admin1', 'email' => 'admin1@email.com', 'role' => 'admin'],
                 ['username' => 'admin2', 'email' => 'admin2@email.com', 'role' => 'admin'],
                 ['username' => 'user1', 'email' => 'user1@email.com', 'role' => 'member'],

@@ -36,10 +36,12 @@
                                 <span class="hidden lg:block">{{__('app.claim-id')}}</span>
                             </th>
                             <th>{{__('app.equipment')}}</th>
+                            <th>{{__('app.type')}}</th>
                             <th>{{__('app.serial')}}</th>
                             <th>{{__('app.problem')}}</th>
                             <th>{{__('app.applicant')}}</th>
                             <th>{{__('app.recipient')}}</th>
+                            <th>{{__('app.claimed')}}</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -49,13 +51,20 @@
                                 <th>{{ $claim->id }}</th>
                                 <td>
                                     <button class="btn btn-sm btn-ghost capitalize" wire:click="showEquipment('{{ $claim->equipment->id }}')">
-                                        {{ $claim->equipment->name }} : {{ $claim->equipment->category }}
+                                        {{ $claim->equipment->name }}
                                     </button>
                                 </td>
+                                <td>{{ $claim->equipment->category }}</td>
                                 <td class="font-mono">{{ $claim->equipment->serial_number ?: '-' }}</td>
                                 <td class="w-full">{{ $claim->problem }}</td>
                                 <td>{{ $claim->user->fullname }}</td>
                                 <td>{{ $claim->admin->fullname }}</td>
+                                <td class="text-center">
+                                    <div data-tip="{{ __('app.mark-as-claimed') }}" class="w-full tooltip">
+                                        <input type="checkbox" class="checkbox checkbox-accent" @if($claim->isCompleted()) checked="checked" @endif
+                                               wire:click="setCompleted({{ $claim->id }}, {{ $claim->isCompleted() ? 'false' : 'true' }})" />
+                                    </div>
+                                </td>
                                 <td>
                                     <button wire:click="showUpdate('{{ $claim->id }}')" class="btn btn-sm">
                                         {{ __('app.edit') }}

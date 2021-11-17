@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Contracts\Nameable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,13 +12,17 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Nameable
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+
+    const SEX_NONE = 0;
+    const SEX_MALE = 1;
+    const SEX_FEMALE = 2;
 
     /**
      * @var string[]
@@ -105,11 +110,28 @@ class User extends Authenticatable
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
+    public function getName()
+    {
+        return $this->fullname;
+    }
+
     /**
      * @return string[]
      */
     public static function roles(): array
     {
         return ['admin', 'member'];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function sexes(): array
+    {
+        return [
+            self::SEX_NONE => 'none',
+            self::SEX_MALE => 'male',
+            self::SEX_FEMALE => 'female',
+        ];
     }
 }

@@ -29,7 +29,13 @@ use App\Contracts\UpdatesEquipments;
 use App\Contracts\UpdatesSubDepartments;
 use App\Contracts\UpdatesUsers;
 use App\Http\Middleware\PatchedAttemptToAuthenticate;
+use App\Models\Department;
+use App\Models\Equipment;
+use App\Models\SubDepartment;
+use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -37,6 +43,13 @@ use Laravel\Fortify\Actions\AttemptToAuthenticate;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $bladeNameableClasses = [
+        Department::class,
+        Equipment::class,
+        SubDepartment::class,
+        User::class,
+    ];
+
     /**
      * Register any application services.
      *
@@ -78,6 +91,30 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->bootMacros();
+        $this->bootValidatorRules();
+        $this->bootBladeStringables();
+    }
+
+    private function bootMacros()
+    {
+        Str::macro('any', function ($haystacks, $callback) {
+            if ($haystacks instanceof Arrayable) {
+                $haystacks = $haystacks->toArray();
+            }
+
+            foreach ($haystacks as $haystack) {
+                if ($callback($haystack) === true) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
+    private function bootValidatorRules()
+    {
         Validator::extend('identified', function ($attribute, $value, $parameters) {
             if (\strlen($value) !== 13)
                 return false;
@@ -92,20 +129,15 @@ class AppServiceProvider extends ServiceProvider
             });
 
             return $calculate === $value[12];
-        }, 'The :attribute is not valid ID');
+        }, __('app.validation.invaild-identify'));
+    }
 
-        Str::macro('any', function ($haystacks, $callback) {
-            if ($haystacks instanceof Arrayable) {
-                $haystacks = $haystacks->toArray();
-            }
-
-            foreach ($haystacks as $haystack) {
-                if ($callback($haystack)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+    private function bootBladeStringables()
+    {
+        foreach ($this->bladeNameableClasses as $class) {
+            Blade::stringable($class, function ($object) {
+                return $object->getName();
+            });
+        }
     }
 }

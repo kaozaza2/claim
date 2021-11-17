@@ -46,15 +46,31 @@
                         @foreach ($accounts as $account)
                             <tr>
                                 <th>{{ $account->id }}</th>
-                                <td class="w-full">{{ $account->fullname }}</td>
+                                <td class="w-full">
+                                    {{ $account }}
+                                    @if ($account->is(auth()->user()))
+                                        <div class="badge badge-success">{{ __('app.you') }}</div>
+                                    @endif
+                                </td>
                                 <td>
-                                    <div data-tip="{{ trans_choice('app.choice.tip-role', !$account->isAdmin()) }}" class="w-full tooltip">
-                                        <button class="btn btn-sm btn-ghost" wire:click="promotePrompt({{ $account->id }}, '{{ $account->isAdmin() ? 'member' : 'admin' }}')">
-                                            {{ trans_choice('app.choice.role', $account->isAdmin()) }}
+                                    @if (!$account->is(auth()->user()))
+                                    <div data-tip="{{ __('app.roles.switch.'.($account->isAdmin() ? 'member' : 'admin')) }}"
+                                         class="w-full tooltip">
+                                        <button class="btn btn-sm btn-ghost" wire:click="promotePrompt({{ $account->id }})">
+                                            {{ __('app.roles.'.$account->role) }}
                                         </button>
                                     </div>
+                                    @else
+                                    <div class="btn btn-sm btn-ghost no-animation">
+                                        {{ __('app.roles.'.$account->role) }}
+                                    </div>
+                                    @endif
                                 </td>
-                                <td>{{ $account->subDepartment->name }}</td>
+                                <td>
+                                    <button class="btn btn-sm" wire:click="showUpdateUserDialog({{ $account->id }})">
+                                        {{ __('app.edit') }}
+                                    </button>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -63,12 +79,20 @@
             </div>
         </div>
 
-        <x-jet-dialog-modal wire:model="showingPromotePromptDialog">
-            <x-slot name="title">{{ __('app.modal.title-warning') }}</x-slot>
+        <x-jet-confirmation-modal wire:model="showingPromotePromptDialog">
+            <x-slot name="title">
+                {{ __('app.modal.title-warning') }}
+            </x-slot>
 
             <x-slot name="content">
-                {{ __('app.modal.confirm-role', ['user' => session('user.fullname', '')]) }}
+                <p>{{
+                  __('app.modal.msg-confirm-role', [
+                      'user' => session('user.fullname'),
+                      'role' => __('app.roles.'.(session('user.role') != 'admin' ? 'admin' : 'member')),
+                  ])
+                }}</p>
 
+                @if (session('user.role') != 'admin')
                 <div class="mt-4" x-data="{}"
                      x-on:confirming-promote-user.window="setTimeout(() => $refs.password.focus(), 250)">
                     <input type="password" class="input input-bordered w-full lg:w-3/4 mt-1 block"
@@ -77,8 +101,9 @@
                            wire:model.defer="state.confirm"
                            wire:keydown.enter="promotePromptAccept"/>
 
-                    <x-jet-input-error for="confirm" class="mt-2"/>
+                    <x-jet-input-error for="confirm" hint="{{ __('app.modal.msg-confirm-role-extra') }}" />
                 </div>
+                @endif
             </x-slot>
 
             <x-slot name="footer">
@@ -91,7 +116,101 @@
                     {{ __('app.confirm') }}
                 </button>
             </x-slot>
-        </x-jet-dialog-modal>
+        </x-jet-confirmation-modal>
 
+        <x-jet-modal wire:model="showingUpdateUserDialog">
+            <form wire:submit.prevent="updateUserInformation">
+                <div class="p-5">
+                    @csrf
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.title') }}</span>
+                        </label>
+                        <input type="text" class="input input-bordered" wire:model.defer="state.user.title"
+                               placeholder="{{ __('app.users.title') }}">
+                        <x-jet-input-error for="title" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.name') }}</span>
+                        </label>
+                        <input type="text" class="input input-bordered" wire:model.defer="state.user.name"
+                               placeholder="{{ __('app.users.name') }}">
+                        <x-jet-input-error for="name" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.lastname') }}</span>
+                        </label>
+                        <input type="text" class="input input-bordered" wire:model.defer="state.user.last_name"
+                               placeholder="{{ __('app.users.lastname') }}">
+                        <x-jet-input-error for="last_name" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.sex') }}</span>
+                        </label>
+                        <select class="select select-bordered w-full max-w-xs" wire:model.defer="state.user.sex">
+                            @foreach (\App\Models\User::sexes() as $key => $sex)
+                                <option value="{{ $key }}">{{ __('app.users.sexes.'.$sex) }}</option>
+                            @endforeach
+                        </select>
+                        <x-jet-input-error for="sex" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.identification') }}</span>
+                        </label>
+                        <input type="text" class="input input-bordered" wire:model.defer="state.user.identification"
+                               placeholder="{{ __('app.users.identification') }}">
+                        <x-jet-input-error for="identification" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.username') }}</span>
+                        </label>
+                        <div data-tip="{{ __('app.modal.msg-warn-username-change') }}" class="w-full tooltip">
+                            <input type="text" class="w-full input input-bordered" wire:model.defer="state.user.username"
+                                   placeholder="{{ __('app.users.username') }}">
+                        </div>
+                        <x-jet-input-error for="username" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.users.email') }}</span>
+                        </label>
+                        <input type="text" class="input input-bordered" wire:model.defer="state.user.email"
+                               placeholder="{{ __('app.users.email') }}">
+                        <x-jet-input-error for="email" class="text-error label-text-alt" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">{{ __('app.sub-department') }}</span>
+                        </label>
+                        <select class="select select-bordered w-full max-w-xs"
+                                wire:model.defer="state.user.sub_department_id">
+                            @foreach (\App\Models\Department::has('subs')->get() as $dep)
+                                <optgroup label="{{ $dep }}">
+                                    @foreach ($dep->subs as $sub)
+                                        <option value="{{ $sub->id }}">{{ $sub }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                        <x-jet-input-error for="sub_department_id" class="text-error label-text-alt" />
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-100 text-right">
+                    <div wire:click="$toggle('showingUpdateUserDialog')" class="btn btn-ghost" wire:loading.attr="disabled">
+                        {{ __('app.cancel') }}
+                    </div>
+
+                    <button type="submit" class="ml-2 btn btn-success" wire:loading.attr="disabled">
+                        {{ __('app.save') }}
+                    </button>
+                </div>
+            </form>
+        </x-jet-modal>
     </div>
 </div>

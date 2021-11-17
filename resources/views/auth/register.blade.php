@@ -27,12 +27,12 @@
 
             <div class="mt-4">
                 <x-jet-label for="sex" value="{{ __('เพศ') }}"/>
-                <select
-                    class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="sex" name="sex" required>
-                    <option selected disabled>เลือก</option>
-                    <option value="male">ชาย</option>
-                    <option value="female">หญิง</option>
+                <select class="select select-bordered w-full" id="sex" name="sex" required>
+                    @foreach (\App\Models\User::sexes() as $key => $sex)
+                        <option @if($loop->first) selected @endif value="{{ $key }}">
+                            {{ __('app.users.sexes.'.$sex) }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
 
@@ -44,16 +44,15 @@
 
             <div class="mt-4">
                 <x-jet-label for="sub_department_id" value="{{ __('หน่วยงาน/แผนก') }}"/>
-                <select class="w-full mt-1 border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm"
-                    id="sub_department_id" name="sub_department_id" required>
-                    @foreach (\App\Models\Department::all() as $dep)
-                        @if ($dep->subs->isEmpty())
-                            @continue
-                        @endif
-                        <option disabled>{{ $dep->name }}</option>
-                        @foreach ($dep->subs as $sub)
-                            <option value="{{ $sub->id }}"> - {{ $sub->name }}</option>
-                        @endforeach
+                <select class="select select-bordered w-full" id="sub_department_id" name="sub_department_id" required>
+                    @foreach (\App\Models\Department::has('subs')->get() as $dep)
+                        <optgroup label="{{ $dep }}">
+                            @foreach ($dep->subs as $sub)
+                                <option @if($loop->parent->first && $loop->first) selected @endif value="{{ $sub->id }}">
+                                    {{ $sub }}
+                                </option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </select>
             </div>

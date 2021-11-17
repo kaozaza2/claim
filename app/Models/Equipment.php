@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Contracts\Nameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class Equipment extends Model
+class Equipment extends Model implements Nameable
 {
     use HasFactory;
 
@@ -92,5 +93,10 @@ class Equipment extends Model
         }
 
         return \asset('images/no_image.jpg');
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

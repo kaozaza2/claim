@@ -42,7 +42,7 @@
                             <tr>
                                 <th>{{ $department->id }}</th>
                                 <td class="w-full">
-                                    <div>{{ $department->name }}</div>
+                                    <div>{{ $department }}</div>
                                 </td>
                                 <td>
                                     <button class="btn btn-sm" wire:click="showUpdate('{{ $department->id }}')">
@@ -62,7 +62,7 @@
                                     <td></td>
                                     <td class="w-full">
                                         <span class="badge badge-success">{{__('app.sub-department')}}</span>
-                                        {{ $sub->name }}
+                                        {{ $sub }}
                                     </td>
                                     <td>
                                         <button class="btn btn-sm" wire:click="showSubUpdate('{{ $sub->id }}')">
@@ -160,7 +160,7 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.sub-departments.name') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('ชื่อแผนก') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.sub-departments.name') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
