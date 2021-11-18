@@ -169,7 +169,7 @@ class Departments extends Component
     {
         $sub = SubDepartment::find($id);
         $this->selectedSubId = $sub->id;
-        $this->state = $sub->withoutRelations()->toArray();
+        $this->state = $sub->attributesToArray();
         $this->showingSubDepartmentUpdate = true;
     }
 

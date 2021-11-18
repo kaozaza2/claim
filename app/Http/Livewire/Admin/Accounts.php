@@ -7,6 +7,7 @@ use App\Contracts\PromotesUsers;
 use App\Contracts\UpdatesUsers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -81,16 +82,15 @@ class Accounts extends Component
 
     private function filteredUsers() {
         if (filled($this->filter)) {
-            $needle = '%'.$this->filter.'%';
-            return User::where(function (Builder $query) use ($needle): void {
-                $query->where('name', 'like', $needle)
-                    ->orWhere('last_name', 'like', $needle)
-                    ->orWhere('identification', 'like', $needle)
-                    ->orWhere('email', 'like', $needle)
-                    ->orWhere('title', 'like', $needle)
-                    ->orWhere('username', 'like', $needle)
-                    ->orWhere('id', 'like', $needle);
-            })->get();
+            $filter = $this->filter;
+            return User::all()->filter(function ($user) use ($filter) : bool {
+                foreach ($user->attributesToArray() as $key => $value) {
+                    if (Str::contains($value, $filter)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
         }
         return User::all();
     }
