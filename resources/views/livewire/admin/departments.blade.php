@@ -1,21 +1,24 @@
 <div>
-    <div class="py-12">
+    <div class="py-6">
         <div class="tabs max-w-7xl mx-auto lg:px-8">
-            <a href="{{ route('admin.claims') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.requests') }}" class="tab tab-bordered">
+                {{ __('app.tab.requests') }}
+            </a>
+            <a href="{{ route('admin.claims') }}" class="tab tab-bordered">
                 {{ __('app.tab.claims') }}
             </a>
-            <a href="{{ route('admin.equipments') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.equipments') }}" class="tab tab-bordered">
                 {{ __('app.tab.equipments') }}
             </a>
-            <a href="{{ route('admin.departments') }}" class="tab tab-lifted tab-active">
+            <a href="{{ route('admin.departments') }}" class="tab tab-bordered tab-active">
                 {{ __('app.tab.departments') }}
             </a>
-            <a href="{{ route('admin.accounts') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.accounts') }}" class="tab tab-bordered">
                 {{ __('app.tab.accounts') }}
             </a>
         </div>
 
-        <div class="max-w-7xl sm:rounded-lg bg-white mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl sm:rounded-lg bg-white mt-6 mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
                     <div class="form-control w-full mr-2">

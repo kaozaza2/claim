@@ -15,7 +15,6 @@ class PreClaim extends Model
     protected $fillable = [
         'equipment_id',
         'user_id',
-        'admin_id',
         'problem',
     ];
 
@@ -33,13 +32,5 @@ class PreClaim extends Model
     public function user()
     {
         return$this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function admin()
-    {
-        return$this->belongsTo(User::class, 'admin_id');
     }
 }

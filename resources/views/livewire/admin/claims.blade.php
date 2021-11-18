@@ -1,29 +1,35 @@
 <div>
-    <div class="py-12">
+    <div class="py-6">
         <div class="tabs max-w-7xl mx-auto lg:px-8">
-            <a href="{{ route('admin.claims') }}" class="tab tab-lifted tab-active">
+            <a href="{{ route('admin.requests') }}" class="tab tab-bordered">
+                {{ __('app.tab.requests') }}
+            </a>
+            <a href="{{ route('admin.claims') }}" class="tab tab-bordered tab-active">
                 {{ __('app.tab.claims') }}
             </a>
-            <a href="{{ route('admin.equipments') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.equipments') }}" class="tab tab-bordered">
                 {{ __('app.tab.equipments') }}
             </a>
-            <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.departments') }}" class="tab tab-bordered">
                 {{ __('app.tab.departments') }}
             </a>
-            <a href="{{ route('admin.accounts') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.accounts') }}" class="tab tab-bordered">
                 {{ __('app.tab.accounts') }}
             </a>
         </div>
 
-        <div class="max-w-7xl sm:rounded-lg bg-white mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl sm:rounded-lg bg-white mt-6 mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
                     <div class="form-control w-full mr-2">
-                        <input type="text" wire:model="search" placeholder="{{ __('app.search') }}" class="input input-bordered">
+                        <input type="text" wire:model="search" placeholder="{{ __('app.search') }}"
+                               class="input input-bordered">
                     </div>
                     <button wire:click="showCreate" class="btn btn-success ml-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="transform rotate-45 inline-block w-6 h-6 mr-2 stroke-current">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             class="transform rotate-45 inline-block w-6 h-6 mr-2 stroke-current">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                         {{ __('app.add') }}
                     </button>
@@ -33,15 +39,15 @@
                         <thead>
                         <tr>
                             <th>
-                                <span class="hidden lg:block">{{__('app.claim-id')}}</span>
+                                <span class="hidden lg:block">{{__('app.claims.id')}}</span>
                             </th>
                             <th>{{__('app.equipment')}}</th>
-                            <th>{{__('app.type')}}</th>
-                            <th>{{__('app.serial')}}</th>
-                            <th>{{__('app.problem')}}</th>
-                            <th>{{__('app.applicant')}}</th>
-                            <th>{{__('app.recipient')}}</th>
-                            <th>{{__('app.claimed')}}</th>
+                            <th>{{__('app.equipments.type')}}</th>
+                            <th>{{__('app.equipments.serial')}}</th>
+                            <th>{{__('app.claims.problem')}}</th>
+                            <th>{{__('app.claims.applicant')}}</th>
+                            <th>{{__('app.claims.recipient')}}</th>
+                            <th>{{__('app.claims.claimed')}}</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
@@ -50,26 +56,33 @@
                             <tr>
                                 <th>{{ $claim->id }}</th>
                                 <td>
-                                    <button class="btn btn-sm btn-ghost capitalize" wire:click="showEquipment('{{ $claim->equipment->id }}')">
+                                    <div wire:click="$emit('showEquipmentDetail', {{ $claim->equipment->id }})"
+                                         class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
                                         {{ $claim->equipment->name }}
-                                    </button>
+                                    </div>
                                 </td>
                                 <td>{{ $claim->equipment->category }}</td>
                                 <td class="font-mono">{{ $claim->equipment->serial_number ?: '-' }}</td>
-                                <td class="w-full">{{ $claim->problem }}</td>
+                                <td>
+                                    <div class="block whitespace-normal w-40">
+                                        <p class="break-words">{{ $claim->problem }}</p>
+                                    </div>
+                                </td>
                                 <td>{{ $claim->user->fullname }}</td>
                                 <td>{{ $claim->admin->fullname }}</td>
                                 <td class="text-center">
-                                    <div data-tip="{{ __('app.mark-as-claimed') }}" class="w-full tooltip">
-                                        <input type="checkbox" class="checkbox checkbox-accent" @if($claim->isCompleted()) checked="checked" @endif
-                                               wire:click="setCompleted({{ $claim->id }}, {{ $claim->isCompleted() ? 'false' : 'true' }})" />
+                                    <div data-tip="{{ __('app.claims.mark-claimed') }}" class="w-full tooltip">
+                                        <input type="checkbox" class="checkbox checkbox-accent"
+                                               @if($claim->isCompleted()) checked="checked" @endif
+                                               wire:click="setCompleted({{ $claim->id }}, {{ $claim->isCompleted() ? 'false' : 'true' }})"/>
                                     </div>
                                 </td>
                                 <td>
                                     <button wire:click="showUpdate('{{ $claim->id }}')" class="btn btn-sm">
                                         {{ __('app.edit') }}
                                     </button>
-                                    <button wire:click="confirmDeletion('{{ $claim->id }}')" class="btn btn-sm btn-error">
+                                    <button wire:click="confirmDeletion('{{ $claim->id }}')"
+                                            class="btn btn-sm btn-error">
                                         {{ __('app.delete') }}
                                     </button>
                                 </td>
@@ -80,49 +93,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Detail -->
-        <x-jet-dialog-modal wire:model="showingEquipmentDetail">
-            <x-slot name="title">
-                {{ optional($equipment)->name }}
-            </x-slot>
-
-            <x-slot name="content">
-                <img class="border mx-auto max-w-xs" src="{{ optional($equipment)->picture_url }}" alt="{{ optional($equipment)->name }}">
-                <table class="mt-3 w-full">
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.claim-id') }}</th>
-                        <td class="border">{{ optional($equipment)->id }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.model') }}</th>
-                        <td class="border">{{ optional($equipment)->name }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.brand') }}</th>
-                        <td class="border">{{ optional($equipment)->brand }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.type') }}</th>
-                        <td class="border">{{ optional($equipment)->category }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.serial') }}</th>
-                        <td class="border">{{ optional($equipment)->serial_number }}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col" class="border">{{ __('app.details') }}</th>
-                        <td class="border">{{ optional($equipment)->detail }}</td>
-                    </tr>
-                </table>
-            </x-slot>
-
-            <x-slot name="footer">
-                <button class="btn btn-ghost" wire:click="$toggle('showingEquipmentDetail')">
-                    {{ __('app.close') }}
-                </button>
-            </x-slot>
-        </x-jet-dialog-modal>
 
         <!-- Show Create -->
         <x-jet-modal wire:model="showingClaimCreate">
@@ -135,9 +105,9 @@
                         </label>
                         <select wire:model="equipment_id" class="select select-bordered w-full">
                             <option disabled="disabled" selected="selected">{{ __('app.select') }}</option>
-                            @foreach(\App\Models\Equipment::all() as $e)
-                                <option value="{{ $e->id }}">
-                                    [{{ $e->id }}] {{ $e->name }} : {{ $e->serial_number }}
+                            @foreach(\App\Models\Equipment::all() as $equipment)
+                                <option value="{{ $equipment->id }}">
+                                    [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
                                 </option>
                             @endforeach
                         </select>
@@ -149,17 +119,18 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.problem') }}</span>
+                            <span class="label-text">{{ __('app.claims.problem') }}</span>
                         </label>
-                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered" placeholder="{{ __('app.details') }}"></textarea>
+                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered"
+                                  placeholder="{{ __('app.details') }}"></textarea>
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.applicant') }}</span>
+                            <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
                         <select wire:model="user_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::member()->cursor() as $e)
-                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @foreach(\App\Models\User::member()->cursor() as $user)
+                                <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
                         </select>
                         @error('user_id')
@@ -170,11 +141,11 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.recipient') }}</span>
+                            <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
                         <select wire:model="admin_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::admin()->cursor() as $e)
-                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @foreach(\App\Models\User::admin()->get() as $admin)
+                                <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
                         </select>
                         @error('admin_id')
@@ -215,9 +186,9 @@
                             <span class="label-text">{{ __('app.equipment') }}</span>
                         </label>
                         <select wire:model="equipment_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\Equipment::all() as $e)
-                                <option value="{{ $e->id }}">
-                                    [{{ $e->id }}] {{ $e->name }} : {{ $e->serial_number }}
+                            @foreach(\App\Models\Equipment::all() as $equipment)
+                                <option value="{{ $equipment->id }}">
+                                    [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
                                 </option>
                             @endforeach
                         </select>
@@ -229,17 +200,18 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.problem') }}</span>
+                            <span class="label-text">{{ __('app.claims.problem') }}</span>
                         </label>
-                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered" placeholder="{{ __('app.details') }}"></textarea>
+                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered"
+                                  placeholder="{{ __('app.details') }}"></textarea>
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.applicant') }}</span>
+                            <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
                         <select wire:model="user_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::all() as $e)
-                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @foreach(\App\Models\User::all() as $user)
+                                <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
                         </select>
                         @error('user_id')
@@ -250,11 +222,11 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.recipient') }}</span>
+                            <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
                         <select wire:model="admin_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::admin()->cursor() as $e)
-                                <option value="{{ $e->id }}">{{ $e->fullname }}</option>
+                            @foreach(\App\Models\User::admin()->get() as $admin)
+                                <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
                         </select>
                         @error('admin_id')

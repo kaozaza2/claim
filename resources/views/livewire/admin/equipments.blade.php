@@ -1,21 +1,24 @@
 <div>
-    <div class="py-12">
+    <div class="py-6">
         <div class="tabs max-w-7xl mx-auto lg:px-8">
-            <a href="{{ route('admin.claims') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.requests') }}" class="tab tab-bordered">
+                {{ __('app.tab.requests') }}
+            </a>
+            <a href="{{ route('admin.claims') }}" class="tab tab-bordered">
                 {{ __('app.tab.claims') }}
             </a>
-            <a href="{{ route('admin.equipments') }}" class="tab tab-lifted tab-active">
+            <a href="{{ route('admin.equipments') }}" class="tab tab-bordered tab-active">
                 {{ __('app.tab.equipments') }}
             </a>
-            <a href="{{ route('admin.departments') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.departments') }}" class="tab tab-bordered">
                 {{ __('app.tab.departments') }}
             </a>
-            <a href="{{ route('admin.accounts') }}" class="tab tab-lifted">
+            <a href="{{ route('admin.accounts') }}" class="tab tab-bordered">
                 {{ __('app.tab.accounts') }}
             </a>
         </div>
 
-        <div class="max-w-7xl sm:rounded-lg bg-white mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl sm:rounded-lg bg-white mt-6 mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
                     <div class="form-control w-full mr-2">
@@ -35,37 +38,38 @@
                             <th>
                                 <span class="hidden lg:block">{{__('รหัสอุปกรณ์')}}</span>
                             </th>
-                            <th>{{__('app.image')}}</th>
-                            <th>{{__('app.model')}}</th>
-                            <th>{{__('app.brand')}}</th>
-                            <th>{{__('app.type')}}</th>
-                            <th>{{__('app.serial')}}</th>
+                            <th>{{__('app.equipments.model')}}</th>
+                            <th>{{__('app.equipments.brand')}}</th>
+                            <th>{{__('app.equipments.type')}}</th>
+                            <th>{{__('app.equipments.serial')}}</th>
                             <th>{{__('app.details')}}</th>
                             <th></th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($equipments as $e)
+                        @foreach ($equipments as $equipment)
                             <tr>
-                                <th>{{ $e->id }}</th>
-                                <td>
-                                    <button wire:click="showPicture('{{ $e->id }}')" class="btn px-1 btn-sm btn-ghost">
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+                                <th>{{ $equipment->id }}</th>
+                                </td>
+                                <td class="w-full">
+                                    {{ $equipment->name }}
+                                    <div wire:click="$emit('showEquipmentDetail', {{ $equipment->id }})"
+                                         class="inline-block cursor-pointer rounded-sm btn-ghost">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 0 24 24" width="14px" fill="#3d4451">
                                             <path d="M0 0h24v24H0V0z" fill="none"/>
                                             <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
                                         </svg>
-                                    </button>
+                                    </div>
                                 </td>
-                                <td class="w-full">{{ $e->name }}</td>
-                                <td class="w-full">{{ $e->brand }}</td>
-                                <td class="w-full">{{ $e->category }}</td>
-                                <td class="font-mono">{{ $e->serial_number ?: '-' }}</td>
-                                <td>{{ $e->detail }}</td>
+                                <td class="w-full">{{ $equipment->brand }}</td>
+                                <td class="w-full">{{ $equipment->category }}</td>
+                                <td class="font-mono">{{ $equipment->serial_number ?: '-' }}</td>
+                                <td>{{ $equipment->detail }}</td>
                                 <td>
-                                    <button class="btn btn-sm" wire:click="showUpdate('{{ $e->id }}')">
+                                    <button class="btn btn-sm" wire:click="showUpdate('{{ $equipment->id }}')">
                                         {{ __('app.edit') }}
                                     </button>
-                                    <button wire:click="confirmDeletion('{{ $e->id }}')" class="btn btn-sm btn-error">
+                                    <button wire:click="confirmDeletion('{{ $equipment->id }}')" class="btn btn-sm btn-error">
                                         {{ __('app.delete') }}
                                     </button>
                                 </td>
@@ -76,24 +80,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Show Picture -->
-        <x-jet-dialog-modal wire:model="showingEquipmentPicture">
-            <x-slot name="title">
-                {{ $this->equipment->name }}
-                <span class="badge badge-success">{{ $this->equipment->id }}</span>
-            </x-slot>
-
-            <x-slot name="content">
-                <img class="border mx-auto max-w-xs" src="{{ $this->equipment->picture_url }}" alt="{{ $this->equipment->name }}">
-            </x-slot>
-
-            <x-slot name="footer">
-                <button class="btn btn-ghost" wire:click="$toggle('showingEquipmentPicture')" wire:loading.attr="disabled">
-                    {{ __('app.close') }}
-                </button>
-            </x-slot>
-        </x-jet-dialog-modal>
 
         <!-- Show Create -->
         <x-jet-modal wire:model="showingEquipmentCreate">

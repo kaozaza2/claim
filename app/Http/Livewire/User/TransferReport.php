@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
-class TransferReport extends Component
+class   TransferReport extends Component
 {
     /**
      * @var string[]

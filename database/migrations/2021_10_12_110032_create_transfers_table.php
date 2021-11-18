@@ -19,7 +19,6 @@ class CreateTransfersTable extends Migration
             $table->bigInteger('from_sub_department_id');
             $table->bigInteger('to_sub_department_id');
             $table->bigInteger('user_id');
-            $table->bigInteger('admin_id')->nullable();
             $table->timestamps();
         });
     }

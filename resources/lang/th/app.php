@@ -8,43 +8,61 @@ return [
     |--------------------------------------------------------------------------
     |
     | The following language lines are used all in application where need to
-    | translate messages that we need to display to the user. 
+    | translate messages that we need to display to the user.
     |
     */
 
     'add' => 'เพิ่ม',
-    'applicant' => 'ผู้แจ้งเรื่อง',
-    'model' => 'รุ่น',
-    'brand' => 'ยี่ห้อ',
     'cancel' => 'ยกเลิก',
-    'claim-id' => 'หมายเลขการเคลม',
-    'claim-history' => 'ประวัติการเคลม',
-    'claimed' => 'ซ่อมแล้ว',
     'close' => 'ปิด',
     'confirm' => 'ยืนยัน',
     'delete' => 'ลบ',
     'details' => 'รายละเอียด',
     'edit' => 'แก้ไข',
-    'equipment' => 'อุปกรณ์',
     'id' => 'ไอดี',
     'image' => 'รูปภาพ',
     'image.select' => 'เลือกรูปภาพ',
     'logout' => 'ออกจากระบบ',
-    'mark-as-claimed' => 'ทำเครื่องหมายว่าซ่อมแล้ว',
     'name' => 'ชื่อ',
     'number' => 'ลำดับ',
     'ok' => 'ตกลง',
     'password' => 'รหัสผ่าน',
-    'problem' => 'อาการเสีย',
     'profile' => 'โปรไฟล์',
-    'recipient' => 'ผู้รับเรื่อง',
     'save' => 'บันทึก',
     'search' => 'ค้นหา',
     'select' => 'เลือก',
-    'serial' => 'เลขครุภัณฑ์',
     'status' => 'สถานะ',
-    'type' => 'ประเภท',
     'you' => 'คุณ',
+
+    'claim' => 'ซ่อม',
+    'claims' => [
+        'id' => 'เลขที่เคลม',
+        'history' => 'ประวัติการเคลม',
+        'problem' => 'อาการที่พบ',
+        'applicant' => 'ผู้แจ้งเรื่อง',
+        'recipient' => 'ผู้รับเรื่อง',
+        'issue-date' => 'แจ้งเมื่อ',
+        'accept' => 'รับเรื่อง',
+        'claimed' => 'ซ่อมแล้ว',
+        'mark-claimed' => 'ทำเครื่องหมายว่าซ่อมแล้ว',
+    ],
+
+    'transfer' => 'ย้ายแผนก',
+    'transfers' => [
+        'from' => 'จากแผนก',
+        'to' => 'ไปแผนก',
+        'applicant' => 'ผู้แจ้งเรื่อง',
+        'issue-date' => 'แจ้งเมื่อ',
+        'accept' => 'รับเรื่อง',
+    ],
+
+    'equipment' => 'อุปกรณ์',
+    'equipments' => [
+        'model' => 'รุ่น',
+        'serial' => 'เลขครุภัณฑ์',
+        'type' => 'ประเภท',
+        'brand' => 'ยี่ห้อ',
+    ],
 
     'modal' => [
         'title-warning' => 'คำเตือน',
@@ -54,7 +72,7 @@ return [
         'msg-delete' => 'ต้องการที่จะลบ :name หรือไม่?',
         'msg-claim-delete' => 'ต้องการที่จะลบรายการเคลม :claim หรือไม่?',
         'msg-confirm-role' => 'ต้องการเปลี่ยนบัญชี :user เป็น:roleหรือไม่?',
-        'msg-confirm-role-extra' => 'เพื่อความปลอดภัย, กรุณายืนยันรหัสผ่าน',
+        'msg-confirm-extra' => 'เพื่อความปลอดภัย, กรุณายืนยันรหัสผ่าน',
         'msg-error-inuse' => 'ไม่สามารถลบได้เนื่องจากถูกใช้งานอยู่',
         'msg-warn-username-change' => 'ควรเปลี่ยนเฉพาะเหตุจำเป็นเท่านั้น',
     ],
@@ -88,6 +106,7 @@ return [
     ],
 
     'tab' => [
+        'requests' => 'รอดำเนินการ',
         'claims' => 'รายการเคลมอุปกรณ์',
         'equipments' => 'รายการอุปกรณ์',
         'departments' => 'หน่วยงานและแผนก',
@@ -112,7 +131,7 @@ return [
 
     'validation' => [
         'wrong-password' => 'รหัสผ่านไม่ถูกต้อง',
-        'invaild-identify' => 'รูปแบบเลขบัตรประชาชนไม่ถูกต้อง',
+        'invalid-identify' => 'รูปแบบเลขบัตรประชาชนไม่ถูกต้อง',
         'username-disabled' => ':Attribute ไม่สามาเปลี่ยนได้ชั่วคราว',
      ],
 ];

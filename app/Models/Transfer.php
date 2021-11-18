@@ -50,12 +50,4 @@ class Transfer extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function admin()
-    {
-        return $this->belongsTo(User::class, 'admin_id');
-    }
 }

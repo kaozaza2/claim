@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin');
 
         Route::prefix('admin')->name('admin.')->group(function () {
+            Route::get('requests', Admin\UserRequest::class)->name('requests');
             Route::get('claims', Admin\Claims::class)->name('claims');
             Route::get('equipments', Admin\Equipments::class)->name('equipments');
             Route::get('departments', Admin\Departments::class)->name('departments');

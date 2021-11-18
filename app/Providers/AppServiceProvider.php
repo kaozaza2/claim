@@ -10,7 +10,9 @@ use App\Actions\DeleteDepartment;
 use App\Actions\DeleteEquipment;
 use App\Actions\DeleteSubDepartment;
 use App\Actions\DeleteUser;
+use App\Actions\PreClaimAccepter;
 use App\Actions\PromoteUser;
+use App\Actions\TransferAccepter;
 use App\Actions\UpdateDepartment;
 use App\Actions\UpdateEquipment;
 use App\Actions\UpdateSubDepartment;
@@ -23,7 +25,9 @@ use App\Contracts\DeletesDepartments;
 use App\Contracts\DeletesEquipments;
 use App\Contracts\DeletesSubDepartments;
 use App\Contracts\DeletesUsers;
+use App\Contracts\PreClaimsAccepter;
 use App\Contracts\PromotesUsers;
+use App\Contracts\TransfersAccepter;
 use App\Contracts\UpdatesDepartments;
 use App\Contracts\UpdatesEquipments;
 use App\Contracts\UpdatesSubDepartments;
@@ -34,7 +38,6 @@ use App\Models\Equipment;
 use App\Models\SubDepartment;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -43,7 +46,10 @@ use Laravel\Fortify\Actions\AttemptToAuthenticate;
 
 class AppServiceProvider extends ServiceProvider
 {
-    protected $bladeNameableClasses = [
+    /**
+     * @var array<string>
+     */
+    protected array $bladeNameableClasses = [
         Department::class,
         Equipment::class,
         SubDepartment::class,
@@ -82,12 +88,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(PromotesUsers::class, PromoteUser::class);
         $this->app->singleton(UpdatesUsers::class, UpdateUser::class);
         $this->app->singleton(DeletesUsers::class, DeleteUser::class);
+
+        $this->app->singleton(PreClaimsAccepter::class, PreClaimAccepter::class);
+        $this->app->singleton(TransfersAccepter::class, TransferAccepter::class);
     }
 
     /**
      * Bootstrap any application services.
-     *
-     * @return mixed
      */
     public function boot()
     {
@@ -116,20 +123,20 @@ class AppServiceProvider extends ServiceProvider
     private function bootValidatorRules()
     {
         Validator::extend('identified', function ($attribute, $value, $parameters) {
-            if (\strlen($value) !== 13)
+            if (strlen($value) !== 13)
                 return false;
 
             $index = 13;
-            $value = \str_split($value);
-            $calculate = \array_reduce($value, function ($carry, $item) use (&$index) {
+            $value = str_split($value);
+            $calculate = array_reduce($value, function ($carry, $item) use (&$index) {
                 if ($index !== 1)
                     return $carry + ($item * $index--);
-                
-                return \substr(11 - ($carry % 11), -1);
+
+                return substr(11 - ($carry % 11), -1);
             });
 
             return $calculate === $value[12];
-        }, __('app.validation.invaild-identify'));
+        }, __('app.validation.invalid-identify'));
     }
 
     private function bootBladeStringables()

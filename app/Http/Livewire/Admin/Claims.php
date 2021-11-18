@@ -33,11 +33,6 @@ class Claims extends Component
     /**
      * @var bool
      */
-    public bool $showingEquipmentDetail = false;
-
-    /**
-     * @var bool
-     */
     public bool $showingClaimCreate = false;
 
     /**
@@ -84,13 +79,8 @@ class Claims extends Component
             });
         }
 
-        $this->claims = $claims->sortByDesc('id');
-    }
-
-    public function showEquipment(string $id)
-    {
-        $this->equipment = Equipment::find($id);
-        $this->showingEquipmentDetail = true;
+        $this->claims = $claims->sortByDesc('id')
+            ->sortBy('complete');
     }
 
     public function showCreate()

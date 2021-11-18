@@ -41,11 +41,6 @@ class Equipments extends Component
     public bool $showingEquipmentCreate = false;
 
     /**
-     * @var bool
-     */
-    public bool $showingEquipmentPicture = false;
-
-    /**
      * @var string|null
      */
     public ?string $selectedId = null;
@@ -86,12 +81,6 @@ class Equipments extends Component
         }
 
         $this->equipments = $equipments;
-    }
-
-    public function showPicture(string $id)
-    {
-        $this->selectedId = $id;
-        $this->showingEquipmentPicture = true;
     }
 
     public function showCreate()
