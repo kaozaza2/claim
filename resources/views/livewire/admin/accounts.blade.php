@@ -21,7 +21,7 @@
         <div class="max-w-7xl sm:rounded-lg bg-white mt-6 mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
-                    <div class="form-control w-full">
+                    <div class="form-control w-full sm:py-3 lg:py-0">
                         <input type="text" wire:model.lazy="filter" placeholder="{{ __('app.search') }}"
                                class="input input-bordered">
                     </div>

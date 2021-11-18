@@ -35,21 +35,21 @@ class Claim extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function scopeSubDepartmentId(Builder $query, $id = null, $complete = null) : Builder
+    protected function scopeWithCompleted(Builder $query, $complete = true) : Builder
     {
-        $query = $query->whereHas('equipment', function (Builder $query) use ($id) {
+        return $query->where('complete', $complete ? 1 : 0);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function scopeSubDepartmentId(Builder $query, $id = null) : Builder
+    {
+        return $query->whereHas('equipment', function (Builder $query) use ($id) {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
-
-        if ($complete === false) {
-            $query = $query->where('complete', 0);
-        }
-
-        if ($complete === true) {
-            $query = $query->where('complete', 1);
-        }
-
-        return $query;
     }
 
     /**
@@ -57,21 +57,11 @@ class Claim extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function scopeOrSubDepartmentId(Builder $query, $id = null, $complete = null) : Builder
+    protected function scopeOrSubDepartmentId(Builder $query, $id = null) : Builder
     {
-        $query = $query->orWhereHas('equipment', function (Builder $query) use ($id) {
+        return $query->orWhereHas('equipment', function (Builder $query) use ($id) {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
-
-        if ($complete === false) {
-            $query = $query->where('complete', 0);
-        }
-
-        if ($complete === true) {
-            $query = $query->where('complete', 1);
-        }
-
-        return $query;
     }
 
     /**
@@ -79,19 +69,9 @@ class Claim extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function scopeUserId(Builder $query, $id = null, $complete = null) : Builder
+    protected function scopeUserId(Builder $query, $id = null) : Builder
     {
-        $query = $query->where('user_id', $id ?: Auth::user()->id);
-
-        if ($complete === false) {
-            $query = $query->where('complete', 0);
-        }
-
-        if ($complete === true) {
-            $query = $query->where('complete', 1);
-        }
-
-        return $query;
+        return $query->where('user_id', $id ?: Auth::user()->id);
     }
 
     /**
@@ -99,19 +79,9 @@ class Claim extends Model
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function scopeOrUserId(Builder $query, $id = null, $complete = null) : Builder
+    protected function scopeOrUserId(Builder $query, $id = null) : Builder
     {
-        $query = $query->orWhere('user_id', $id ?: Auth::user()->id);
-
-        if ($complete === false) {
-            $query = $query->where('complete', 0);
-        }
-
-        if ($complete === true) {
-            $query = $query->where('complete', 1);
-        }
-
-        return $query;
+        return $query->orWhere('user_id', $id ?: Auth::user()->id);
     }
 
     /**

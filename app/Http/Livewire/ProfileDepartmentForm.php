@@ -22,12 +22,10 @@ class ProfileDepartmentForm extends Component
         ];
     }
 
-    public function updated($property)
+    public function updatedStateDepartment()
     {
-        if ($property == 'state.department') {
-            if ($sub = SubDepartment::whereDepartment($this->state['department'])->first()) {
-                $this->state['sub_department'] = $sub->id;
-            }
+        if ($sub = SubDepartment::whereDepartment($this->state['department'])->first()) {
+            $this->state['sub_department'] = $sub->id;
         }
     }
 
@@ -36,12 +34,12 @@ class ProfileDepartmentForm extends Component
      */
     public function render()
     {
-        return \view('profile.profile-department-form');
+        return view('profile.profile-department-form');
     }
 
     public function updateDepartment()
     {
-        \validator($this->state, [
+        validator($this->state, [
             'department' => [
                 'required',
                 Rule::exists('departments', 'id'),

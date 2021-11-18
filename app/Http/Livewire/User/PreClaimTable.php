@@ -42,7 +42,7 @@ class PreClaimTable extends Component
     public function render()
     {
         $this->loadPreClaims();
-        return \view('livewire.user.pre-claim-table', [
+        return view('livewire.user.pre-claim-table', [
             'preClaims' => $this->preClaims,
             'selected' => $this->selected,
         ]);

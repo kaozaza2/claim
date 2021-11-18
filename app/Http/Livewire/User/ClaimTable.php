@@ -18,10 +18,12 @@ class ClaimTable extends Component
     {
         $completed = false;
         $user = Auth::user();
-        $claims = Claim::userId($user->id, $completed)
-            ->orSubDepartmentId($user->sub_department_id, $completed)
+        $claims = Claim::userId($user->id)
+            ->withCompleted($completed)
+            ->orSubDepartmentId($user->sub_department_id)
+            ->withCompleted($completed)
             ->paginate(10);
-        return \view('livewire.user.claim-table', [
+        return view('livewire.user.claim-table', [
             'claims' => $claims,
         ]);
     }
