@@ -4,17 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-
 class CreateClaimsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('claims', function (Blueprint $table) {
+        Schema::create('claims', function (Blueprint $table): void {
             $table->id();
             $table->bigInteger('equipment_id');
             $table->bigInteger('user_id')->nullable();
@@ -31,10 +28,8 @@ class CreateClaimsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('claims');
     }

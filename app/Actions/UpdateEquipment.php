@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateEquipment implements UpdatesEquipments
 {
-    public function update(Equipment $equipment, array $input)
+    public function update(Equipment $equipment, array $input): void
     {
         Validator::make($input, [
             'name' => 'required',

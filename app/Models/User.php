@@ -69,43 +69,28 @@ class User extends Authenticatable implements Nameable
         return Str::contains($this->role, 'admin');
     }
 
-    /**
-     * @return string
-     */
-    protected function getFullnameAttribute()
+    protected function getFullnameAttribute(): string
     {
         return \sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    protected function scopeAdmin(Builder $query)
+    protected function scopeAdmin(Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('role', 'admin')
             ->orWhere('role', 'superadmin');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    protected function scopeMember(Builder $query)
+    protected function scopeMember(Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('role', 'member');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function claims()
+    public function claims(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Claim::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function subDepartment()
+    public function subDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }

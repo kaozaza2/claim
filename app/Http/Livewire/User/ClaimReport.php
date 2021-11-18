@@ -33,7 +33,7 @@ class ClaimReport extends Component
 
     public ?string $problem = null;
 
-    public function showClaimReport()
+    public function showClaimReport(): void
     {
         if ($this->equipments->isEmpty()) {
             return;
@@ -43,7 +43,7 @@ class ClaimReport extends Component
         $this->showingClaimReport = true;
     }
 
-    public function storePreClaim()
+    public function storePreClaim(): void
     {
         $validatedData = $this->validate([
             'equipment_id' => [
@@ -81,7 +81,7 @@ class ClaimReport extends Component
         return \view('livewire.user.claim-report');
     }
 
-    private function sendMessage(PreClaim $claim)
+    private function sendMessage(PreClaim $claim): void
     {
         $message = \sprintf(
             "แจ้งซ่อม\nอุปกรณ์ที่แจ้ง: %s\nเลขครุภัณฑ์: %s\nแจ้งโดย: %s\nอาการเสีย: %s",

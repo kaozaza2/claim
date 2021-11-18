@@ -7,10 +7,7 @@ use App\Models\User;
 
 class DeleteUser implements DeletesUsers
 {
-    /**
-     * @return bool|null
-     */
-    public function delete(User $user)
+    public function delete(User $user): ?bool
     {
         return $user->delete();
     }

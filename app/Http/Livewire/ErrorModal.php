@@ -26,7 +26,7 @@ class ErrorModal extends Component
     /**
      * @param mixed[] $messages
      */
-    public function showErrorModal(array $messages)
+    public function showErrorModal(array $messages): void
     {
         $this->messages = $messages;
         $this->showingErrorMessage = true;

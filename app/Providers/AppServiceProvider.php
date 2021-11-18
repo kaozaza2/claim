@@ -58,21 +58,19 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->registerBinds();
         $this->registerSingletons();
     }
 
-    private function registerBinds()
+    private function registerBinds(): void
     {
         $this->app->bind(AttemptToAuthenticate::class, PatchedAttemptToAuthenticate::class);
     }
 
-    private function registerSingletons()
+    private function registerSingletons(): void
     {
         $this->app->singleton(CreatesDepartments::class, CreateDepartment::class);
         $this->app->singleton(CreatesEquipments::class, CreateEquipment::class);
@@ -96,7 +94,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->bootMacros();
         $this->bootValidatorRules();

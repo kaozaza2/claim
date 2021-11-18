@@ -10,18 +10,12 @@ class Department extends Model implements Nameable
 {
     use HasFactory;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subs()
+    public function subs(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(SubDepartment::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function users()
+    public function users(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
         return $this->hasManyThrough(User::class, SubDepartment::class);
     }

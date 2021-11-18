@@ -7,7 +7,7 @@ use App\Models\Equipment;
 
 class DeleteEquipment implements DeletesEquipments
 {
-    public function delete(Equipment $equipment)
+    public function delete(Equipment $equipment): void
     {
         $equipment->claims()->delete();
         $equipment->deletePicture();

@@ -16,12 +16,12 @@ class Claim extends Component
         'acceptClaim'
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $this->claims = PreClaim::all();
     }
 
-    public function acceptClaim(PreClaimsAccepter $accepter, int $index)
+    public function acceptClaim(PreClaimsAccepter $accepter, int $index): void
     {
         $claim = $this->claims->pull($index);
         $accepter->accept($claim, Auth::user());

@@ -18,9 +18,9 @@ class Equipment extends Model implements Nameable
      */
     protected $table = 'equipments';
 
-    public function updatePicture(UploadedFile $picture)
+    public function updatePicture(UploadedFile $picture): void
     {
-        \tap($this->picture, function ($previous) use ($picture) {
+        \tap($this->picture, function ($previous) use ($picture): void {
             $this->forceFill([
                 'picture' => $picture->storePublicly(
                     'equipment-photos', ['disk' => $this->pictureStorageDisk()]
@@ -34,7 +34,7 @@ class Equipment extends Model implements Nameable
 
     }
 
-    public function deletePicture()
+    public function deletePicture(): void
     {
         if ($this->picture) {
             Storage::disk($this->pictureStorageDisk())->delete($this->picture);
@@ -46,34 +46,22 @@ class Equipment extends Model implements Nameable
         return 'public';
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function claims()
+    public function claims(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Claim::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function preClaims()
+    public function preClaims(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PreClaim::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function oldSubDepartment()
+    public function oldSubDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function subDepartment()
+    public function subDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }

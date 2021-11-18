@@ -11,9 +11,9 @@ use Livewire\Component;
 
 class ProfileDepartmentForm extends Component
 {
-    public $state = [];
+    public array $state = [];
 
-    public function mount()
+    public function mount(): void
     {
         $user = Auth::user();
         $this->state = [
@@ -22,7 +22,7 @@ class ProfileDepartmentForm extends Component
         ];
     }
 
-    public function updatedStateDepartment()
+    public function updatedStateDepartment(): void
     {
         if ($sub = SubDepartment::whereDepartment($this->state['department'])->first()) {
             $this->state['sub_department'] = $sub->id;
@@ -37,7 +37,7 @@ class ProfileDepartmentForm extends Component
         return view('profile.profile-department-form');
     }
 
-    public function updateDepartment()
+    public function updateDepartment(): void
     {
         validator($this->state, [
             'department' => [

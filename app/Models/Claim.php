@@ -30,80 +30,46 @@ class Claim extends Model
         'complete' => 'boolean',
     ];
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function scopeWithCompleted(Builder $query, $complete = true) : Builder
     {
         return $query->where('complete', $complete ? 1 : 0);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function scopeSubDepartmentId(Builder $query, $id = null) : Builder
     {
-        return $query->whereHas('equipment', function (Builder $query) use ($id) {
+        return $query->whereHas('equipment', function (Builder $query) use ($id): \Illuminate\Database\Eloquent\Builder {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function scopeOrSubDepartmentId(Builder $query, $id = null) : Builder
     {
-        return $query->orWhereHas('equipment', function (Builder $query) use ($id) {
+        return $query->orWhereHas('equipment', function (Builder $query) use ($id): \Illuminate\Database\Eloquent\Builder {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function scopeUserId(Builder $query, $id = null) : Builder
     {
         return $query->where('user_id', $id ?: Auth::user()->id);
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     protected function scopeOrUserId(Builder $query, $id = null) : Builder
     {
         return $query->orWhere('user_id', $id ?: Auth::user()->id);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function equipment()
+    public function equipment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Equipment::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function admin()
+    public function admin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
     }

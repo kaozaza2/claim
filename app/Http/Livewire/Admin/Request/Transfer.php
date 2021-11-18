@@ -15,12 +15,12 @@ class Transfer extends Component
         'acceptTransfer'
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $this->transfers = TransferModel::all();
     }
 
-    public function acceptTransfer(TransfersAccepter $accepter, int $index)
+    public function acceptTransfer(TransfersAccepter $accepter, int $index): void
     {
         $accepter->accept($this->transfers->pull($index));
     }

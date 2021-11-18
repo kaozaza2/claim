@@ -9,9 +9,9 @@ use App\Models\User;
 
 class PreClaimAccepter implements PreClaimsAccepter
 {
-    public function accept(PreClaim $claim, User $who)
+    public function accept(PreClaim $claim, User $who): void
     {
-        tap(new Claim(), function ($new) use ($claim, $who) {
+        tap(new Claim(), function ($new) use ($claim, $who): void {
             $new->forceFill([
                 'equipment_id' => $claim->equipment_id,
                 'user_id' => $claim->user_id,

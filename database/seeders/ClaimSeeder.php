@@ -14,24 +14,30 @@ class ClaimSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        $memberSubs = SubDepartment::whereHas('users', fn($q) => $q->where('role', 'member'))
+        $memberSubs = SubDepartment::whereHas('users', function ($q) {
+            return $q->where('role', 'member');
+        })
             ->get()
-            ->map(fn($s) => ['sub_department_id' => $s->id]);
+            ->map(function ($s) : array {
+                return ['sub_department_id' => $s->id];
+            });
 
         $equipments = Equipment::factory()
             ->count(10)
             ->sequence(...$memberSubs)
             ->create()
-            ->map(fn($e) => ['equipment_id' => $e->id]);
+            ->map(function ($e) : array {
+                return ['equipment_id' => $e->id];
+            });
 
         $members = User::member()
             ->get()
-            ->map(fn($u) => ['user_id' => $u->id]);
+            ->map(function ($u) : array {
+                return ['user_id' => $u->id];
+            });
 
         PreClaim::factory()
             ->count(4)
@@ -40,11 +46,17 @@ class ClaimSeeder extends Seeder
             ->create();
 
         $fromEquipments = Equipment::all()
-            ->map(fn($e) => ['equipment_id' => $e->id, 'from_sub_department_id' => $e->sub_department_id]);
+            ->map(function ($e) : array {
+                return ['equipment_id' => $e->id, 'from_sub_department_id' => $e->sub_department_id];
+            });
 
-        $toSubs = SubDepartment::whereHas('users', fn($q) => $q->where('role', 'admin'))
+        $toSubs = SubDepartment::whereHas('users', function ($q) {
+            return $q->where('role', 'admin');
+        })
             ->get()
-            ->map(fn($s) => ['to_sub_department_id' => $s->id]);
+            ->map(function ($s) : array {
+                return ['to_sub_department_id' => $s->id];
+            });
 
         Transfer::factory()
             ->count(4)

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateSubDepartment implements UpdatesSubDepartments
 {
-    public function update(SubDepartment $sub, array $input)
+    public function update(SubDepartment $sub, array $input): void
     {
         Validator::make($input, [
             'name' => [

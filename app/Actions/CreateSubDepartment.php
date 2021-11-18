@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class CreateSubDepartment implements CreatesSubDepartments
 {
-    public function create(array $input)
+    public function create(array $input): void
     {
         Validator::make($input, [
             'department_id' => [

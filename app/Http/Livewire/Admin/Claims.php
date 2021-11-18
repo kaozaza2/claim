@@ -75,7 +75,9 @@ class Claims extends Component
                     $item->status,
                     $item->user->name,
                     $item->admin->name,
-                ], fn($s) => Str::contains($s, $search));
+                ], function ($s) use ($search) : bool {
+                    return Str::contains($s, $search);
+                });
             });
         }
 
@@ -83,7 +85,7 @@ class Claims extends Component
             ->sortBy('complete');
     }
 
-    public function showCreate()
+    public function showCreate(): void
     {
         $this->reset('equipment_id', 'user_id', 'admin_id', 'problem');
         $this->fill([
@@ -95,7 +97,7 @@ class Claims extends Component
         $this->showingClaimCreate = true;
     }
 
-    public function storeClaim()
+    public function storeClaim(): void
     {
         $validatedData = $this->validate([
             'equipment_id' => 'required|exists:equipments,id',
@@ -109,7 +111,7 @@ class Claims extends Component
         $this->showingClaimCreate = false;
     }
 
-    public function showUpdate(string $id)
+    public function showUpdate(string $id): void
     {
         $claim = $this->claims->firstWhere('id', $id);
         $this->fill(
@@ -119,14 +121,14 @@ class Claims extends Component
         $this->showingClaimUpdate = true;
     }
 
-    public function setCompleted($claimId, bool $complete)
+    public function setCompleted($claimId, bool $complete): void
     {
         if ($claim = Claim::find($claimId)) {
             $claim->update(['complete' => $complete]);
         }
     }
 
-    public function updateClaim()
+    public function updateClaim(): void
     {
         $validatedData = $this->validate([
             'equipment_id' => 'required|exists:equipments,id',
@@ -140,13 +142,13 @@ class Claims extends Component
         $this->showingClaimUpdate = false;
     }
 
-    public function confirmDeletion(string $id)
+    public function confirmDeletion(string $id): void
     {
         $this->selected = $this->claims->firstWhere('id', $id);
         $this->confirmingClaimDeletion = true;
     }
 
-    public function deleteClaim()
+    public function deleteClaim(): void
     {
         $this->selected->delete();
         $this->confirmingClaimDeletion = false;

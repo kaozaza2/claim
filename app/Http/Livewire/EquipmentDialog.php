@@ -15,7 +15,7 @@ class EquipmentDialog extends Component
 
     public bool $showingEquipmentDetail = false;
 
-    public function showEquipmentDetail(int $equipmentId)
+    public function showEquipmentDetail(int $equipmentId): void
     {
         $this->equipment = Equipment::find($equipmentId);
         $this->showingEquipmentDetail = true;

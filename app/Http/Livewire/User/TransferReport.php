@@ -39,7 +39,7 @@ class   TransferReport extends Component
 
     public ?string $to_sub_department_id = null;
 
-    public function showTransferReport()
+    public function showTransferReport(): void
     {
         if ($this->equipments->isEmpty()) {
             return;
@@ -52,7 +52,7 @@ class   TransferReport extends Component
         $this->showingTransferReport = true;
     }
 
-    public function storeTransfer()
+    public function storeTransfer(): void
     {
         $validatedData = $this->validate([
             'equipment_id' => [
@@ -87,7 +87,7 @@ class   TransferReport extends Component
         $this->sendMessage($transfer);
     }
 
-    public function updated($propertyName)
+    public function updated($propertyName): void
     {
         if ($propertyName == 'equipment_id') {
             $equipment = $this->equipments->firstWhere('id', $this->equipment_id);
@@ -110,7 +110,7 @@ class   TransferReport extends Component
         return \view('livewire.user.transfer-report');
     }
 
-    private function sendMessage(Transfer $transfer)
+    private function sendMessage(Transfer $transfer): void
     {
         $message = \sprintf(
             "แจ้งย้าย\nอุปกรณ์ที่แจ้ง: %s\nเลขครุภัณฑ์: %s\nแจ้งโดย: %s\nจากแผนก: %s\nไปแผนก: %s",

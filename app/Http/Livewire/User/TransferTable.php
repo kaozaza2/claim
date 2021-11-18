@@ -28,7 +28,7 @@ class TransferTable extends Component
         'reloadTransferTable' => '$refresh',
     ];
 
-    public function loadTransfers()
+    public function loadTransfers(): void
     {
         $this->transfers = Transfer::where('user_id', Auth::user()->id)
             ->whereNull('admin_id')
@@ -50,13 +50,13 @@ class TransferTable extends Component
         ]);
     }
 
-    public function showCancel(string $id)
+    public function showCancel(string $id): void
     {
         $this->selected = $this->transfers->firstWhere('id', $id);
         $this->confirmingCancel = true;
     }
 
-    public function confirmCancel()
+    public function confirmCancel(): void
     {
         $this->selected->delete();
         $this->confirmingCancel = false;

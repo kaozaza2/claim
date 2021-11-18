@@ -22,7 +22,7 @@ class Accounts extends Component
     public bool $showingUpdateUserDialog = false;
     public bool $showingDeleteUserDialog = false;
 
-    public function showUpdateUserDialog(int $userId)
+    public function showUpdateUserDialog(int $userId): void
     {
         if ($this->user = User::find($userId)) {
             $this->state['user'] = $this->user->attributesToArray();
@@ -30,26 +30,26 @@ class Accounts extends Component
         }
     }
 
-    public function updateUserInformation(UpdatesUsers $updater)
+    public function updateUserInformation(UpdatesUsers $updater): void
     {
         $updater->update($this->user, $this->state['user']);
         $this->showingUpdateUserDialog = false;
     }
 
-    public function showDeleteUserDialog(int $userId)
+    public function showDeleteUserDialog(int $userId): void
     {
         if ($this->user = User::find($userId)) {
             $this->showingDeleteUserDialog = true;
         }
     }
 
-    public function deleteUserAccount(DeletesUsers $deleter)
+    public function deleteUserAccount(DeletesUsers $deleter): void
     {
         $deleter->delete($this->user);
         $this->showingDeleteUserDialog = false;
     }
 
-    public function promotePrompt(int $userId)
+    public function promotePrompt(int $userId): void
     {
         $user = User::find($userId);
         $this->state['confirm'] = null;
@@ -58,7 +58,7 @@ class Accounts extends Component
         $this->showingPromotePromptDialog = true;
     }
 
-    public function promotePromptAccept()
+    public function promotePromptAccept(): void
     {
         if (!Session::get('user')->isAdmin() && !Hash::check($this->state['confirm'], Auth::user()->password)) {
             throw ValidationException::withMessages([
@@ -82,7 +82,7 @@ class Accounts extends Component
     private function filteredUsers() {
         if (filled($this->filter)) {
             $needle = '%'.$this->filter.'%';
-            return User::where(function (Builder $query) use ($needle) {
+            return User::where(function (Builder $query) use ($needle): void {
                 $query->where('name', 'like', $needle)
                     ->orWhere('last_name', 'like', $needle)
                     ->orWhere('identification', 'like', $needle)

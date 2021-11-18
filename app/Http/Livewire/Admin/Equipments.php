@@ -76,20 +76,22 @@ class Equipments extends Component
                     $item->detail,
                     $item->serial_number,
                     $item->id,
-                ], fn($s) => Str::contains($s, $search));
+                ], function ($s) use ($search) : bool {
+                    return Str::contains($s, $search);
+                });
             });
         }
 
         $this->equipments = $equipments;
     }
 
-    public function showCreate()
+    public function showCreate(): void
     {
         $this->state = [];
         $this->showingEquipmentCreate = true;
     }
 
-    public function storeEquipment(CreatesEquipments $creator)
+    public function storeEquipment(CreatesEquipments $creator): void
     {
         $creator->create(
             $this->picture
@@ -112,7 +114,7 @@ class Equipments extends Component
         return SubDepartment::all();
     }
 
-    public function showUpdate(string $id)
+    public function showUpdate(string $id): void
     {
         $equipment = Equipment::find($id);
         $this->selectedId = $id;
@@ -121,7 +123,7 @@ class Equipments extends Component
         $this->showingEquipmentUpdate = true;
     }
 
-    public function updateEquipment(UpdatesEquipments $updater)
+    public function updateEquipment(UpdatesEquipments $updater): void
     {
         $updater->update(
             Equipment::find($this->selectedId),
@@ -133,13 +135,13 @@ class Equipments extends Component
         $this->showingEquipmentUpdate = false;
     }
 
-    public function confirmDeletion(string $id)
+    public function confirmDeletion(string $id): void
     {
         $this->selectedId = $id;
         $this->confirmingEquipmentDeletion = true;
     }
 
-    public function deleteEquipment(DeletesEquipments $deleter)
+    public function deleteEquipment(DeletesEquipments $deleter): void
     {
         $deleter->delete(Equipment::find($this->selectedId));
         $this->confirmingEquipmentDeletion = false;

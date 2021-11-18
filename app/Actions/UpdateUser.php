@@ -44,7 +44,7 @@ class UpdateUser implements UpdatesUsers
             ],
         ])->validated();
 
-        return \tap($user, function ($user) use ($validated) {
+        return \tap($user, function ($user) use ($validated): void {
             $user->update($validated);
         });
     }

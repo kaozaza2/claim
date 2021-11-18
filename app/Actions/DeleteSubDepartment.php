@@ -7,7 +7,7 @@ use App\Models\SubDepartment;
 
 class DeleteSubDepartment implements DeletesSubDepartments
 {
-    public function delete(SubDepartment $sub)
+    public function delete(SubDepartment $sub): void
     {
         $sub->delete();
     }

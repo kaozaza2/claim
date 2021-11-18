@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 
 class CreateEquipment implements CreatesEquipments
 {
-    public function create(array $input)
+    public function create(array $input): void
     {
         Validator::make($input ,[
             'name' => 'required',
@@ -28,7 +28,7 @@ class CreateEquipment implements CreatesEquipments
             'sub_department_id.exists' => 'ไม่พบแผนกที่เลือก',
         ])->validate();
 
-        $equipment = \tap(new Equipment, function ($equipment) use ($input) {
+        $equipment = \tap(new Equipment, function ($equipment) use ($input): void {
             $equipment->forceFill([
                 'name' => $input['name'],
                 'serial_number' => $input['serial_number'] ?? null,

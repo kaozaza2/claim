@@ -28,7 +28,7 @@ class PreClaimTable extends Component
         'reloadPreClaimTable' => '$refresh',
     ];
 
-    public function loadPreClaims()
+    public function loadPreClaims(): void
     {
         $this->preClaims = PreClaim::where('user_id', Auth::user()->id)->get();
         if (!isset($this->selected) && $this->preClaims->isNotEmpty()) {
@@ -48,13 +48,13 @@ class PreClaimTable extends Component
         ]);
     }
 
-    public function showCancel(string $id)
+    public function showCancel(string $id): void
     {
         $this->selected = $this->preClaims->firstWhere('id', $id);
         $this->confirmingCancel = true;
     }
 
-    public function confirmCancel()
+    public function confirmCancel(): void
     {
         $this->selected->delete();
         $this->confirmingCancel = false;

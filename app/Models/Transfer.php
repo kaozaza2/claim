@@ -19,34 +19,22 @@ class Transfer extends Model
         'user_id',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function equipment()
+    public function equipment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Equipment::class, 'equipment_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function fromSub()
+    public function fromSub(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'from_sub_department_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function toSub()
+    public function toSub(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'to_sub_department_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

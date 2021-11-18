@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class CreateDepartment implements CreatesDepartments
 {
-    public function create(array $input)
+    public function create(array $input): void
     {
         Validator::make($input, [
             'name' => [

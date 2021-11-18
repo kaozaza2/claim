@@ -8,9 +8,9 @@ use App\Models\Transfer;
 
 class TransferAccepter implements TransfersAccepter
 {
-    public function accept(Transfer $transfer)
+    public function accept(Transfer $transfer): void
     {
-        tap($transfer->equipment, function (Equipment $equipment) use ($transfer) {
+        tap($transfer->equipment, function (Equipment $equipment) use ($transfer): void {
             $equipment->forceFill([
                 'sub_department_id' => $transfer->toSub->id,
                 'old_sub_department_id' => $transfer->fromSub->id,
