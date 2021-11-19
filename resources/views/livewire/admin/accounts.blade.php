@@ -112,7 +112,7 @@
                                placeholder="{{ __('app.password') }}"
                                x-ref="password"
                                wire:model.defer="state.confirm"
-                               wire:keydown.enter="promotePromptAccept"/>
+                               wire:keydown.enter="$emitSelf('promote-accept')"/>
 
                         <x-jet-input-error for="confirm" hint="{{ __('app.modal.msg-confirm-extra') }}"/>
                     </div>
@@ -125,7 +125,8 @@
                     {{ __('app.cancel') }}
                 </button>
 
-                <button class="ml-2 btn btn-error" wire:click="promotePromptAccept" wire:loading.attr="disabled">
+                <button class="ml-2 btn btn-error" wire:click="$emitSelf('promote-accept')"
+                        wire:loading.attr="disabled">
                     {{ __('app.confirm') }}
                 </button>
             </x-slot>
@@ -141,7 +142,7 @@
                   __('app.modal.msg-delete', ['name' => optional($this->user)->getName()])
                 }}</p>
 
-                @if ('admin' == optional($this->user)->role)
+                @if (optional($this->user)->isAdmin())
                     <div class="mt-4" x-data="{}"
                          x-on:confirming-promote-user.window="setTimeout(() => $refs.password.focus(), 250)">
                         <input type="password" class="input input-bordered w-full lg:w-3/4 mt-1 mb-2 block"

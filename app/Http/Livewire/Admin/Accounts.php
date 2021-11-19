@@ -16,6 +16,10 @@ use Livewire\Component;
 
 class Accounts extends Component
 {
+    protected $listeners = [
+        'promote-accept' => 'promotePromptAccept',
+    ];
+
     public array $state = [];
     public string $filter = '';
     public ?User $user = null;
@@ -59,7 +63,7 @@ class Accounts extends Component
         $this->showingPromotePromptDialog = true;
     }
 
-    public function promotePromptAccept(): void
+    public function promotePromptAccept(PromotesUsers $promoter): void
     {
         if (!Session::get('user')->isAdmin() && !Hash::check($this->state['confirm'], Auth::user()->password)) {
             throw ValidationException::withMessages([
@@ -69,7 +73,7 @@ class Accounts extends Component
 
         $this->state['confirm'] = null;
         $user = Session::pull('user');
-        app(PromotesUsers::class)->promote($user, $user->isAdmin() ? 'member' : 'admin');
+        $promoter->promote($user, $user->isAdmin() ? 'member' : 'admin');
         $this->showingPromotePromptDialog = false;
     }
 

@@ -4,6 +4,7 @@ namespace App\Actions;
 
 use App\Contracts\UpdatesUsers;
 use App\Models\User;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +15,7 @@ class UpdateUser implements UpdatesUsers
      */
     public function update(User $user, array $input)
     {
-        $validated = Validator::make($input, [
+        $data = Validator::make($input, [
             'title' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
@@ -44,8 +45,13 @@ class UpdateUser implements UpdatesUsers
             ],
         ])->validated();
 
-        return \tap($user, function ($user) use ($validated): void {
-            $user->update($validated);
+        return \tap($user->email, function ($email) use ($user, $data): void {
+            $user->update($data);
+
+            if ($user instanceof MustVerifyEmail && $email != $user->email) {
+                $user->forceFill(['email_verified_at' => null])->save();
+                $user->sendEmailVerificationNotification();
+            }
         });
     }
 }
