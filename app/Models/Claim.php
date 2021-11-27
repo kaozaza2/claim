@@ -9,11 +9,9 @@ use Illuminate\Support\Facades\Auth;
 
 class Claim extends Model
 {
+    use Concerns\WithSearchableColumns;
     use HasFactory;
 
-    /**
-     * @var string[]
-     */
     protected $fillable = [
         'equipment_id',
         'user_id',
@@ -23,9 +21,12 @@ class Claim extends Model
         'complete',
     ];
 
-    /**
-     * @var string[]
-     */
+    protected $excludes = [
+        'equipment_id',
+        'user_id',
+        'admin_id',
+    ];
+
     protected $casts = [
         'complete' => 'boolean',
     ];

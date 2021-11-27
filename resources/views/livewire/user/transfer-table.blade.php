@@ -1,7 +1,7 @@
 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-5">
     <h1 class="text-2xl mb-3">{{__('รายการรอย้ายทั้งหมด')}}</h1>
 
-    @if ($transfers->isEmpty())
+    @if (blank($transfers))
         <p>{{__('ยังไม่มีรายการที่รอย้าย')}}</p>
     @else
         <div class="overflow-x-auto">
@@ -11,28 +11,30 @@
                     <th>
                         <span class="hidden lg:block">{{__('No.')}}</span>
                     </th>
-                    <th colspan="3">{{__('อุปกร์ที่เคลม')}}</th>
-                    <th>{{__('เลขครุภัณฑ์')}}</th>
-                    <th>{{__('ย้ายจากแผนก')}}</th>
-                    <th>{{__('ย้ายไปยังแผนก')}}</th>
-                    <th>{{__('วันที่ยื่นเรื่อง')}}</th>
+                    <th colspan="3">{{__('app.equipment')}}</th>
+                    <th>{{__('app.equipments.serial')}}</th>
+                    <th>{{__('app.transfers.from')}}</th>
+                    <th>{{__('app.transfers.to')}}</th>
+                    <th>{{__('app.date')}}</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($transfers as $transfer)
+                @foreach ($transfers as $key => $transfer)
                     <tr>
                         <th>{{ $loop->index + 1 }}</th>
-                        <td>{{ $transfer->equipment->name }}</td>
+                        <td>{{ $transfer->equipment }}</td>
                         <td>{{ $transfer->equipment->brand }}</td>
                         <td>{{ $transfer->equipment->category }}</td>
-                        <td class="font-mono">{{ $transfer->equipment->serial_number ?: '-' }}</td>
-                        <td>{{ $transfer->fromSub->name }}</td>
-                        <td>{{ $transfer->toSub->name }}</td>
+                        <td class="font-mono">
+                            {{ $transfer->equipment->serial_number ?: '-' }}
+                        </td>
+                        <td>{{ $transfer->fromSub }}</td>
+                        <td>{{ $transfer->toSub }}</td>
                         <td>{{ $transfer->created_at->format('Y-m-d') }}</td>
                         <td>
-                            <button class="btn btn-sm" wire:click="showCancel('{{ $transfer->id }}')">
-                                {{ __('ยกเลิก') }}
+                            <button class="btn btn-sm" wire:click="$emitSelf('user-transfer-cancel', {{ $key }})">
+                                {{ __('app.cancel') }}
                             </button>
                         </td>
                     </tr>
@@ -40,22 +42,5 @@
                 </tbody>
             </table>
         </div>
-
-        <x-jet-confirmation-modal wire:model="confirmingCancel">
-            <x-slot name="title">
-                {{ __('ยกเลิกแจ้งย้าย ?') }}
-            </x-slot>
-
-            <x-slot name="content">
-                {{ sprintf('ยกเลิกแจ้งย้าย %s ไปยัง %s?', $selected->equipment->name ?? '', $selected->toSub->name ?? '') }}
-            </x-slot>
-
-            <x-slot name="footer">
-                <button type="button" wire:click="$toggle('confirmingCancel')" class="btn btn-ghost ml-auto">
-                    {{ __('ยกเลิก') }}
-                </button>
-                <button class="btn btn-error ml-2" wire:click="confirmCancel">{{ __('ตกลง') }}</button>
-            </x-slot>
-        </x-jet-confirmation-modal>
     @endif
 </div>

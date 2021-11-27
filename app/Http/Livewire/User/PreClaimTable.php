@@ -4,59 +4,51 @@ namespace App\Http\Livewire\User;
 
 use App\Models\PreClaim;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class PreClaimTable extends Component
 {
-    /**
-     * @var mixed|null
-     */
-    public Collection $preClaims;
+    public Collection $pending;
 
-    public ?PreClaim $selected = null;
-
-    /**
-     * @var bool
-     */
-    public bool $confirmingCancel = false;
-
-    /**
-     * @var array<string, string>
-     */
     protected $listeners = [
-        'reloadPreClaimTable' => '$refresh',
+        'user-claim-refresh' => 'load',
+        'user-claim-cancel' => 'confirm',
+        'user-claim-cancel-submit' => 'destroy',
     ];
 
-    public function loadPreClaims(): void
+    public function mount(): void
     {
-        $this->preClaims = PreClaim::where('user_id', Auth::user()->id)->get();
-        if (!isset($this->selected) && $this->preClaims->isNotEmpty()) {
-            $this->selected = $this->preClaims->first();
-        }
+        $this->load();
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function render(): View
     {
-        $this->loadPreClaims();
-        return view('livewire.user.pre-claim-table', [
-            'preClaims' => $this->preClaims,
-            'selected' => $this->selected,
-        ]);
+        return view('livewire.user.pre-claim-table');
     }
 
-    public function showCancel(string $id): void
+    public function load(): void
     {
-        $this->selected = $this->preClaims->firstWhere('id', $id);
-        $this->confirmingCancel = true;
+        $this->pending = PreClaim::currentUser()->get();
     }
 
-    public function confirmCancel(): void
+    public function confirm(int $index): void
     {
-        $this->selected->delete();
-        $this->confirmingCancel = false;
+        $pending = $this->pending->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-cancel-claim'),
+            __('app.modal.msg-cancel-claim', [
+                'eq' => $pending->equipment->getName(),
+            ]), [
+                'emitter' => 'user-claim-cancel-submit',
+                'params' => [$index],
+            ],
+        );
+    }
+
+    public function destroy(int $index): void
+    {
+        $this->pending->pull($index)->delete();
     }
 }

@@ -9,10 +9,10 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="w-full text-right">
-                <button class="btn btn-info" wire:click="$emit('showTransferReport')">
+                <button class="btn btn-info" wire:click="$emit('user-transfer-create')">
                     {{ __('แจ้งย้าย') }}
                 </button>
-                <button class="btn btn-success ml-2" wire:click="$emit('showClaimReport')">
+                <button class="btn btn-success ml-2" wire:click="$emit('user-claim-create')">
                     {{ __('แจ้งซ่อม') }}
                 </button>
             </div>

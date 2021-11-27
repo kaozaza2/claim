@@ -53,7 +53,7 @@
                                 </td>
                                 <td class="w-full">
                                     {{ $equipment->name }}
-                                    <div wire:click="$emit('showEquipmentDetail', {{ $equipment->id }})"
+                                    <div wire:click="$emit('show-equipment-detail', {{ $equipment->id }})"
                                          class="inline-block cursor-pointer rounded-sm btn-ghost">
                                         <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 0 24 24" width="14px" fill="#3d4451">
                                             <path d="M0 0h24v24H0V0z" fill="none"/>
@@ -96,33 +96,33 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.model') }}</span>
+                            <span class="label-text">{{ __('app.equipments.model') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.model') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.equipments.model') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.brand') }}</span>
+                            <span class="label-text">{{ __('app.equipments.brand') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.brand') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.equipments.brand') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.type') }}</span>
+                            <span class="label-text">{{ __('app.equipments.type') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.type') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.equipments.type') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.serial') }}</span>
+                            <span class="label-text">{{ __('app.equipments.serial') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.serial') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.equipments.serial') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
                     </div>
@@ -171,33 +171,33 @@
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.model') }}</span>
+                            <span class="label-text">{{ __('app.equipments.model') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.model') }}"
+                        <input type="text" wire:model.defer="state.name" placeholder="{{ __('app.equipments.model') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="name" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.brand') }}</span>
+                            <span class="label-text">{{ __('app.equipments.brand') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.brand') }}"
+                        <input type="text" wire:model.defer="state.brand" placeholder="{{ __('app.equipments.brand') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="brand" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.type') }}</span>
+                            <span class="label-text">{{ __('app.equipments.type') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.type') }}"
+                        <input type="text" wire:model.defer="state.category" placeholder="{{ __('app.equipments.type') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="category" class="text-error label-text-alt" />
                     </div>
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text">{{ __('app.serial') }}</span>
+                            <span class="label-text">{{ __('app.equipments.serial') }}</span>
                         </label>
-                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.serial') }}"
+                        <input type="text" wire:model.defer="state.serial_number" placeholder="{{ __('app.equipments.serial') }}"
                                class="input input-bordered">
                         <x-jet-input-error for="serial_number" class="text-error label-text-alt" />
                     </div>
@@ -242,7 +242,7 @@
                 {{ __('app.modal.msg-delete', ['name' => $this->equipment->name]) }}
 
                 @if ($this->equipment->claims() && $this->equipment->claims()->exists())
-                    <div class="mt-3">{{ __('app.claim-history') }}</div>
+                    <div class="mt-3">{{ __('app.claims.history') }}</div>
                     <ul>
                         @each('components.li', $this->equipment->claims->map(fn($i)=>"$i->id : $i->problem"), 'slot')
                     </ul>

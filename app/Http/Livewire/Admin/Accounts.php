@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -18,10 +17,12 @@ class Accounts extends Component
 {
     protected $listeners = [
         'promote-accept' => 'promotePromptAccept',
+        'delete-account' => 'deleteUserAccount',
     ];
 
     public array $state = [];
     public string $filter = '';
+    public string $verify = '';
     public ?User $user = null;
     public bool $showingPromotePromptDialog = false;
     public bool $showingUpdateUserDialog = false;
@@ -44,36 +45,37 @@ class Accounts extends Component
     public function showDeleteUserDialog(int $userId): void
     {
         if ($this->user = User::find($userId)) {
+            $this->dispatchBrowserEvent('confirming-delete-user');
             $this->showingDeleteUserDialog = true;
         }
     }
 
     public function deleteUserAccount(DeletesUsers $deleter): void
     {
+        if ($this->user->isAdmin()) {
+            $this->confirmPasswordValidated();
+        }
+
         $deleter->delete($this->user);
         $this->showingDeleteUserDialog = false;
     }
 
     public function promotePrompt(int $userId): void
     {
-        $user = User::find($userId);
-        $this->state['confirm'] = null;
-        Session::put('user', $user);
+        $this->user = User::find($userId);
+        $this->verify = '';
         $this->dispatchBrowserEvent('confirming-promote-user');
         $this->showingPromotePromptDialog = true;
     }
 
     public function promotePromptAccept(PromotesUsers $promoter): void
     {
-        if (!Session::get('user')->isAdmin() && !Hash::check($this->state['confirm'], Auth::user()->password)) {
-            throw ValidationException::withMessages([
-                'confirm' => [__('app.validation.wrong-password')],
-            ]);
+        if (!$this->user->isAdmin()) {
+            $this->confirmPasswordValidated();
         }
 
-        $this->state['confirm'] = null;
-        $user = Session::pull('user');
-        $promoter->promote($user, $user->isAdmin() ? 'member' : 'admin');
+        $this->verify = '';
+        $promoter->promote($this->user, $this->user->isAdmin() ? 'member' : 'admin');
         $this->showingPromotePromptDialog = false;
     }
 
@@ -85,17 +87,21 @@ class Accounts extends Component
     }
 
     private function filteredUsers() {
-        if (filled($this->filter)) {
-            $filter = $this->filter;
-            return User::all()->filter(function ($user) use ($filter) : bool {
-                foreach ($user->attributesToArray() as $key => $value) {
-                    if (Str::contains($value, $filter)) {
-                        return true;
-                    }
-                }
-                return false;
+        $user = User::with(['claims', 'subDepartment'])->get();
+        if (filled($filter = $this->filter)) {
+            return $user->filter(function ($user) use ($filter): bool {
+                return $user->searchAuto($filter);
             });
         }
-        return User::all();
+        return $user;
+    }
+
+    private function confirmPasswordValidated()
+    {
+        if (!Hash::check($this->verify, Auth::user()->password)) {
+            throw ValidationException::withMessages([
+                'verify' => [__('app.validation.wrong-password')],
+            ]);
+        }
     }
 }

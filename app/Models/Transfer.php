@@ -2,22 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Transfer extends Model
 {
+    use Concerns\WithSearchableColumns;
     use HasFactory;
 
-    /**
-     * @var string[]
-     */
     protected $fillable = [
         'equipment_id',
         'from_sub_department_id',
         'to_sub_department_id',
         'user_id',
     ];
+
+    protected $excludes = [
+        'equipment_id',
+        'from_sub_department_id',
+        'to_sub_department_id',
+        'user_id',
+    ];
+
+    protected function scopeCurrentUser(Builder $query): Builder
+    {
+        return $query->where('user_id', Auth::user()->id);
+    }
 
     public function equipment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

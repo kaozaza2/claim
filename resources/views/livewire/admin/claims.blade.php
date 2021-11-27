@@ -22,10 +22,10 @@
             <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
                 <div class="flex-none lg:flex mb-3">
                     <div class="form-control w-full mr-2">
-                        <input type="text" wire:model="search" placeholder="{{ __('app.search') }}"
+                        <input type="text" wire:model.lazy="search" placeholder="{{ __('app.search') }}"
                                class="input input-bordered">
                     </div>
-                    <button wire:click="showCreate" class="btn btn-success ml-auto">
+                    <button wire:click="$emitSelf('claim-table-create')" class="btn btn-success ml-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                              class="transform rotate-45 inline-block w-6 h-6 mr-2 stroke-current">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -39,24 +39,24 @@
                         <thead>
                         <tr>
                             <th>
-                                <span class="hidden lg:block">{{__('app.claims.id')}}</span>
+                                <span class="hidden lg:block"> {{ __('app.claims.id') }}</span>
                             </th>
-                            <th>{{__('app.equipment')}}</th>
-                            <th>{{__('app.equipments.type')}}</th>
-                            <th>{{__('app.equipments.serial')}}</th>
-                            <th>{{__('app.claims.problem')}}</th>
-                            <th>{{__('app.claims.applicant')}}</th>
-                            <th>{{__('app.claims.recipient')}}</th>
-                            <th>{{__('app.claims.claimed')}}</th>
+                            <th> {{ __('app.equipment') }}</th>
+                            <th> {{ __('app.equipments.type') }}</th>
+                            <th> {{ __('app.equipments.serial') }}</th>
+                            <th> {{ __('app.claims.problem') }}</th>
+                            <th> {{ __('app.claims.applicant') }}</th>
+                            <th> {{ __('app.claims.recipient') }}</th>
+                            <th> {{ __('app.claims.claimed') }}</th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($claims as $claim)
+                        @foreach ($claims as $key => $claim)
                             <tr>
                                 <th>{{ $claim->id }}</th>
                                 <td>
-                                    <div wire:click="$emit('showEquipmentDetail', {{ $claim->equipment->id }})"
+                                    <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
                                          class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
                                         {{ $claim->equipment->name }}
                                     </div>
@@ -74,15 +74,14 @@
                                     <div data-tip="{{ __('app.claims.mark-claimed') }}" class="w-full tooltip">
                                         <input type="checkbox" class="checkbox checkbox-accent"
                                                @if($claim->isCompleted()) checked="checked" @endif
-                                               wire:click="setCompleted({{ $claim->id }}, {{ $claim->isCompleted() ? 'false' : 'true' }})"/>
+                                               wire:click="$emitSelf('claim-table-toggle', {{ $key }})"/>
                                     </div>
                                 </td>
                                 <td>
-                                    <button wire:click="showUpdate('{{ $claim->id }}')" class="btn btn-sm">
+                                    <button wire:click="$emitSelf('claim-table-update', {{ $key }})" class="btn btn-sm">
                                         {{ __('app.edit') }}
                                     </button>
-                                    <button wire:click="confirmDeletion('{{ $claim->id }}')"
-                                            class="btn btn-sm btn-error">
+                                    <button wire:click="$emitSelf('claim-table-delete', {{ $key }})" class="btn btn-sm btn-error">
                                         {{ __('app.delete') }}
                                     </button>
                                 </td>
@@ -96,15 +95,14 @@
 
         <!-- Show Create -->
         <x-jet-modal wire:model="showingClaimCreate">
-            <form wire:submit.prevent="storeClaim">
+            <form wire:submit.prevent="store">
                 @csrf
                 <div class="p-5">
                     <div class="form-control w-full">
                         <label class="label">
                             <span class="label-text">{{ __('app.equipment') }}</span>
                         </label>
-                        <select wire:model="equipment_id" class="select select-bordered w-full">
-                            <option disabled="disabled" selected="selected">{{ __('app.select') }}</option>
+                        <select wire:model.defer="state.equipment_id" class="select select-bordered w-full">
                             @foreach(\App\Models\Equipment::all() as $equipment)
                                 <option value="{{ $equipment->id }}">
                                     [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
@@ -121,14 +119,14 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.problem') }}</span>
                         </label>
-                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered"
+                        <textarea wire:model.defer="state.problem" class="textarea h-24 textarea-bordered"
                                   placeholder="{{ __('app.details') }}"></textarea>
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
-                        <select wire:model="user_id" class="select select-bordered w-full">
+                        <select wire:model.defer="state.user_id" class="select select-bordered w-full">
                             @foreach(\App\Models\User::member()->cursor() as $user)
                                 <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
@@ -143,7 +141,7 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
-                        <select wire:model="admin_id" class="select select-bordered w-full">
+                        <select wire:model.defer="state.admin_id" class="select select-bordered w-full">
                             @foreach(\App\Models\User::admin()->get() as $admin)
                                 <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
@@ -158,8 +156,8 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.status') }}</span>
                         </label>
-                        <input type="text" wire:model="status" class="input input-bordered"
-                               placeholder="{{__('app.status')}}">
+                        <input type="text" wire:model.defer="state.status" class="input input-bordered"
+                               placeholder=" {{ __('app.status') }}">
                         @error('status')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
@@ -178,14 +176,14 @@
 
         <!-- Update -->
         <x-jet-modal wire:model="showingClaimUpdate">
-            <form wire:submit.prevent="updateClaim">
+            <form wire:submit.prevent="update">
                 @csrf
                 <div class="p-5">
                     <div class="form-control w-full">
                         <label class="label">
                             <span class="label-text">{{ __('app.equipment') }}</span>
                         </label>
-                        <select wire:model="equipment_id" class="select select-bordered w-full">
+                        <select wire:model.defer="state.equipment_id" class="select select-bordered w-full">
                             @foreach(\App\Models\Equipment::all() as $equipment)
                                 <option value="{{ $equipment->id }}">
                                     [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
@@ -202,14 +200,14 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.problem') }}</span>
                         </label>
-                        <textarea wire:model="problem" class="textarea h-24 textarea-bordered"
+                        <textarea wire:model.defer="state.problem" class="textarea h-24 textarea-bordered"
                                   placeholder="{{ __('app.details') }}"></textarea>
                     </div>
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
-                        <select wire:model="user_id" class="select select-bordered w-full">
+                        <select wire:model.defer="state.user_id" class="select select-bordered w-full">
                             @foreach(\App\Models\User::all() as $user)
                                 <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
@@ -224,7 +222,7 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
-                        <select wire:model="admin_id" class="select select-bordered w-full">
+                        <select wire:model.defer="state.admin_id" class="select select-bordered w-full">
                             @foreach(\App\Models\User::admin()->get() as $admin)
                                 <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
@@ -239,8 +237,8 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.status') }}</span>
                         </label>
-                        <input type="text" wire:model="status" class="input input-bordered"
-                               placeholder="{{__('app.status')}}">
+                        <input type="text" wire:model.defer="state.status" class="input input-bordered"
+                               placeholder=" {{ __('app.status') }}">
                         @error('status')
                         <label class="label">
                             <span class="text-error label-text-alt">{{ $message }}</span>
@@ -256,25 +254,5 @@
                 </div>
             </form>
         </x-jet-modal>
-
-        <!-- Delete -->
-        <x-jet-confirmation-modal wire:model="confirmingClaimDeletion">
-            <x-slot name="title">
-                {{ __('app.modal.title-claim-delete') }}
-            </x-slot>
-
-            <x-slot name="content">
-                {{ __('app.modal.msg-claim-delete', ['claim' => optional($selected)->id]) }}
-            </x-slot>
-
-            <x-slot name="footer">
-                <button type="button" wire:click="$toggle('confirmingClaimDeletion')" class="btn btn-ghost ml-auto">
-                    {{ __('app.cancel') }}
-                </button>
-                <button type="submit" wire:click="deleteClaim" class="btn btn-error ml-2">
-                    {{ __('app.delete') }}
-                </button>
-            </x-slot>
-        </x-jet-confirmation-modal>
     </div>
 </div>

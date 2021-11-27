@@ -4,6 +4,7 @@ namespace App\Http\Livewire\User;
 
 use App\Models\Claim;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,10 +12,7 @@ class ClaimTable extends Component
 {
     use WithPagination;
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function render(): View
     {
         $completed = false;
         $user = Auth::user();

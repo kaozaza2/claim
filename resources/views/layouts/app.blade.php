@@ -46,6 +46,10 @@
         @endpush
 
         @push('modals')
+            <livewire:confirm-dialog />
+        @endpush
+
+        @push('modals')
             <livewire:error-modal />
         @endpush
 

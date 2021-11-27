@@ -73,7 +73,7 @@ class Departments extends Component
     public function render()
     {
         $this->loadDepartments();
-        return \view('livewire.admin.departments')
+        return view('livewire.admin.departments')
             ->layout('layouts.admin');
     }
 
@@ -90,22 +90,17 @@ class Departments extends Component
     private function loadDepartments()
     {
         $departments = Department::all();
-        if ($this->search != null) {
-            $search = $this->search;
-            $departments = $departments->map(function ($i) use ($search) {
-                $i->subs = $i->subs->filter(function ($f) use ($search) {
-                    return Str::any([$f->id, $f->name], function ($s) use ($search) : bool {
-                        return Str::contains($s, $search);
-                    });
+        if (filled($search = $this->search)) {
+            $search = str_replace(':', '', $search);
+            $departments = $departments->map(function ($d) use ($search) {
+                $d->subs = $d->subs->filter(function ($s) use ($search) {
+                    return $s->searchInColumn('name', $search);
                 });
-                return $i;
-            })->reject(function ($i) use ($search) {
-                return !Str::any([$i->id, $i->name], function ($s) use ($search) : bool {
-                    return Str::contains($s, $search);
-                }) && $i->subs->isEmpty();
+                return $d;
+            })->reject(function ($d) use ($search) {
+                return !$d->searchInColumn('name', $search) && $d->subs->isEmpty();
             });
         }
-
         $this->departments = $departments;
     }
 

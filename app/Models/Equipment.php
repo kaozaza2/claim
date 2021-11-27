@@ -11,12 +11,20 @@ use Illuminate\Support\Facades\Storage;
 
 class Equipment extends Model implements Nameable
 {
+    use Concerns\WithSearchableColumns;
     use HasFactory;
 
-    /**
-     * @var string
-     */
     protected $table = 'equipments';
+
+    protected $appends = [
+        'picture_url',
+        'sub_department',
+    ];
+
+    protected $excludes = [
+        'picture_url',
+        'sub_department_id',
+    ];
 
     public function updatePicture(UploadedFile $picture): void
     {
@@ -71,16 +79,30 @@ class Equipment extends Model implements Nameable
         return $query->where('sub_department_id', $subId ?: Auth::user()->subDepartment->id);
     }
 
-    /**
-     * @return mixed|string
-     */
     protected function getPictureUrlAttribute()
     {
         if ($this->picture) {
             return Storage::disk($this->pictureStorageDisk())->url($this->picture);
         }
 
-        return \asset('images/no_image.jpg');
+        return asset('images/no_image.jpg');
+    }
+
+    protected function getFullDetailsAttribute()
+    {
+        return implode(' : ', [
+            $this->name,
+            $this->brand,
+            $this->category,
+            $this->serial_number,
+        ]);
+    }
+
+    protected function getSubDepartmentAttribute()
+    {
+        return optional(
+            $this->subDepartment()->first()
+        )->getName();
     }
 
     public function getName()

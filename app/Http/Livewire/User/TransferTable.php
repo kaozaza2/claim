@@ -4,61 +4,53 @@ namespace App\Http\Livewire\User;
 
 use App\Models\Transfer;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class TransferTable extends Component
 {
-    /**
-     * @var mixed|null
-     */
     public Collection $transfers;
 
-    public ?Transfer $selected = null;
-
-    /**
-     * @var bool
-     */
-    public bool $confirmingCancel = false;
-
-    /**
-     * @var array<string, string>
-     */
     protected $listeners = [
-        'reloadTransferTable' => '$refresh',
+        'user-transfer-refresh' => 'load',
+        'user-transfer-cancel' => 'confirm',
+        'user-transfer-cancel-submit' => 'destroy',
     ];
 
-    public function loadTransfers(): void
+    public function mount(): void
     {
-        $this->transfers = Transfer::where('user_id', Auth::user()->id)
-            ->whereNull('admin_id')
-            ->get();
-        if (!isset($this->selected) && $this->transfers->isNotEmpty()) {
-            $this->selected = $this->transfers->first();
-        }
+        $this->load();
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function render(): View
     {
-        $this->loadTransfers();
-        return \view('livewire.user.transfer-table', [
-            'transfers' => $this->transfers,
-            'selected' => $this->selected,
-        ]);
+        return view('livewire.user.transfer-table');
     }
 
-    public function showCancel(string $id): void
+    public function load(): void
     {
-        $this->selected = $this->transfers->firstWhere('id', $id);
-        $this->confirmingCancel = true;
+        $this->transfers = Transfer::currentUser()->get();
     }
 
-    public function confirmCancel(): void
+    public function confirm(int $index): void
     {
-        $this->selected->delete();
-        $this->confirmingCancel = false;
+        $transfer = $this->transfers->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-cancel-transfer'),
+            __('app.modal.msg-cancel-transfer', [
+                'eq' => $transfer->equipment->getName(),
+                'fm' => $transfer->fromSub->getName(),
+                'to' => $transfer->toSub->getName(),
+            ]), [
+                'emitter' => 'user-transfer-cancel-submit',
+                'params' => [$index],
+            ],
+        );
+    }
+
+    public function destroy(int $index): void
+    {
+        $this->transfers->pull($index)->delete();
     }
 }
