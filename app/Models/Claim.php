@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,14 +39,14 @@ class Claim extends Model
 
     protected function scopeSubDepartmentId(Builder $query, $id = null) : Builder
     {
-        return $query->whereHas('equipment', function (Builder $query) use ($id): \Illuminate\Database\Eloquent\Builder {
+        return $query->whereHas('equipment', function (Builder $query) use ($id): Builder {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
     }
 
     protected function scopeOrSubDepartmentId(Builder $query, $id = null) : Builder
     {
-        return $query->orWhereHas('equipment', function (Builder $query) use ($id): \Illuminate\Database\Eloquent\Builder {
+        return $query->orWhereHas('equipment', function (Builder $query) use ($id): Builder {
             return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
         });
     }
@@ -60,23 +61,23 @@ class Claim extends Model
         return $query->orWhere('user_id', $id ?: Auth::user()->id);
     }
 
-    public function equipment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function equipment(): BelongsTo
     {
         return $this->belongsTo(Equipment::class);
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function admin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
 
-    public function isCompleted()
+    public function isCompleted(): bool
     {
-        return $this->complete;
+        return (bool) $this->complete;
     }
 }

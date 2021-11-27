@@ -6,9 +6,7 @@ use Illuminate\Support\Str;
 
 trait WithSearchableColumns
 {
-    protected $relationCache = [];
-
-    public function searchAuto($needle): bool
+    public function searchAuto(string $needle): bool
     {
         $searches = [];
         $found = false;
@@ -40,7 +38,7 @@ trait WithSearchableColumns
         return false;
     }
 
-    public function searchInColumn($column, $needle): bool
+    public function searchInColumn(string $column, string $needle): bool
     {
         $excludes = $this->excludes ?: [];
 
@@ -62,7 +60,7 @@ trait WithSearchableColumns
         return false;
     }
 
-    public function searchAnyColumn($needle): bool
+    public function searchAnyColumn(string $needle): bool
     {
         foreach (array_keys($this->toArray()) as $column) {
             if ($this->searchInColumn($column, $needle)) {

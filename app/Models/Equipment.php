@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use App\Contracts\Nameable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Optional;
 
 class Equipment extends Model implements Nameable
 {
@@ -28,7 +32,7 @@ class Equipment extends Model implements Nameable
 
     public function updatePicture(UploadedFile $picture): void
     {
-        \tap($this->picture, function ($previous) use ($picture): void {
+        tap($this->picture, function ($previous) use ($picture): void {
             $this->forceFill([
                 'picture' => $picture->storePublicly(
                     'equipment-photos', ['disk' => $this->pictureStorageDisk()]
@@ -54,32 +58,32 @@ class Equipment extends Model implements Nameable
         return 'public';
     }
 
-    public function claims(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
     }
 
-    public function preClaims(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function preClaims(): HasMany
     {
         return $this->hasMany(PreClaim::class);
     }
 
-    public function oldSubDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function oldSubDepartment(): BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');
     }
 
-    public function subDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function subDepartment(): BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
-    protected function scopeWhereSubDepartment($query, $subId = null)
+    protected function scopeWhereSubDepartment(Builder $query, $subId = null): Builder
     {
         return $query->where('sub_department_id', $subId ?: Auth::user()->subDepartment->id);
     }
 
-    protected function getPictureUrlAttribute()
+    protected function getPictureUrlAttribute(): string
     {
         if ($this->picture) {
             return Storage::disk($this->pictureStorageDisk())->url($this->picture);
@@ -88,7 +92,7 @@ class Equipment extends Model implements Nameable
         return asset('images/no_image.jpg');
     }
 
-    protected function getFullDetailsAttribute()
+    protected function getFullDetailsAttribute(): string
     {
         return implode(' : ', [
             $this->name,
@@ -98,14 +102,14 @@ class Equipment extends Model implements Nameable
         ]);
     }
 
-    protected function getSubDepartmentAttribute()
+    protected function getSubDepartmentAttribute(): Optional
     {
         return optional(
             $this->subDepartment()->first()
         )->getName();
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

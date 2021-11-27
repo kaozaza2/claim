@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Contracts\Nameable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 
 class SubDepartment extends Model implements Nameable
@@ -21,17 +23,17 @@ class SubDepartment extends Model implements Nameable
         return $query->where('department_id', $departmentId);
     }
 
-    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
     }
 
-    public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
