@@ -9,7 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class SubDepartment extends Model implements Nameable
 {
+    use Concerns\WithSearchableColumns;
     use HasFactory;
+
+    protected $excludes = [
+        'department_id',
+    ];
 
     public function scopeWhereDepartment(Builder $query, $departmentId) : Builder
     {

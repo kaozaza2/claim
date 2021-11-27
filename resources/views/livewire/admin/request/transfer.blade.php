@@ -20,7 +20,7 @@
                 @foreach ($transfers as $key => $transfer)
                     <tr>
                         <td class="w-full">
-                            <div wire:click="$emit('showEquipmentDetail', {{ $transfer->equipment->id }})"
+                            <div wire:click="$emit('show-equipment-detail', {{ $transfer->equipment->id }})"
                                  class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
                                 {{ $transfer->equipment->name }}
                             </div>
@@ -33,7 +33,7 @@
                         <td>{{ $transfer->created_at->format('d-m-Y') }}</td>
                         <td>{{ $transfer->user }}</td>
                         <td>
-                            <button class="btn btn-sm" wire:click="$emitSelf('acceptTransfer', {{ $key }})">
+                            <button class="btn btn-sm" wire:click="$emitSelf('accept-transfer', {{ $key }})">
                                 {{ __('app.transfers.accept') }}
                             </button>
                         </td>

@@ -6,4 +6,5 @@
     </x-slot>
 
     {{ $slot }}
+
 </x-app-layout>

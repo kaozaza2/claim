@@ -12,7 +12,8 @@ class Transfer extends Component
     public Collection $transfers;
 
     protected $listeners = [
-        'acceptTransfer'
+        'accept-transfer' => 'dialog',
+        'accept-transfer-callback' => 'accepted',
     ];
 
     public function mount(): void
@@ -20,7 +21,25 @@ class Transfer extends Component
         $this->transfers = TransferModel::all();
     }
 
-    public function acceptTransfer(TransfersAccepter $accepter, int $index): void
+    public function dialog(int $index): void
+    {
+        $transfer = $this->transfers->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-accept-transfer'),
+            __('app.modal.msg-accept-transfer', [
+                'eq' => $transfer->equipment->getName(),
+                'fm' => $transfer->fromSub->getName(),
+                'to' => $transfer->toSub->getName(),
+                'by' => $transfer->user->getName(),
+            ]), [
+                'emitter' => 'accept-transfer-callback',
+                'params' => [$index],
+            ],
+        );
+    }
+
+    public function accepted(TransfersAccepter $accepter, int $index): void
     {
         $accepter->accept($this->transfers->pull($index));
     }

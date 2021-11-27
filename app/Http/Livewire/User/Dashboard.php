@@ -2,17 +2,13 @@
 
 namespace App\Http\Livewire\User;
 
-use App\Models\Claim;
 use Livewire\Component;
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class Dashboard extends Component
 {
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function render(): View
     {
-        return \view('livewire.user.dashboard');
+        return view('livewire.user.dashboard');
     }
 }

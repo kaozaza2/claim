@@ -9,6 +9,7 @@
                     <th>{{__('app.equipments.brand')}}</th>
                     <th>{{__('app.equipments.type')}}</th>
                     <th>{{__('app.equipments.serial')}}</th>
+                    <th>{{__('app.claims.problem')}}</th>
                     <th>{{__('app.claims.issue-date')}}</th>
                     <th>{{__('app.claims.applicant')}}</th>
                     <th scope="col"></th>
@@ -18,7 +19,7 @@
                 @foreach ($claims as $key => $claim)
                     <tr>
                         <td class="w-full">
-                            <div wire:click="$emit('showEquipmentDetail', {{ $claim->equipment->id }})"
+                            <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
                                  class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
                                 {{ $claim->equipment->name }}
                             </div>
@@ -26,10 +27,11 @@
                         <td>{{ $claim->equipment->brand }}</td>
                         <td>{{ $claim->equipment->category }}</td>
                         <td>{{ $claim->equipment->serial_number }}</td>
+                        <td>{{ $claim->problem }}</td>
                         <td>{{ $claim->created_at->format('d-m-Y') }}</td>
                         <td>{{ $claim->user }}</td>
                         <td>
-                            <button class="btn btn-sm" wire:click="$emitSelf('acceptClaim', {{ $key }})">
+                            <button class="btn btn-sm" wire:click="$emitSelf('accept-claim', {{ $key }})">
                                 {{ __('app.claims.accept') }}
                             </button>
                         </td>

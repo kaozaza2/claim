@@ -13,7 +13,8 @@ class Claim extends Component
     public Collection $claims;
 
     protected $listeners = [
-        'acceptClaim'
+        'accept-claim' => 'dialog',
+        'accept-claim-callback' => 'accepted',
     ];
 
     public function mount(): void
@@ -21,7 +22,23 @@ class Claim extends Component
         $this->claims = PreClaim::all();
     }
 
-    public function acceptClaim(PreClaimsAccepter $accepter, int $index): void
+    public function dialog(int $index): void
+    {
+        $claim = $this->claims->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-accept-claim'),
+            __('app.modal.msg-accept-claim', [
+                'eq' => $claim->equipment->getName(),
+                'by' => $claim->user->getName(),
+            ]), [
+                'emitter' => 'accept-claim-callback',
+                'params' => [$index],
+            ],
+        );
+    }
+
+    public function accepted(PreClaimsAccepter $accepter, int $index): void
     {
         $claim = $this->claims->pull($index);
         $accepter->accept($claim, Auth::user());

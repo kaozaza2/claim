@@ -100,21 +100,21 @@
             <x-slot name="content">
                 <p>{{
                   __('app.modal.msg-confirm-role', [
-                      'user' => session('user.fullname'),
-                      'role' => __('app.roles.'.(session('user.role') != 'admin' ? 'admin' : 'member')),
+                      'user' => optional($this->user)->getName(),
+                      'role' => __('app.roles.'.(optional($this->user)->isAdmin() ? 'member' : 'admin')),
                   ])
                 }}</p>
 
-                @if (session('user.role') != 'admin')
+                @if (!optional($this->user)->isAdmin())
                     <div class="mt-4" x-data="{}"
                          x-on:confirming-promote-user.window="setTimeout(() => $refs.password.focus(), 250)">
                         <input type="password" class="input input-bordered w-full lg:w-3/4 mt-1 mb-2 block"
                                placeholder="{{ __('app.password') }}"
                                x-ref="password"
-                               wire:model.defer="state.confirm"
+                               wire:model.defer="verify"
                                wire:keydown.enter="$emitSelf('promote-accept')"/>
 
-                        <x-jet-input-error for="confirm" hint="{{ __('app.modal.msg-confirm-extra') }}"/>
+                        <x-jet-input-error for="verify" hint="{{ __('app.modal.msg-confirm-extra') }}"/>
                     </div>
                 @endif
             </x-slot>
@@ -144,14 +144,14 @@
 
                 @if (optional($this->user)->isAdmin())
                     <div class="mt-4" x-data="{}"
-                         x-on:confirming-promote-user.window="setTimeout(() => $refs.password.focus(), 250)">
+                         x-on:confirming-delete-user.window="setTimeout(() => $refs.password.focus(), 250)">
                         <input type="password" class="input input-bordered w-full lg:w-3/4 mt-1 mb-2 block"
                                placeholder="{{ __('app.password') }}"
                                x-ref="password"
-                               wire:model.defer="state.confirm"
-                               wire:keydown.enter="promotePromptAccept"/>
+                               wire:model.defer="verify"
+                               wire:keydown.enter="$emitSelf('delete-account')"/>
 
-                        <x-jet-input-error for="confirm" hint="{{ __('app.modal.msg-confirm-extra') }}"/>
+                        <x-jet-input-error for="verify" hint="{{ __('app.modal.msg-confirm-extra') }}"/>
                     </div>
                 @endif
             </x-slot>
@@ -162,7 +162,8 @@
                     {{ __('app.cancel') }}
                 </button>
 
-                <button class="ml-2 btn btn-error" wire:click="deleteUserAccount" wire:loading.attr="disabled">
+                <button class="ml-2 btn btn-error" wire:click="$emitSelf('delete-account')"
+                        wire:loading.attr="disabled">
                     {{ __('app.confirm') }}
                 </button>
             </x-slot>

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model implements Nameable
 {
+    use Concerns\WithSearchableColumns;
     use HasFactory;
 
     public function subs(): \Illuminate\Database\Eloquent\Relations\HasMany

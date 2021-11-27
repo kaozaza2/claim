@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Actions\ClaimManager;
 use App\Actions\CreateDepartment;
 use App\Actions\CreateEquipment;
 use App\Actions\CreateSubDepartment;
@@ -17,6 +18,7 @@ use App\Actions\UpdateDepartment;
 use App\Actions\UpdateEquipment;
 use App\Actions\UpdateSubDepartment;
 use App\Actions\UpdateUser;
+use App\Contracts\ClaimsManager;
 use App\Contracts\CreatesDepartments;
 use App\Contracts\CreatesEquipments;
 use App\Contracts\CreatesSubDepartments;
@@ -89,6 +91,8 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(PreClaimsAccepter::class, PreClaimAccepter::class);
         $this->app->singleton(TransfersAccepter::class, TransferAccepter::class);
+
+        $this->app->singleton(ClaimsManager::class, ClaimManager::class);
     }
 
     /**

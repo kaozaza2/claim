@@ -7,6 +7,7 @@ use App\Models\SubDepartment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ProfileDepartmentForm extends Component
@@ -29,10 +30,7 @@ class ProfileDepartmentForm extends Component
         }
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function render(): View
     {
         return view('profile.profile-department-form');
     }

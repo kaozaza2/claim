@@ -7,83 +7,81 @@ use App\Models\Equipment;
 use App\Models\PreClaim;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class ClaimReport extends Component
 {
-    /**
-     * @var string[]
-     */
     protected $listeners = [
-        'showClaimReport',
+        'user-claim-create' => 'dialog',
     ];
 
-    /**
-     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Equipment[]|mixed|null
-     */
     public Collection $equipments;
 
-    /**
-     * @var bool
-     */
-    public bool $showingClaimReport = false;
+    public bool $showing = false;
 
-    public ?string $equipment_id = null;
+    public array $state = [];
 
-    public ?string $problem = null;
-
-    public function showClaimReport(): void
+    public function mount(): void
     {
-        if ($this->equipments->isEmpty()) {
-            return;
-        }
-
-        $this->equipment_id = $this->equipments->first()->id;
-        $this->showingClaimReport = true;
+        $this->load();
     }
 
-    public function storePreClaim(): void
-    {
-        $validatedData = $this->validate([
-            'equipment_id' => [
-                'required',
-                Auth::user()->isAdmin()
-                    ? Rule::exists('equipments', 'id')
-                    : Rule::exists('equipments', 'id')->where('sub_department_id', Auth::user()->sub_department_id),
-                Rule::unique('pre_claims')->where('user_id', Auth::user()->id),
-            ],
-            'problem' => ['nullable'],
-        ], [
-            'equipment_id.exists' => 'ไม่พบ ' . $this->equipments->firstWhere('id' ,$this->equipment_id)->name,
-            'equipment_id.unique' => 'ได้แจ้งซ่อม ' . $this->equipments->firstWhere('id' ,$this->equipment_id)->name . ' ไว้แล้ว',
-        ]);
-
-        $claim = PreClaim::create([
-            'equipment_id' => $validatedData['equipment_id'],
-            'problem' => $validatedData['problem'],
-            'user_id' => Auth::user()->id,
-        ]);
-        $this->showingClaimReport = false;
-        $this->emit('reloadPreClaimTable');
-
-        $this->sendMessage($claim);
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function render()
+    public function load(): void
     {
         $this->equipments = Auth::user()->isAdmin()
             ? Equipment::all()
             : Equipment::whereSubDepartment()->get();
-        return \view('livewire.user.claim-report');
+    }
+
+    public function dialog(): void
+    {
+        if (filled($this->equipments)) {
+            $this->state = ['equipment' => $this->equipments->first()->id];
+            $this->showing = true;
+        }
+    }
+
+    public function store(): void
+    {
+        $user = Auth::user();
+        $equipment = $this->equipments->firstWhere('id', $this->state['equipment']);
+        $validated = validator($this->state, [
+            'equipment' => [
+                'required',
+                $user->isAdmin()
+                    ? Rule::exists('equipments', 'id')
+                    : Rule::exists('equipments', 'id')
+                        ->where('sub_department_id', $user->sub_department_id),
+                Rule::unique('pre_claims')->where('user_id', $user->id),
+            ],
+            'problem' => ['nullable'],
+        ], [
+            'equipment.exists' => __('app.validation.equipment.exists', ['eq' => $equipment->name]),
+            'equipment.unique' => __('app.validation.equipment.unique', ['eq' => $equipment->name]),
+        ])->validated();
+
+        $claim = (new PreClaim)->forceFill([
+            'equipment_id' => $validated['equipment'],
+            'problem' => $validated['problem'] ?? null,
+            'user_id' => $user->id,
+        ]);
+        $claim->save();
+
+        $this->showing = false;
+        $this->emit('user-claim-refresh');
+        $this->sendMessage($claim);
+    }
+
+    public function render(): View
+    {
+        return view('livewire.user.claim-report');
     }
 
     private function sendMessage(PreClaim $claim): void
     {
-        $message = \sprintf(
+        $message = sprintf(
             "แจ้งซ่อม\nอุปกรณ์ที่แจ้ง: %s\nเลขครุภัณฑ์: %s\nแจ้งโดย: %s\nอาการเสีย: %s",
             $claim->equipment->name,
             $claim->equipment->serial_number,

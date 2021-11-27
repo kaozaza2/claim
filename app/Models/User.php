@@ -14,6 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements Nameable
 {
+    use Concerns\WithSearchableColumns;
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -24,9 +25,6 @@ class User extends Authenticatable implements Nameable
     const SEX_MALE = 1;
     const SEX_FEMALE = 2;
 
-    /**
-     * @var string[]
-     */
     protected $fillable = [
         'title',
         'name',
@@ -40,9 +38,6 @@ class User extends Authenticatable implements Nameable
         'password',
     ];
 
-    /**
-     * @var string[]
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -50,16 +45,22 @@ class User extends Authenticatable implements Nameable
         'two_factor_secret',
     ];
 
-    /**
-     * @var array<string, class-string<\datetime>>
-     */
+    protected $excludes = [
+        'department_id',
+        'sub_department_id',
+        'email_verified_at',
+        'profile_photo_url',
+        'profile_photo_path',
+        'password',
+        'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * @var string[]
-     */
     protected $appends = [
         'profile_photo_url',
     ];
@@ -71,7 +72,11 @@ class User extends Authenticatable implements Nameable
 
     protected function getFullnameAttribute(): string
     {
-        return \sprintf('%s %s %s', $this->title, $this->name, $this->last_name);
+        return implode(' ', [
+            $this->getAttribute('title'),
+            $this->getAttribute('name'),
+            $this->getAttribute('last_name'),
+        ]);
     }
 
     protected function scopeAdmin(Builder $query): \Illuminate\Database\Eloquent\Builder

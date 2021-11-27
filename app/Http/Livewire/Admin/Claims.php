@@ -2,155 +2,123 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Contracts\ClaimsManager;
 use App\Models\Claim;
 use App\Models\Equipment;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Claims extends Component
 {
-    /** @var \Illuminate\Database\Eloquent\Collection&\App\Models\Claim[]|null */
-    public Collection $claims;
+    public $state = [];
 
-    /**
-     * @var mixed|null
-     */
-    public Claim $selected;
+    public $index = -1;
 
-    /**
-     * @var mixed|null
-     */
-    public Equipment $equipment;
+    public $claims;
 
-    /**
-     * @var bool
-     */
-    public bool $confirmingClaimDeletion = false;
+    public $search = '';
 
-    /**
-     * @var bool
-     */
-    public bool $showingClaimCreate = false;
+    public $showingClaimCreate = false;
 
-    /**
-     * @var bool
-     */
-    public bool $showingClaimUpdate = false;
+    public $showingClaimUpdate = false;
 
-    public ?string $search = null;
+    protected $listeners = [
+        'claim-table-create' => 'showCreateDialog',
+        'claim-table-update' => 'showUpdateDialog',
+        'claim-table-delete' => 'showDeleteDialog',
+        'claim-table-toggle' => 'toggleCompleteState',
+        'claim-table-delete-accept' => 'destroy',
+    ];
 
-    public ?string $equipment_id = null;
-
-    public ?string $user_id = null;
-
-    public ?string $admin_id = null;
-
-    public ?string $problem = null;
-
-    public ?string $status = null;
-
-    public function render()
+    public function mount(): void
     {
-        $this->loadClaims();
-        return \view('livewire.admin.claims')
-            ->layout('layouts.admin');
+        $this->claims = Claim::all()->sortByDesc('id');
     }
 
-    public function loadClaims()
+    public function toggleCompleteState(int $index): void
     {
-        $claims = Claim::all();
-        if ($this->search) {
-            $search = $this->search;
+        tap($this->claims->get($index), function ($claim) {
+            $claim->complete = !$claim->complete;
+            $claim->save();
+        });
+    }
+
+    public function updatedSearch()
+    {
+        $claims = Claim::with(['equipment', 'user', 'admin'])->get();
+        if (filled($search = $this->search)) {
             $claims = $claims->filter(function ($item) use ($search) {
-                return Str::any([
-                    $item->equipment->name,
-                    $item->equipment->brand,
-                    $item->equipment->category,
-                    $item->equipment->serial_number,
-                    $item->problem,
-                    $item->id,
-                    $item->status,
-                    $item->user->name,
-                    $item->admin->name,
-                ], function ($s) use ($search) : bool {
-                    return Str::contains($s, $search);
-                });
+                return $item->searchAuto($search);
             });
         }
 
-        $this->claims = $claims->sortByDesc('id')
-            ->sortBy('complete');
+        $this->claims = $claims->sortByDesc('id');
     }
 
-    public function showCreate(): void
+    public function showCreateDialog(): void
     {
-        $this->reset('equipment_id', 'user_id', 'admin_id', 'problem');
-        $this->fill([
+        $this->state = [
             'equipment_id' => Equipment::first()->id,
             'user_id' => User::member()->first()->id,
             'admin_id' => Auth::user()->id,
             'status' => 'กำลังรับเรื่อง',
-        ]);
+        ];
         $this->showingClaimCreate = true;
     }
 
-    public function storeClaim(): void
+    public function showUpdateDialog(int $index): void
     {
-        $validatedData = $this->validate([
-            'equipment_id' => 'required|exists:equipments,id',
-            'user_id' => 'required|exists:users,id',
-            'admin_id' => 'required|exists:users,id',
-            'problem' => 'nullable',
-            'status' => 'required',
-        ]);
-
-        Claim::create($validatedData);
-        $this->showingClaimCreate = false;
-    }
-
-    public function showUpdate(string $id): void
-    {
-        $claim = $this->claims->firstWhere('id', $id);
-        $this->fill(
-            $claim->only('equipment_id', 'user_id', 'admin_id', 'problem', 'status')
-        );
-        $this->selected = $claim;
+        $this->index = $index;
+        $claim = $this->claims->get($index);
+        $this->state = $claim->attributesToArray();
         $this->showingClaimUpdate = true;
     }
 
-    public function setCompleted($claimId, bool $complete): void
+    public function showDeleteDialog(int $index): void
     {
-        if ($claim = Claim::find($claimId)) {
-            $claim->update(['complete' => $complete]);
-        }
+        $this->index = $index;
+        $claim = $this->claims->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-claim-delete'),
+            __('app.modal.msg-claim-delete', [
+                'claim' => $claim->id,
+            ]), [
+                'emitter' => 'claim-table-delete-accept',
+            ],
+        );
     }
 
-    public function updateClaim(): void
+    public function store(ClaimsManager $manager): void
     {
-        $validatedData = $this->validate([
-            'equipment_id' => 'required|exists:equipments,id',
-            'user_id' => 'required|exists:users,id',
-            'admin_id' => 'required|exists:users,id',
-            'problem' => 'nullable',
-            'status' => 'required',
-        ]);
+        $this->claims->prepend(
+            $manager->store($this->state)
+        );
+        $this->showingClaimCreate = false;
+    }
 
-        $this->selected->update($validatedData);
+    public function update(ClaimsManager $manager): void
+    {
+        $claim = $manager->update(
+            $this->claims->pull($this->index),
+            $this->state
+        );
+        $this->claims->prepend($claim);
         $this->showingClaimUpdate = false;
     }
 
-    public function confirmDeletion(string $id): void
+    public function destroy(ClaimsManager $manager): void
     {
-        $this->selected = $this->claims->firstWhere('id', $id);
-        $this->confirmingClaimDeletion = true;
+        $manager->destroy(
+            $this->claims->pull($this->index)
+        );
     }
 
-    public function deleteClaim(): void
+    public function render()
     {
-        $this->selected->delete();
-        $this->confirmingClaimDeletion = false;
+        return view('livewire.admin.claims')
+            ->layout('layouts.admin');
     }
 }

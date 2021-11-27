@@ -66,22 +66,11 @@ class Equipments extends Component
     private function loadEquipments()
     {
         $equipments = Equipment::all();
-        if ($this->search != null) {
-            $search = $this->search;
+        if (filled($search = $this->search)) {
             $equipments = $equipments->filter(function ($item) use ($search) {
-                return Str::any([
-                    $item->name,
-                    $item->brand,
-                    $item->category,
-                    $item->detail,
-                    $item->serial_number,
-                    $item->id,
-                ], function ($s) use ($search) : bool {
-                    return Str::contains($s, $search);
-                });
+                return $item->searchAuto($search);
             });
         }
-
         $this->equipments = $equipments;
     }
 
