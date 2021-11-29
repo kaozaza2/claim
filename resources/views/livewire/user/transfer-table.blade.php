@@ -23,7 +23,12 @@
                 @foreach ($transfers as $key => $transfer)
                     <tr>
                         <th>{{ $loop->index + 1 }}</th>
-                        <td>{{ $transfer->equipment }}</td>
+                        <td>
+                            <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
+                                 class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
+                                {{ $transfer->equipment }}
+                            </div>
+                        </td>
                         <td>{{ $transfer->equipment->brand }}</td>
                         <td>{{ $transfer->equipment->category }}</td>
                         <td class="font-mono">

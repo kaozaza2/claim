@@ -13,57 +13,49 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-/**
- * @property Collection<SubDepartment> $sub_departments
- */
 class Equipments extends Component
 {
     use WithFileUploads;
 
-    /**
-     * @var \Illuminate\Database\Eloquent\Collection&\App\Models\Equipment[]|null
-     */
     public Collection $equipments;
 
-    /**
-     * @var bool
-     */
-    public bool $confirmingEquipmentDeletion = false;
+    public Collection $subs;
 
-    /**
-     * @var bool
-     */
-    public bool $showingEquipmentUpdate = false;
+    public bool $updating = false;
 
-    /**
-     * @var bool
-     */
-    public bool $showingEquipmentCreate = false;
+    public bool $creating = false;
 
-    /**
-     * @var string|null
-     */
-    public ?string $selectedId = null;
+    public int $index = 0;
 
-    /**
-     * @var mixed[]|mixed
-     */
     public array $state = [];
-
-    /** @var UploadedFile|string|null */
-    public $picture;
 
     public ?string $search = null;
 
+    protected $listeners = [
+        'admin-equipment-create' => 'create',
+        'admin-equipment-update' => 'show',
+        'admin-equipment-delete' => 'delete',
+        'admin-equipment-delete-confirm' => 'destory',
+    ];
+
     public function render()
     {
-        $this->loadEquipments();
-        return \view('livewire.admin.equipments', [
-            'equipments' => $this->equipments->take(10),
-        ])->layout('layouts.admin');
+        return view('livewire.admin.equipments')
+            ->layout('layouts.admin');
     }
 
-    private function loadEquipments()
+    public function mount(): void
+    {
+        $this->subs = SubDepartment::all();
+        $this->load();
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->load();
+    }
+
+    public function load(): void
     {
         $equipments = Equipment::all();
         if (filled($search = $this->search)) {
@@ -74,65 +66,60 @@ class Equipments extends Component
         $this->equipments = $equipments;
     }
 
-    public function showCreate(): void
+    public function create(): void
     {
         $this->state = [];
-        $this->showingEquipmentCreate = true;
+        $this->creating = true;
     }
 
-    public function storeEquipment(CreatesEquipments $creator): void
+    public function store(CreatesEquipments $creator): void
     {
-        $creator->create(
-            $this->picture
-                ? \array_merge($this->state, ['picture' => $this->picture])
-                : $this->state
+        $this->equipments->prepend(
+            $creator->create($this->state)
         );
-        $this->showingEquipmentCreate = false;
+        $this->creating = false;
     }
 
-    public function getEquipmentProperty()
+    public function show(int $index): void
     {
-        return \optional(Equipment::find($this->selectedId));
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection&\App\Models\SubDepartment[]
-     */
-    public function getSubDepartmentsProperty()
-    {
-        return SubDepartment::all();
-    }
-
-    public function showUpdate(string $id): void
-    {
-        $equipment = Equipment::find($id);
-        $this->selectedId = $id;
-        $this->state = $equipment->withoutRelations()->toArray();
         $this->resetErrorBag();
-        $this->showingEquipmentUpdate = true;
+        $equipment = $this->equipments->get(
+            $this->index = $index
+        );
+        $this->state = $equipment->attributesToArray();
+        $this->updating = true;
     }
 
-    public function updateEquipment(UpdatesEquipments $updater): void
+    public function update(UpdatesEquipments $updater): void
     {
         $updater->update(
-            Equipment::find($this->selectedId),
-            $this->picture
-                ? \array_merge($this->state, ['picture' => $this->picture])
-                : $this->state
+            $this->equipments->get($this->index), $this->state
         );
-
-        $this->showingEquipmentUpdate = false;
+        $this->load();
+        $this->updating = false;
     }
 
-    public function confirmDeletion(string $id): void
+    public function delete(int $index): void
     {
-        $this->selectedId = $id;
-        $this->confirmingEquipmentDeletion = true;
+        $equipment = $this->equipments->get($index);
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-delete', [
+                'name' => $equipment->name,
+            ]),
+            __('app.modal.msg-delete', [
+                'name' => $equipment->full_details,
+            ]), [
+                'emitter' => 'admin-equipment-delete-confirm',
+                'params' => [$index],
+            ],
+        );
     }
 
-    public function deleteEquipment(DeletesEquipments $deleter): void
+    public function destory(DeletesEquipments $deleter, int $index): void
     {
-        $deleter->delete(Equipment::find($this->selectedId));
-        $this->confirmingEquipmentDeletion = false;
+        $deleter->delete(
+            $this->equipments->pull($index)
+        );
     }
 }

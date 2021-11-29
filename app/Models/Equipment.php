@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Optional;
 
 class Equipment extends Model implements Nameable
 {
@@ -102,7 +101,7 @@ class Equipment extends Model implements Nameable
         ]);
     }
 
-    protected function getSubDepartmentAttribute(): Optional
+    protected function getSubDepartmentAttribute(): ?string
     {
         return optional(
             $this->subDepartment()->first()

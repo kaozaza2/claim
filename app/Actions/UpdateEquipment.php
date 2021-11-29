@@ -4,14 +4,14 @@ namespace App\Actions;
 
 use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
 
 class UpdateEquipment implements UpdatesEquipments
 {
-    public function update(Equipment $equipment, array $input): void
+    public function update(Equipment $equipment, array $input): Equipment
     {
-        Validator::make($input, [
+        validator($input, [
             'name' => 'required',
             'serial_number' => 'nullable',
             'detail' => 'nullable',
@@ -27,8 +27,8 @@ class UpdateEquipment implements UpdatesEquipments
             'sub_department_id.exists' => 'ไม่พบแผนกที่เลือก',
         ])->validate();
 
-        if (isset($input['picture'])) {
-            $equipment->updatePicture($input['picture']);
+        if (array_key_exists('picture', $input) && $input['picture'] instanceof UploadedFile) {
+            $equipment->updatePicture($picture);
         }
 
         $equipment->forceFill([
@@ -39,5 +39,7 @@ class UpdateEquipment implements UpdatesEquipments
             'category' => $input['category'],
             'sub_department_id' => $input['sub_department_id'],
         ])->save();
+
+        return $equipment;
     }
 }

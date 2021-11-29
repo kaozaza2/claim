@@ -58,7 +58,7 @@
                                 <td>
                                     <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
                                          class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
-                                        {{ $claim->equipment->name }}
+                                        {{ $claim->equipment }}
                                     </div>
                                 </td>
                                 <td>{{ $claim->equipment->category }}</td>

@@ -9,45 +9,46 @@ trait WithSearchableColumns
     public function searchAuto(string $needle): bool
     {
         $searches = [];
-        $found = false;
-        $index = 0;
+        $keywords = [];
+        $lastIsKeyword = false;
         foreach (explode(' ', $needle) as $search) {
             if (Str::contains($search, ':')) {
-                $found = true;
-                $searches[] = explode(':', $search);
+                $lastIsKeyword = true;
+                $keywords[Str::before($search, ':')] = Str::after($search, ':');
             } else {
-                if ($found || !array_key_exists($index - 1, $searches)) {
+                if ($lastIsKeyword || empty($searches)) {
                     $searches[] = $search;
                 } else {
-                    $searches[--$index] .= ' ' . $search;
+                    $searches[array_key_last($searches)] .= ' ' . $search;
                 }
-                $found = false;
+                $lastIsKeyword = false;
             }
-            $index++;
         }
 
-        foreach ($searches as $search) {
-            if (is_array($search)) {
-                if ($this->searchInColumn($search[0], $search[1])) {
-                    return true;
-                }
-            } else if ($this->searchAnyColumn($search)) {
-                return true;
+        foreach ($keywords as $column => $search) {
+            if (!$this->searchInColumn($column, $search)) {
+                return false;
             }
         }
-        return false;
+
+        $foundInColumn = empty($searches);
+        foreach ($searches as $search) {
+            if ($this->searchAnyColumn($search, !empty($keywords))) {
+                $foundInColumn = true;
+                break;
+            }
+        }
+
+        return $foundInColumn;
     }
 
     public function searchInColumn(string $column, string $needle): bool
     {
-        $excludes = $this->excludes ?: [];
-
-        if (in_array($column, $excludes)) {
+        if (in_array($column, $this->excludes ?: [])) {
             return false;
         }
 
-        if ($this->isRelation($key = $column) || $this->isRelation($key = Str::camel($column))) {
-            $relation = $this->getRelationValue($key);
+        if ($this->isRelation($column) && $relation = $this->getRelationValue($column)) {
             if (method_exists($relation, 'searchAuto') && $relation->searchAuto($needle)) {
                 return true;
             }
@@ -60,9 +61,12 @@ trait WithSearchableColumns
         return false;
     }
 
-    public function searchAnyColumn(string $needle): bool
+    public function searchAnyColumn(string $needle, bool $strict = false): bool
     {
-        foreach (array_keys($this->toArray()) as $column) {
+        $columns = array_keys(
+            $strict ? $this->attributesToArray() : $this->toArray()
+        );
+        foreach ($columns as $column) {
             if ($this->searchInColumn($column, $needle)) {
                 return true;
             }
