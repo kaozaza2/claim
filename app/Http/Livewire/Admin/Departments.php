@@ -9,89 +9,53 @@ use App\Contracts\DeletesSubDepartments;
 use App\Contracts\UpdatesDepartments;
 use App\Contracts\UpdatesSubDepartments;
 use App\Models\Department;
-use App\Models\SubDepartment;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
-
-/**
- * @property Department $department
- * @property SubDepartment sub_department
- */
 class Departments extends Component
 {
-    /**
-     * @var \Illuminate\Support\Collection|null
-     */
     public Collection $departments;
 
-    public ?string $selectedId = null;
+    public $department;
 
-    /**
-     * @var mixed|string|null
-     */
-    public ?string $selectedSubId = null;
+    public $sub_department;
 
-    /**
-     * @var mixed[]|array<string, string>|mixed
-     */
     public array $state = [];
 
-    /**
-     * @var bool
-     */
     public bool $showingDepartmentCreate = false;
 
-    /**
-     * @var bool
-     */
     public bool $showingSubDepartmentCreate = false;
 
-    /**
-     * @var bool
-     */
     public bool $showingDepartmentUpdate = false;
 
-    /**
-     * @var bool
-     */
     public bool $showingSubDepartmentUpdate = false;
 
-    /**
-     * @var bool
-     */
     public bool $confirmingDepartmentDeletion = false;
 
-    /**
-     * @var bool
-     */
     public bool $confirmingSubDepartmentDeletion = false;
 
     public ?string $search = null;
 
+    public function mount(): void
+    {
+        $this->load();
+    }
+
     public function render()
     {
-        $this->loadDepartments();
         return view('livewire.admin.departments')
             ->layout('layouts.admin');
     }
 
-    public function getDepartmentProperty()
+    public function updatedSearch(): void
     {
-        return Department::find($this->selectedId);
+        $this->load();
     }
 
-    public function getSubDepartmentProperty()
-    {
-        return SubDepartment::find($this->selectedSubId);
-    }
-
-    private function loadDepartments()
+    public function load(): void
     {
         $departments = Department::all();
-        if (filled($search = $this->search)) {
-            $search = str_replace(':', '', $search);
+        if (filled($search = str_replace(':', '', $this->search))) {
             $departments = $departments->map(function ($d) use ($search) {
                 $d->subs = $d->subs->filter(function ($s) use ($search) {
                     return $s->searchInColumn('name', $search);
@@ -113,82 +77,92 @@ class Departments extends Component
     public function storeDepartment(CreatesDepartments $creator): void
     {
         $creator->create($this->state);
+        $this->load();
         $this->showingDepartmentCreate = false;
     }
 
-    public function showUpdate(string $id): void
+    public function showUpdate(int $index): void
     {
-        $dep = Department::find($id);
-        $this->selectedId = $dep->id;
-        $this->state = $dep->withoutRelations()->toArray();
+        $this->department = $this->departments->get($index);
+        $this->state = $this->department->attributesToArray();
         $this->showingDepartmentUpdate = true;
     }
 
     public function updateDepartment(UpdatesDepartments $updater): void
     {
-        $updater->update(Department::find($this->selectedId), $this->state);
+        $updater->update(
+            $this->department, $this->state
+        );
+        $this->load();
         $this->showingDepartmentUpdate = false;
     }
 
-    public function confirmDeletion(string $id): void
+    public function confirmDeletion(int $index): void
     {
-        $dep = Department::find($id);
-        if ($dep->users()->exists()) {
+        $department = $this->departments->get($index);
+        if ($department->users()->exists()) {
             $this->showErrorInUseModal();
             return;
         }
 
-        $this->selectedId = $dep->id;
+        $this->department = $department;
         $this->confirmingDepartmentDeletion = true;
     }
 
     public function deleteDepartment(DeletesDepartments $deleter): void
     {
-        $deleter->delete(Department::find($this->selectedId));
+        $deleter->delete($this->department);
+        $this->load();
         $this->confirmingDepartmentDeletion = false;
     }
 
-    public function showSubCreate(string $id): void
+    public function showSubCreate(int $department): void
     {
-        $this->state = ['department_id' => $id];
+        $this->state = ['department_id' => $department];
         $this->showingSubDepartmentCreate = true;
     }
 
     public function storeSubDepartment(CreatesSubDepartments $creator): void
     {
         $creator->create($this->state);
+        $this->load();
         $this->showingSubDepartmentCreate = false;
     }
 
-    public function showSubUpdate(string $id): void
+    public function showSubUpdate(int $index, int $subIndex): void
     {
-        $sub = SubDepartment::find($id);
-        $this->selectedSubId = $sub->id;
-        $this->state = $sub->attributesToArray();
+        $sub_department = $this->departments->get($index)
+            ->subs->get($subIndex);
+        $this->sub_department = $sub_department;
+        $this->state = $sub_department->attributesToArray();
         $this->showingSubDepartmentUpdate = true;
     }
 
     public function updateSubDepartment(UpdatesSubDepartments $updater): void
     {
-        $updater->update(SubDepartment::find($this->selectedSubId), $this->state);
+        $updater->update(
+            $this->sub_department, $this->state
+        );
+        $this->load();
         $this->showingSubDepartmentUpdate = false;
     }
 
-    public function confirmSubDeletion(string $id): void
+    public function confirmSubDeletion(int $index, int $subIndex): void
     {
-        $sub = SubDepartment::find($id);
-        if ($sub->users()->exists()) {
+        $sub_department = $this->departments->get($index)->subs->get($subIndex);
+        if ($sub_department->users()->exists()) {
             $this->showErrorInUseModal();
             return;
         }
 
-        $this->selectedSubId = $id;
+        $this->sub_department = $sub_department;
         $this->confirmingSubDepartmentDeletion = true;
     }
 
     public function deleteSubDepartment(DeletesSubDepartments $deleter): void
     {
-        $deleter->delete(SubDepartment::find($this->selectedSubId));
+        $deleter->delete($this->sub_department);
+        $this->load();
         $this->confirmingSubDepartmentDeletion = false;
     }
 

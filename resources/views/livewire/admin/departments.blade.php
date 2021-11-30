@@ -41,26 +41,26 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach ($departments as $department)
+                        @foreach ($departments as $key => $dep)
                             <tr>
-                                <th>{{ $department->id }}</th>
+                                <th>{{ $dep->id }}</th>
                                 <td class="w-full">
-                                    <div>{{ $department }}</div>
+                                    <div>{{ $dep }}</div>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm" wire:click="showUpdate('{{ $department->id }}')">
+                                    <button class="btn btn-sm" wire:click="showUpdate({{ $key }})">
                                         {{ __('app.edit') }}
                                     </button>
-                                    <button class="btn btn-success btn-sm" wire:click="showSubCreate('{{ $department->id }}')">
+                                    <button class="btn btn-success btn-sm" wire:click="showSubCreate({{ $dep->id }})">
                                         {{ __('app.sub-departments.add') }}
                                     </button>
-                                    <button wire:click="confirmDeletion('{{ $department->id }}')" class="btn btn-sm btn-error">
+                                    <button wire:click="confirmDeletion({{ $key }})" class="btn btn-sm btn-error">
                                         {{ __('app.delete') }}
                                     </button>
                                 </td>
                             </tr>
-                            @if($department->subs->isNotEmpty())
-                                @foreach($department->subs as $sub)
+                            @if($dep->subs->isNotEmpty())
+                                @foreach($dep->subs as $skey => $sub)
                                 <tr>
                                     <td></td>
                                     <td class="w-full">
@@ -68,10 +68,10 @@
                                         {{ $sub }}
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm" wire:click="showSubUpdate('{{ $sub->id }}')">
+                                        <button class="btn btn-sm" wire:click="showSubUpdate({{ $key }}, {{ $skey }})">
                                             {{ __('app.edit') }}
                                         </button>
-                                        <button wire:click="confirmSubDeletion('{{ $sub->id }}')" class="btn btn-sm btn-error">
+                                        <button wire:click="confirmSubDeletion({{ $key }}, {{ $skey }})" class="btn btn-sm btn-error">
                                             {{ __('app.delete') }}
                                         </button>
                                     </td>
@@ -180,16 +180,16 @@
         <!-- Deletion -->
         <x-jet-dialog-modal wire:model="confirmingDepartmentDeletion">
             <x-slot name="title">
-                {{ __('app.modal.title-delete', ['name' => optional($this->department)->name]) }}
+                {{ __('app.modal.title-delete', ['name' => optional($department)->name]) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ __('app.modal.msg-delete', ['name' => optional($this->department)->name]) }}
+                {{ __('app.modal.msg-delete', ['name' => optional($department)->name]) }}
 
-                @if(optional($this->department)->subs() && optional($this->department)->subs()->exists())
+                @if(optional($department)->subs() && optional($department)->subs()->exists())
                     <p class="mt-3">{{ __('app.sub-departments.also') }}</p>
                     <ul>
-                        @each('components.li', $this->department->subs->pluck('name'), 'slot')
+                        @each('components.li', $department->subs->pluck('name'), 'slot')
                     </ul>
                 @endif
             </x-slot>
@@ -207,11 +207,11 @@
         <!-- Sub Deletion -->
         <x-jet-dialog-modal wire:model="confirmingSubDepartmentDeletion">
             <x-slot name="title">
-                {{ __('app.modal.title-delete', ['name' => optional($this->sub_department)->name]) }}
+                {{ __('app.modal.title-delete', ['name' => optional($sub_department)->name]) }}
             </x-slot>
 
             <x-slot name="content">
-                {{ __('app.modal.msg-delete', ['name' => optional($this->sub_department)->name]) }}
+                {{ __('app.modal.msg-delete', ['name' => optional($sub_department)->name]) }}
             </x-slot>
 
             <x-slot name="footer">
