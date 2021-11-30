@@ -13,8 +13,6 @@ class UserFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
-     *
-     * @var class-string<\App\Models\User>|string
      */
     protected $model = User::class;
 
@@ -26,7 +24,9 @@ class UserFactory extends Factory
         return [
             'title' => $this->faker->titleMale(),
             'name' => $this->faker->firstNameMale(),
+            'username' => $this->faker->userName(),
             'last_name' => $this->faker->lastName(),
+            'role' => 'member',
             'sex' => User::SEX_MALE,
             'identification' => \rand(1000000000000, 9999999999999),
             'sub_department_id' => SubDepartment::factory(),

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\SubDepartment;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Fortify\Features;
@@ -11,6 +12,14 @@ use Tests\TestCase;
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected $sub;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->sub = SubDepartment::factory()->create();
+    }
 
     public function test_registration_screen_can_be_rendered()
     {
@@ -41,9 +50,15 @@ class RegistrationTest extends TestCase
         }
 
         $response = $this->post('/register', [
-            'name' => 'Test User',
+            'name' => 'Test',
+            'last_name' => 'User',
             'email' => 'test@example.com',
+            'username' => 'user.name.test',
             'password' => 'password',
+            'sex' => 1,
+            'identification' => 1212121212121,
+            'sub_department_id' => $this->sub->id,
+            'title' => 'Mr.',
             'password_confirmation' => 'password',
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
         ]);

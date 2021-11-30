@@ -3,14 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Equipment;
+use App\Models\SubDepartment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EquipmentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
-     *
-     * @var class-string<\App\Models\Equipment>|string
      */
     protected $model = Equipment::class;
 
@@ -25,6 +24,7 @@ class EquipmentFactory extends Factory
             'category' => $this->faker->randomElement(['จอภาพ', 'เครื่องสำรองไฟ', 'เม้าส์', 'คีย์บอร์ด', 'หูฟัง']),
             'serial_number' => $this->faker->numerify('####-###-#####-###/####'),
             'detail' => $this->faker->words(5, true),
+            'sub_department_id' => SubDepartment::factory(),
         ];
     }
 }

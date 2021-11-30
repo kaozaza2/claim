@@ -35,7 +35,7 @@ class Equipments extends Component
         'admin-equipment-create' => 'create',
         'admin-equipment-update' => 'show',
         'admin-equipment-delete' => 'delete',
-        'admin-equipment-delete-confirm' => 'destory',
+        'admin-equipment-delete-confirm' => 'destroy',
     ];
 
     public function render()
@@ -116,7 +116,7 @@ class Equipments extends Component
         );
     }
 
-    public function destory(DeletesEquipments $deleter, int $index): void
+    public function destroy(DeletesEquipments $deleter, int $index): void
     {
         $deleter->delete(
             $this->equipments->pull($index)
