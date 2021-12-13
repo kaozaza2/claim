@@ -18,7 +18,7 @@ class EquipmentDialog extends Component
 
     public function mount(): void
     {
-        $this->equipment = Equipment::factory()->make()->toArray();
+        $this->equipment = [];
     }
 
     public function dialog(int $equipmentId): void

@@ -25,6 +25,7 @@ class EquipmentFactory extends Factory
             'serial_number' => $this->faker->numerify('####-###-#####-###/####'),
             'detail' => $this->faker->words(5, true),
             'sub_department_id' => SubDepartment::factory(),
+            'old_sub_department_id' => null,
         ];
     }
 }
