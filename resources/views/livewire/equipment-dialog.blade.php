@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <th scope="col" class="border">{{ __('app.sub-department') }}</th>
-                    <td class="border">{{ $this->equipment->sub_department }}</td>
+                    <td class="border">{{ $this->equipment->subDepartment }}</td>
                 </tr>
                 <tr>
                     <th scope="col" class="border">{{ __('app.details') }}</th>

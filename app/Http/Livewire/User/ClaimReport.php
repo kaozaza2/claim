@@ -30,9 +30,14 @@ class ClaimReport extends Component
 
     public function load(): void
     {
-        $this->equipments = Auth::user()->isAdmin()
-            ? Equipment::all()
-            : Equipment::whereSubDepartment()->get();
+        if (($user = Auth::user())->isAdmin()) {
+            $this->equipments = Equipment::all();
+            return;
+        }
+
+        $this->equipments = Equipment::whereSubDepartmentId(
+            $user->sub_department_id
+        )->get();
     }
 
     public function dialog(): void

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Contracts\Nameable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,17 +20,15 @@ class Equipment extends Model implements Nameable
 
     protected $appends = [
         'picture_url',
-        'sub_department',
     ];
 
     protected $excludes = [
-        'picture_url',
         'sub_department_id',
     ];
 
     public function updatePicture(UploadedFile $picture): void
     {
-        tap($this->picture, function ($previous) use ($picture): void {
+        tap($this->picture, function ($previous) use ($picture) {
             $this->forceFill([
                 'picture' => $picture->storePublicly(
                     'equipment-photos', ['disk' => $this->pictureStorageDisk()]
@@ -77,11 +74,6 @@ class Equipment extends Model implements Nameable
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
-    protected function scopeWhereSubDepartment(Builder $query, $subId = null): Builder
-    {
-        return $query->where('sub_department_id', $subId ?: Auth::user()->subDepartment->id);
-    }
-
     protected function getPictureUrlAttribute(): string
     {
         if ($this->picture) {
@@ -94,18 +86,8 @@ class Equipment extends Model implements Nameable
     protected function getFullDetailsAttribute(): string
     {
         return implode(' : ', [
-            $this->name,
-            $this->brand,
-            $this->category,
-            $this->serial_number,
+            $this->name, $this->brand, $this->category, $this->serial_number
         ]);
-    }
-
-    protected function getSubDepartmentAttribute(): ?string
-    {
-        return optional(
-            $this->subDepartment()->first()
-        )->getName();
     }
 
     public function getName(): string

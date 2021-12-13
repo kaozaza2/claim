@@ -33,10 +33,16 @@ class TransferReport extends Component
 
     public function load(): void
     {
-        $this->equipments = Auth::user()->isAdmin()
-            ? Equipment::all()->keyBy('id')
-            : Equipment::whereSubDepartment()->get()->keyBy('id');
         $this->subs = SubDepartment::all();
+        
+        if (($user = Auth::user())->isAdmin()) {
+            $this->equipments = Equipment::all()->keyBy('id');
+            return;
+        }
+
+        $this->equipments = Equipment::whereSubDepartmentId(
+            $user->sub_department_id
+        )->get()->keyBy('id');
     }
 
     public function dialog(): void
