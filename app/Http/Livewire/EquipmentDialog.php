@@ -12,18 +12,18 @@ class EquipmentDialog extends Component
         'show-equipment-detail' => 'dialog',
     ];
 
-    public array $equipment;
+    public Equipment $equipment;
 
     public bool $showing = false;
 
     public function mount(): void
     {
-        $this->equipment = [];
+        $this->equipment = Equipment::firstOrNew();
     }
 
     public function dialog(int $equipmentId): void
     {
-        $this->equipment = Equipment::find($equipmentId)->toArray();
+        $this->equipment = Equipment::find($equipmentId);
         $this->showing = true;
     }
 
