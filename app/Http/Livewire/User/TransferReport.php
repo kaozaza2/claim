@@ -52,7 +52,7 @@ class TransferReport extends Component
 
     public function store(): void
     {
-        $equipment = $this->equipments->get($this->state['equipment']);
+        $equipment = Equipment::find($this->state['equipment']);
         $validated = validator($this->state, [
             'equipment' => [
                 'required',
@@ -69,10 +69,9 @@ class TransferReport extends Component
                     ->where('id', $this->state['equipment']),
             ],
         ], [
-            'equipment.exists' => 'ไม่พบ ' . $equipment->name,
-            'equipment.unique' => $equipment->name . ' แจ้งย้ายไว้แล้ว',
-            'to.unique' => $equipment->name . ' อยู่ในแผนก '
-                . SubDepartment::find($this->state['to'])->name . ' อยู่แล้ว',
+            'equipment.exists' => 'ไม่พบครุภัณฑ์',
+            'equipment.unique' => 'ครุภัณฑ์ได้ถูกแจ้งย้ายไว้ก่อนแล้ว',
+            'to.unique' => 'ครุภัณฑ์อยู่ในแผนกดังกล่าวอยู่แล้ว',
         ])->validated();
 
         $transfer = (new Transfer)->forceFill([
@@ -90,7 +89,7 @@ class TransferReport extends Component
 
     public function updatedStateEquipment(): void
     {
-        $equipment = $this->equipments->get($this->state['equipment']);
+        $equipment = Equipment::find($this->state['equipment']);
         $this->subs = SubDepartment::where('id', '!=', $equipment->sub_department_id)->get();
         if (array_key_exists('to', $this->state) && $this->state['to'] === $equipment->sub_department_id) {
             $this->state['to'] = $this->subs->first()->id;

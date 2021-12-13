@@ -32,35 +32,6 @@ class Claim extends Model
         'complete' => 'boolean',
     ];
 
-    protected function scopeWithCompleted(Builder $query, $complete = true) : Builder
-    {
-        return $query->where('complete', $complete ? 1 : 0);
-    }
-
-    protected function scopeSubDepartmentId(Builder $query, $id = null) : Builder
-    {
-        return $query->whereHas('equipment', function (Builder $query) use ($id): Builder {
-            return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
-        });
-    }
-
-    protected function scopeOrSubDepartmentId(Builder $query, $id = null) : Builder
-    {
-        return $query->orWhereHas('equipment', function (Builder $query) use ($id): Builder {
-            return $query->where('sub_department_id', $id ?: Auth::user()->sub_department_id);
-        });
-    }
-
-    protected function scopeUserId(Builder $query, $id = null) : Builder
-    {
-        return $query->where('user_id', $id ?: Auth::user()->id);
-    }
-
-    protected function scopeOrUserId(Builder $query, $id = null) : Builder
-    {
-        return $query->orWhere('user_id', $id ?: Auth::user()->id);
-    }
-
     public function equipment(): BelongsTo
     {
         return $this->belongsTo(Equipment::class);
@@ -74,10 +45,5 @@ class Claim extends Model
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
-    }
-
-    public function isCompleted(): bool
-    {
-        return (bool) $this->complete;
     }
 }

@@ -24,7 +24,7 @@
                     <tr>
                         <th>{{ $loop->index + 1 }}</th>
                         <td>
-                            <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
+                            <div wire:click="$emit('show-equipment-detail', {{ $transfer->equipment->id }})"
                                  class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
                                 {{ $transfer->equipment }}
                             </div>

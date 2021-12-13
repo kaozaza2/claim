@@ -14,13 +14,12 @@ class ClaimTable extends Component
 
     public function render(): View
     {
-        $completed = false;
         $user = Auth::user();
-        $claims = Claim::userId($user->id)
-            ->withCompleted($completed)
-            ->orSubDepartmentId($user->sub_department_id)
-            ->withCompleted($completed)
-            ->paginate(10);
+        $claims = Claim::where(function ($query) use ($user) {
+            $query->whereUserId($user->id)->whereComplete(0);
+        })->orWhere(function ($query) use ($user) {
+            $query->whereSubDepartmentId($user->sub_department_id)->whereComplete(0);
+        })->paginate(10);
         return view('livewire.user.claim-table', [
             'claims' => $claims,
         ]);

@@ -29,7 +29,7 @@
                 <livewire:user.transfer-table />
             </div>
 
-            @if (\App\Models\Claim::userId()->withCompleted()->count() > 0)
+            @if ($this->isAuditAvailable())
             <div class="mt-3">
                 <livewire:user.audit />
             </div>

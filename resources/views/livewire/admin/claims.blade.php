@@ -73,7 +73,7 @@
                                 <td class="text-center">
                                     <div data-tip="{{ __('app.claims.mark-claimed') }}" class="w-full tooltip">
                                         <input type="checkbox" class="checkbox checkbox-accent"
-                                               @if($claim->isCompleted()) checked="checked" @endif
+                                               @if ($claim->complete) checked="checked" @endif
                                                wire:click="$emitSelf('claim-table-toggle', {{ $key }})"/>
                                     </div>
                                 </td>
