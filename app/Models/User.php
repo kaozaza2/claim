@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Contracts\Nameable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -79,23 +81,23 @@ class User extends Authenticatable implements Nameable
         ]);
     }
 
-    protected function scopeAdmin(Builder $query): \Illuminate\Database\Eloquent\Builder
+    protected function scopeAdmin(Builder $query): Builder
     {
         return $query->where('role', 'admin')
             ->orWhere('role', 'superadmin');
     }
 
-    protected function scopeMember(Builder $query): \Illuminate\Database\Eloquent\Builder
+    protected function scopeMember(Builder $query): Builder
     {
         return $query->where('role', 'member');
     }
 
-    public function claims(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function claims(): HasMany
     {
         return $this->hasMany(Claim::class);
     }
 
-    public function subDepartment(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function subDepartment(): BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
@@ -105,17 +107,11 @@ class User extends Authenticatable implements Nameable
         return $this->fullname;
     }
 
-    /**
-     * @return string[]
-     */
     public static function roles(): array
     {
         return ['admin', 'member'];
     }
 
-    /**
-     * @return string[]
-     */
     public static function sexes(): array
     {
         return [

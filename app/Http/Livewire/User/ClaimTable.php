@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\User;
 
 use App\Models\Claim;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -15,9 +16,9 @@ class ClaimTable extends Component
     public function render(): View
     {
         $user = Auth::user();
-        $claims = Claim::where(function ($query) use ($user) {
+        $claims = Claim::where(function (Builder $query) use ($user) {
             $query->whereUserId($user->id)->whereComplete(0);
-        })->orWhere(function ($query) use ($user) {
+        })->orWhere(function (Builder $query) use ($user) {
             $query->whereSubDepartmentId($user->sub_department_id)->whereComplete(0);
         })->paginate(10);
         return view('livewire.user.claim-table', [
