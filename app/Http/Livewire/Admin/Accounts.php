@@ -87,13 +87,13 @@ class Accounts extends Component
     }
 
     private function filteredUsers() {
-        $user = User::with(['claims', 'subDepartment'])->get();
+        $users = User::all();
         if (filled($filter = $this->filter)) {
-            return $user->filter(function ($user) use ($filter): bool {
+            return $users->filter(function ($user) use ($filter) {
                 return $user->searchAuto($filter);
             });
         }
-        return $user;
+        return $users;
     }
 
     private function confirmPasswordValidated()
