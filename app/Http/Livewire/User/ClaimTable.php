@@ -17,10 +17,10 @@ class ClaimTable extends Component
     {
         $user = Auth::user();
         $claims = Claim::where(function (Builder $query) use ($user) {
-            $query->whereUserId($user->id)->whereComplete(0);
-        })->orWhere(function (Builder $query) use ($user) {
-            $query->whereSubDepartmentId($user->sub_department_id)->whereComplete(0);
-        })->paginate(10);
+            $query->whereUserId($user->id)->orWhereHas('equipment', function ($query) use ($user) {
+                $query->whereSubDepartmentId($user->sub_department_id);
+            });
+        })->whereComplete(0)->paginate(10);
         return view('livewire.user.claim-table', [
             'claims' => $claims,
         ]);
