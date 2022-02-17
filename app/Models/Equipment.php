@@ -64,6 +64,11 @@ class Equipment extends Model implements Nameable
         return $this->hasMany(PreClaim::class);
     }
 
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(Transfer::class);
+    }
+
     public function oldSubDepartment(): BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');

@@ -22,10 +22,9 @@ class ClaimSeeder extends Seeder
                 ->for($member->subDepartment, 'subDepartment')
                 ->for($member->subDepartment, 'oldSubDepartment');
 
-            PreClaim::factory()
-                ->count(2)
-                ->for($member, 'user')
-                ->for($equipment, 'equipment')
+            $equipment->count(2)
+                ->has(PreClaim::factory()
+                    ->for($member, 'user'))
                 ->create();
 
             $sub = SubDepartment::whereHas('users', function ($query) use ($member) {
@@ -33,12 +32,11 @@ class ClaimSeeder extends Seeder
                     ->where('id', '!=', $member->id);
             })->first();
 
-            Transfer::factory()
-                ->count(2)
-                ->for($member, 'user')
-                ->for($member->subDepartment, 'fromSub')
-                ->for($sub, 'toSub')
-                ->for($equipment, 'equipment')
+            $equipment->count(2)
+                ->has(Transfer::factory()
+                    ->for($member, 'user')
+                    ->for($member->subDepartment, 'fromSub')
+                    ->for($sub, 'toSub'))
                 ->create();
 
             foreach (User::admin()->get() as $admin) {
