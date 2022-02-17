@@ -40,8 +40,10 @@ use App\Models\Equipment;
 use App\Models\SubDepartment;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\AttemptToAuthenticate;
@@ -102,7 +104,14 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->bootMacros();
         $this->bootValidatorRules();
+        $this->bootShareVariables();
         $this->bootBladeStringables();
+    }
+
+    private function bootShareVariables()
+    {
+        View::share('equipments', Equipment::all());
+        View::share('users', User::all());
     }
 
     private function bootMacros()

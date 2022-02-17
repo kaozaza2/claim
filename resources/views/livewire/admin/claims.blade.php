@@ -103,7 +103,7 @@
                             <span class="label-text">{{ __('app.equipment') }}</span>
                         </label>
                         <select wire:model.defer="state.equipment_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\Equipment::all() as $equipment)
+                            @foreach($equipments as $equipment)
                                 <option value="{{ $equipment->id }}">
                                     [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
                                 </option>
@@ -127,7 +127,7 @@
                             <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
                         <select wire:model.defer="state.user_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::member()->cursor() as $user)
+                            @foreach($users->where('role', 'member') as $user)
                                 <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
                         </select>
@@ -142,7 +142,7 @@
                             <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
                         <select wire:model.defer="state.admin_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::admin()->get() as $admin)
+                            @foreach($users->where('role', 'admin') as $admin)
                                 <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
                         </select>
@@ -184,7 +184,7 @@
                             <span class="label-text">{{ __('app.equipment') }}</span>
                         </label>
                         <select wire:model.defer="state.equipment_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\Equipment::all() as $equipment)
+                            @foreach($equipments as $equipment)
                                 <option value="{{ $equipment->id }}">
                                     [{{ $equipment->id }}] {{ $equipment }} : {{ $equipment->serial_number }}
                                 </option>
@@ -208,7 +208,7 @@
                             <span class="label-text">{{ __('app.claims.applicant') }}</span>
                         </label>
                         <select wire:model.defer="state.user_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::all() as $user)
+                            @foreach($users as $user)
                                 <option value="{{ $user->id }}">{{ $user }}</option>
                             @endforeach
                         </select>
@@ -223,7 +223,7 @@
                             <span class="label-text">{{ __('app.claims.recipient') }}</span>
                         </label>
                         <select wire:model.defer="state.admin_id" class="select select-bordered w-full">
-                            @foreach(\App\Models\User::admin()->get() as $admin)
+                            @foreach($users->where('role', 'admin') as $admin)
                                 <option value="{{ $admin->id }}">{{ $admin }}</option>
                             @endforeach
                         </select>
