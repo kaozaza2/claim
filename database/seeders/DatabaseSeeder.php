@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->has(SubDepartment::factory()
-                ->has(Department::factory()
+            ->for(SubDepartment::factory()
+                ->for(Department::factory()
                     ->state(['name' => 'ผู้ดูแลระบบ']))
                 ->state(['name' => 'ผู้ดูแลระบบ']))
             ->state([
