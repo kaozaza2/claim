@@ -19,37 +19,33 @@ class ClaimSeeder extends Seeder
     {
         foreach (User::member()->get() as $member) {
             $equipment = Equipment::factory()
-                ->count(6)
                 ->for($member->subDepartment, 'subDepartment')
-                ->for($member->subDepartment, 'oldSubDepartment')
-                ->create();
+                ->for($member->subDepartment, 'oldSubDepartment');
 
-            foreach ($equipment->shift(2) as $equip) {
-                PreClaim::factory()
-                    ->for($member, 'user')
-                    ->for($equip, 'equipment')
-                    ->create();
-            }
+            PreClaim::factory()
+                ->count(2)
+                ->for($member, 'user')
+                ->for($equipment, 'equipment')
+                ->create();
 
             $sub = SubDepartment::whereHas('users', function ($query) use ($member) {
                 $query->where('role', 'member')
                     ->where('id', '!=', $member->id);
             })->first();
 
-            foreach ($equipment->shift(2) as $equip) {
-                Transfer::factory()
-                    ->for($member, 'user')
-                    ->for($member->subDepartment, 'fromSub')
-                    ->for($sub, 'toSub')
-                    ->for($equip, 'equipment')
-                    ->create();
-            }
+            Transfer::factory()
+                ->count(2)
+                ->for($member, 'user')
+                ->for($member->subDepartment, 'fromSub')
+                ->for($sub, 'toSub')
+                ->for($equipment, 'equipment')
+                ->create();
 
             foreach (User::admin()->get() as $admin) {
                 Claim::factory()
                     ->for($member, 'user')
                     ->for($admin, 'admin')
-                    ->for($equipment->shift(), 'equipment')
+                    ->for($equipment, 'equipment')
                     ->create();
             }
         }
