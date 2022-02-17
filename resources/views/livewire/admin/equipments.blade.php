@@ -130,9 +130,14 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.sub-department') }}</span>
                         </label>
-                        <select class="select select-bordered w-full" wire:model.defer="state.sub_department_id">
-                            @foreach ($subs as $sub)
-                                <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                        <select class="select select-bordered"
+                                wire:model.defer="state.sub_department_id">
+                            @foreach (\App\Models\Department::has('subs')->get() as $dep)
+                                <optgroup label="{{ $dep }}">
+                                    @foreach ($dep->subs as $sub)
+                                        <option value="{{ $sub->id }}">{{ $sub }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <x-jet-input-error for="sub_department_id" class="text-error label-text-alt" />
@@ -204,9 +209,14 @@
                         <label class="label">
                             <span class="label-text">{{ __('app.sub-department') }}</span>
                         </label>
-                        <select class="select select-bordered w-full" wire:model.defer="state.sub_department_id">
-                            @foreach ($subs as $sub)
-                                <option value="{{ $sub->id }}">{{ $sub }}</option>
+                        <select class="select select-bordered"
+                                wire:model.defer="state.sub_department_id">
+                            @foreach (\App\Models\Department::has('subs')->get() as $dep)
+                                <optgroup label="{{ $dep }}">
+                                    @foreach ($dep->subs as $sub)
+                                        <option value="{{ $sub->id }}">{{ $sub }}</option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                         <x-jet-input-error for="sub_department_id" class="text-error label-text-alt" />

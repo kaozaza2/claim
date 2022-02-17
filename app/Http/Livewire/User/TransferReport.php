@@ -96,7 +96,7 @@ class TransferReport extends Component
     public function updatedStateEquipment(): void
     {
         $equipment = Equipment::find($this->state['equipment']);
-        $this->subs = SubDepartment::where('id', '!=', $equipment->sub_department_id)->get();
+        $this->subs = SubDepartment::with('department')->where('id', '!=', $equipment->sub_department_id)->get();
         if (array_key_exists('to', $this->state) && $this->state['to'] === $equipment->sub_department_id) {
             $this->state['to'] = $this->subs->first()->id;
         }

@@ -22,9 +22,13 @@
                     <label class="label">
                         <span class="label-text">{{ __('แผนกที่จะย้าย') }}</span>
                     </label>
-                    <select wire:model.defer="state.to" class="select select-bordered w-full">
-                        @foreach ($subs as $sub)
-                            <option value="{{ $sub->id }}">{{ $sub->name }}</option>
+                    <select class="select select-bordered" wire:model.defer="state.to">
+                        @foreach ($subs->groupBy('department.name') as $dep => $subs)
+                            <optgroup label="{{ $dep }}">
+                                @foreach ($subs as $sub)
+                                    <option value="{{ $sub->id }}">{{ $sub }}</option>
+                                @endforeach
+                            </optgroup>
                         @endforeach
                     </select>
                     @error('to')
