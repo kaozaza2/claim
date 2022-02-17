@@ -17,34 +17,41 @@ class ClaimSeeder extends Seeder
      */
     public function run(): void
     {
-        $equipments = Equipment::factory()->count(10)->sequence(
-            ...User::member()->get()->map(function ($user) {
-                return ['sub_department_id' => $user->subDepartment->id];
-            })->toArray()
-        )->create()->map(function ($equipment) {
-            return ['equipment_id' => $equipment['id']];
-        })->toArray();
+        foreach (User::member()->get() as $member) {
+            $equipment = Equipment::factory()
+                ->count(6)
+                ->for($member->subDepartment, 'subDepartment')
+                ->for($member->subDepartment, 'oldSubDepartment')
+                ->create();
 
-        $members = User::member()->get()->map(function ($user) {
-            return ['user_id' => $user->id];
-        })->toArray();
+            foreach ($equipment->shift(2) as $equip) {
+                PreClaim::factory()
+                    ->for($member, 'user')
+                    ->for($equip, 'equipment')
+                    ->create();
+            }
 
-        $admins = User::admin()->get()->map(function ($user) {
-            return ['admin_id' => $user->id];
-        })->toArray();
+            $sub = SubDepartment::whereHas('users', function ($query) use ($member) {
+                $query->where('role', 'member')
+                    ->where('id', '!=', $member->id);
+            })->first();
 
-        PreClaim::factory()->count(4)->sequence(...$members)->sequence(...$equipments)->create();
+            foreach ($equipment->shift(2) as $equip) {
+                Transfer::factory()
+                    ->for($member, 'user')
+                    ->for($member->subDepartment, 'fromSub')
+                    ->for($sub, 'toSub')
+                    ->for($equip, 'equipment')
+                    ->create();
+            }
 
-        Transfer::factory()->count(4)->sequence(...$members)->sequence(
-            ...Equipment::all()->map(function ($equipment) {
-                return ['equipment_id' => $equipment->id, 'from_sub_department_id' => $equipment->sub_department_id];
-            })->toArray()
-        )->sequence(
-            ...User::admin()->get()->map(function ($user) {
-                return ['to_sub_department_id' => $user->subDepartment->id];
-            })->toArray()
-        )->create();
-
-        Claim::factory()->count(10)->sequence(...$members)->sequence(...$equipments)->sequence(...$admins)->create();
+            foreach (User::admin()->get() as $admin) {
+                Claim::factory()
+                    ->for($member, 'user')
+                    ->for($admin, 'admin')
+                    ->for($equipment->shift(), 'equipment')
+                    ->create();
+            }
+        }
     }
 }
