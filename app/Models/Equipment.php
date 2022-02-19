@@ -74,6 +74,11 @@ class Equipment extends Model implements Nameable
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
+    public function oldDepartment(): BelongsTo
+    {
+        return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');
+    }
+
     public function archive(): MorphOne
     {
         return $this->morphOne(Archive::class, 'archive');
