@@ -34,8 +34,8 @@
                         <td class="font-mono">
                             {{ $transfer->equipment->serial_number ?: '-' }}
                         </td>
-                        <td>{{ $transfer->fromSub }}</td>
-                        <td>{{ $transfer->toSub }}</td>
+                        <td>{{ $transfer->from }}</td>
+                        <td>{{ $transfer->to }}</td>
                         <td>{{ $transfer->created_at->format('Y-m-d') }}</td>
                         <td>
                             <button class="btn btn-sm" wire:click="$emitSelf('user-transfer-cancel', {{ $key }})">

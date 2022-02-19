@@ -102,6 +102,11 @@ class User extends Authenticatable implements Nameable
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
     }
 
+    public function archives(): HasMany
+    {
+        return $this->hasMany(Archive::class, 'archiver');
+    }
+
     public function getName()
     {
         return $this->fullname;

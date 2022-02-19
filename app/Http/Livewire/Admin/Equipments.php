@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin;
 
 use App\Contracts\CreatesEquipments;
 use App\Contracts\DeletesEquipments;
+use App\Contracts\EquipmentsArchivers;
 use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
 use App\Models\SubDepartment;
@@ -35,6 +36,7 @@ class Equipments extends Component
         'admin-equipment-create' => 'create',
         'admin-equipment-update' => 'show',
         'admin-equipment-delete' => 'delete',
+        'admin-equipment-archive' => 'archive',
         'admin-equipment-delete-confirm' => 'destroy',
     ];
 
@@ -57,7 +59,7 @@ class Equipments extends Component
 
     public function load(): void
     {
-        $equipments = Equipment::all();
+        $equipments = Equipment::doesntHave('archive')->get();
         if (filled($search = $this->search)) {
             $equipments = $equipments->filter(function ($item) use ($search) {
                 return $item->searchAuto($search);
@@ -97,6 +99,13 @@ class Equipments extends Component
         );
         $this->load();
         $this->updating = false;
+    }
+
+    public function archive(EquipmentsArchivers $archiver, $index): void
+    {
+        $archiver->archive(
+            $this->equipments->pull($this->index)
+        );
     }
 
     public function delete(int $index): void

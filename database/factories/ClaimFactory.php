@@ -26,7 +26,7 @@ class ClaimFactory extends Factory
             'user_id' => User::factory(),
             'admin_id' => User::factory(),
             'problem' => $this->faker->words(3, true),
-            'status' => $this->faker->randomElement(['กำลังรับเรื่อง', 'กำลังซ่อม', 'เสร็จสิ้น']),
+            'status' => $this->faker->randomElement(['กำลังดำเนินการ', 'รออะไหล่', 'ส่งซ่อมภายนอก', 'ซ่อมเสร็จ']),
         ];
     }
 }

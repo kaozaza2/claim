@@ -34,7 +34,7 @@ class TransferReport extends Component
     public function load(): void
     {
         $this->subs = SubDepartment::all();
-        
+
         if (($user = Auth::user())->isAdmin()) {
             $this->equipments = Equipment::all()->keyBy('id');
             return;
@@ -114,8 +114,8 @@ class TransferReport extends Component
             $transfer->equipment->name,
             $transfer->equipment->serial_number,
             $transfer->user->name,
-            $transfer->fromSub->name,
-            $transfer->toSub->name,
+            $transfer->from->name,
+            $transfer->to->name,
         );
 
         SendLineNotify::dispatch($message);

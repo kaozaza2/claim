@@ -1,96 +1,78 @@
 <div>
     <div class="py-6">
-        <div class="tabs max-w-7xl mx-auto lg:px-8">
-            <a href="{{ route('admin.requests') }}" class="tab tab-bordered">
-                {{ __('app.tab.requests') }}
-            </a>
-            <a href="{{ route('admin.claims') }}" class="tab tab-bordered">
-                {{ __('app.tab.claims') }}
-            </a>
-            <a href="{{ route('admin.equipments') }}" class="tab tab-bordered">
-                {{ __('app.tab.equipments') }}
-            </a>
-            <a href="{{ route('admin.departments') }}" class="tab tab-bordered">
-                {{ __('app.tab.departments') }}
-            </a>
-            <a href="{{ route('admin.accounts') }}" class="tab tab-bordered tab-active">
-                {{ __('app.tab.accounts') }}
-            </a>
-        </div>
+        @livewire('admin-tab')
 
-        <div class="max-w-7xl sm:rounded-lg bg-white mt-6 mx-auto sm:px-6 lg:px-8">
-            <div class="overflow-hidden sm:py-6 lg:py-8 px-0">
-                <div class="flex-none lg:flex mb-3">
-                    <div class="form-control w-full sm:py-3 lg:py-0">
-                        <input type="text" wire:model.lazy="filter" placeholder="{{ __('app.search') }}"
-                               class="input input-bordered">
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="table table-compact border w-full table-zebra">
-                        <thead>
-                        <tr>
-                            <th>
-                                <span class="hidden lg:block">{{__('app.id')}}</span>
-                            </th>
-                            <th>{{__('app.name')}}</th>
-                            <th>{{__('app.sub-department')}}</th>
-                            <th>{{__('app.users.username')}}</th>
-                            <th>{{__('app.users.email')}}</th>
-                            <th class="text-center">{{__('app.users.identification')}}</th>
-                            <th class="text-center">{{__('app.role')}}</th>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach ($accounts as $account)
-                            <tr>
-                                <th>{{ $account->id }}</th>
-                                <td class="w-full">
-                                    {{ $account }}
-                                    @if ($account->is(auth()->user()))
-                                        <div class="badge badge-success">{{ __('app.you') }}</div>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="truncate">{{ $account->subDepartment }}</div>
-                                </td>
-                                <td>{{ $account->username }}</td>
-                                <td>{{ $account->email }}</td>
-                                <td class="font-mono">{{ $account->identification }}</td>
-                                <td>
-                                    @if (!$account->is(auth()->user()))
-                                        <div class="w-full tooltip"
-                                             data-tip="{{ __('app.roles.switch.'.($account->isAdmin() ? 'member' : 'admin')) }}">
-                                            <button class="btn btn-sm btn-ghost"
-                                                    wire:click="promotePrompt({{ $account->id }})">
-                                                {{ __('app.roles.'.$account->role) }}
-                                            </button>
-                                        </div>
-                                    @else
-                                        <div class="btn btn-sm btn-ghost no-animation">
-                                            {{ __('app.roles.'.$account->role) }}
-                                        </div>
-                                    @endif
-                                </td>
-                                <td>
-                                    <button class="btn btn-sm" wire:click="showUpdateUserDialog({{ $account->id }})">
-                                        {{ __('app.edit') }}
-                                    </button>
-                                    @if(!$account->is(auth()->user()))
-                                        <button class="btn btn-sm btn-error"
-                                                wire:click="showDeleteUserDialog({{ $account->id }})">
-                                            {{ __('app.delete') }}
-                                        </button>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+        <x-layout-box>
+            <div class="flex-none lg:flex mb-3">
+                <div class="form-control w-full sm:py-3 lg:py-0">
+                    <input type="text" wire:model.lazy="filter" placeholder="{{ __('app.search') }}"
+                           class="input input-bordered">
                 </div>
             </div>
-        </div>
+            <div class="overflow-x-auto">
+                <table class="table table-compact border w-full table-zebra">
+                    <thead>
+                    <tr>
+                        <th>
+                            <span class="hidden lg:block">{{__('app.id')}}</span>
+                        </th>
+                        <th>{{__('app.name')}}</th>
+                        <th>{{__('app.sub-department')}}</th>
+                        <th>{{__('app.users.username')}}</th>
+                        <th>{{__('app.users.email')}}</th>
+                        <th class="text-center">{{__('app.users.identification')}}</th>
+                        <th class="text-center">{{__('app.role')}}</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach ($accounts as $account)
+                        <tr>
+                            <th>{{ $account->id }}</th>
+                            <td class="w-full">
+                                {{ $account }}
+                                @if ($account->is(auth()->user()))
+                                    <div class="badge badge-success">{{ __('app.you') }}</div>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="truncate">{{ $account->subDepartment }}</div>
+                            </td>
+                            <td>{{ $account->username }}</td>
+                            <td>{{ $account->email }}</td>
+                            <td class="font-mono">{{ $account->identification }}</td>
+                            <td>
+                                @if (!$account->is(auth()->user()))
+                                    <div class="w-full tooltip"
+                                         data-tip="{{ __('app.roles.switch.'.($account->isAdmin() ? 'member' : 'admin')) }}">
+                                        <button class="btn btn-sm btn-ghost"
+                                                wire:click="promotePrompt({{ $account->id }})">
+                                            {{ __('app.roles.'.$account->role) }}
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="btn btn-sm btn-ghost no-animation">
+                                        {{ __('app.roles.'.$account->role) }}
+                                    </div>
+                                @endif
+                            </td>
+                            <td>
+                                <button class="btn btn-sm" wire:click="showUpdateUserDialog({{ $account->id }})">
+                                    {{ __('app.edit') }}
+                                </button>
+                                @if(!$account->is(auth()->user()))
+                                    <button class="btn btn-sm btn-error"
+                                            wire:click="showDeleteUserDialog({{ $account->id }})">
+                                        {{ __('app.delete') }}
+                                    </button>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </x-layout-box>
 
         <x-jet-confirmation-modal wire:model="showingPromotePromptDialog">
             <x-slot name="title">

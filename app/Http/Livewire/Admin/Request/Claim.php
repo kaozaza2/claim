@@ -12,6 +12,8 @@ class Claim extends Component
 {
     public Collection $claims;
 
+    public $user;
+
     protected $listeners = [
         'accept-claim' => 'dialog',
         'accept-claim-callback' => 'accepted',
@@ -19,7 +21,8 @@ class Claim extends Component
 
     public function mount(): void
     {
-        $this->claims = PreClaim::all();
+        $this->user = Auth::user();
+        $this->claims = PreClaim::doesntHave('archive')->get();
     }
 
     public function dialog(int $index): void
@@ -40,8 +43,7 @@ class Claim extends Component
 
     public function accepted(PreClaimsAccepter $accepter, int $index): void
     {
-        $claim = $this->claims->pull($index);
-        $accepter->accept($claim, Auth::user());
+        $accepter->accept($claim = $this->claims->pull($index), $this->user);
     }
 
     public function render()

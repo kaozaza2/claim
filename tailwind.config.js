@@ -1,18 +1,21 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-    // mode: 'jit',
-    purge: (process.env.NODE_ENV === 'production') ? [
+    content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
-        './storage/framework/views/*.php',
+        './storage/framework/views/*.blade.php',
         './resources/views/**/*.blade.php',
-    ] : false,
+    ],
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Nunito', 'Sarabun', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'rose': '#ecb7bf',
+                'google': '#5F6368',
             },
         },
     },

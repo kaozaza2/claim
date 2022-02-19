@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class Equipment extends Model implements Nameable
@@ -69,14 +69,14 @@ class Equipment extends Model implements Nameable
         return $this->hasMany(Transfer::class);
     }
 
-    public function oldSubDepartment(): BelongsTo
-    {
-        return $this->belongsTo(SubDepartment::class, 'old_sub_department_id');
-    }
-
     public function subDepartment(): BelongsTo
     {
         return $this->belongsTo(SubDepartment::class, 'sub_department_id');
+    }
+
+    public function archive(): MorphOne
+    {
+        return $this->morphOne(Archive::class, 'archive');
     }
 
     protected function getPictureUrlAttribute(): string

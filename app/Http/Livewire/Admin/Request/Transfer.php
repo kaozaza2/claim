@@ -3,13 +3,16 @@
 namespace App\Http\Livewire\Admin\Request;
 
 use App\Contracts\TransfersAccepter;
-use App\Models\Transfer as TransferModel;
+use App\Models\Transfer as Transfers;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Transfer extends Component
 {
     public Collection $transfers;
+
+    public $user;
 
     protected $listeners = [
         'accept-transfer' => 'dialog',
@@ -18,7 +21,8 @@ class Transfer extends Component
 
     public function mount(): void
     {
-        $this->transfers = TransferModel::all();
+        $this->user = Auth::user();
+        $this->transfers = Transfers::doesntHave('archive')->get();
     }
 
     public function dialog(int $index): void
@@ -29,8 +33,8 @@ class Transfer extends Component
             __('app.modal.title-accept-transfer'),
             __('app.modal.msg-accept-transfer', [
                 'eq' => $transfer->equipment->getName(),
-                'fm' => $transfer->fromSub->getName(),
-                'to' => $transfer->toSub->getName(),
+                'fm' => $transfer->from->getName(),
+                'to' => $transfer->to->getName(),
                 'by' => $transfer->user->getName(),
             ]), [
                 'emitter' => 'accept-transfer-callback',
@@ -41,7 +45,7 @@ class Transfer extends Component
 
     public function accepted(TransfersAccepter $accepter, int $index): void
     {
-        $accepter->accept($this->transfers->pull($index));
+        $accepter->accept($transfer = $this->transfers->pull($index));
     }
 
     public function render()

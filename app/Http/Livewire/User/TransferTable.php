@@ -4,7 +4,6 @@ namespace App\Http\Livewire\User;
 
 use App\Models\Transfer;
 use Illuminate\Support\Collection;
-use Illuminate\View\View;
 use Livewire\Component;
 
 class TransferTable extends Component
@@ -22,14 +21,16 @@ class TransferTable extends Component
         $this->load();
     }
 
-    public function render(): View
+    public function render()
     {
         return view('livewire.user.transfer-table');
     }
 
     public function load(): void
     {
-        $this->transfers = Transfer::currentUser()->get();
+        $this->transfers = Transfer::currentUser()
+            ->doesntHave('archive')
+            ->get();
     }
 
     public function confirm(int $index): void
@@ -40,8 +41,8 @@ class TransferTable extends Component
             __('app.modal.title-cancel-transfer'),
             __('app.modal.msg-cancel-transfer', [
                 'eq' => $transfer->equipment->getName(),
-                'fm' => $transfer->fromSub->getName(),
-                'to' => $transfer->toSub->getName(),
+                'fm' => $transfer->from->getName(),
+                'to' => $transfer->to->getName(),
             ]), [
                 'emitter' => 'user-transfer-cancel-submit',
                 'params' => [$index],

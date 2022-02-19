@@ -4,7 +4,6 @@ namespace App\Http\Livewire\User;
 
 use App\Models\PreClaim;
 use Illuminate\Support\Collection;
-use Illuminate\View\View;
 use Livewire\Component;
 
 class PreClaimTable extends Component
@@ -22,14 +21,16 @@ class PreClaimTable extends Component
         $this->load();
     }
 
-    public function render(): View
+    public function render()
     {
         return view('livewire.user.pre-claim-table');
     }
 
     public function load(): void
     {
-        $this->pending = PreClaim::currentUser()->get();
+        $this->pending = PreClaim::currentUser()
+            ->doesntHave('archive')
+            ->get();
     }
 
     public function confirm(int $index): void
