@@ -20,6 +20,7 @@
                 <a class="tab tab-lifted">{{ __('app.reports.claim') }}</a>
                 <a class="tab tab-lifted">{{ __('app.reports.claim-done') }}</a>
             </div>
+
             @livewire('admin.statistics.transfers')
         </x-layout-box>
     </div>

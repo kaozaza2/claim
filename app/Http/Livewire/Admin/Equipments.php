@@ -8,9 +8,7 @@ use App\Contracts\EquipmentsArchivers;
 use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
 use App\Models\SubDepartment;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -36,8 +34,9 @@ class Equipments extends Component
         'admin-equipment-create' => 'create',
         'admin-equipment-update' => 'show',
         'admin-equipment-delete' => 'delete',
-        'admin-equipment-archive' => 'archive',
+        'admin-equipment-archive' => 'showArchive',
         'admin-equipment-delete-confirm' => 'destroy',
+        'admin-equipment-archive-accept' => 'archive',
     ];
 
     public function render()
@@ -52,11 +51,6 @@ class Equipments extends Component
         $this->load();
     }
 
-    public function updatedSearch(): void
-    {
-        $this->load();
-    }
-
     public function load(): void
     {
         $equipments = Equipment::doesntHave('archive')->get();
@@ -66,6 +60,11 @@ class Equipments extends Component
             });
         }
         $this->equipments = $equipments;
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->load();
     }
 
     public function create(): void
@@ -101,10 +100,18 @@ class Equipments extends Component
         $this->updating = false;
     }
 
+    public function showArchive($index)
+    {
+        $this->emit('show-confirm-dialog', __('app.retirement'), __('app.retirement.message'), [
+            'emitter' => 'admin-equipment-archive-accept',
+            'params' => [$index],
+        ]);
+    }
+
     public function archive(EquipmentsArchivers $archiver, $index): void
     {
         $archiver->archive(
-            $this->equipments->pull($this->index)
+            $this->equipments->pull($index)
         );
     }
 
@@ -119,9 +126,9 @@ class Equipments extends Component
             __('app.modal.msg-delete', [
                 'name' => $equipment->full_details,
             ]), [
-                'emitter' => 'admin-equipment-delete-confirm',
-                'params' => [$index],
-            ],
+            'emitter' => 'admin-equipment-delete-confirm',
+            'params' => [$index],
+        ],
         );
     }
 

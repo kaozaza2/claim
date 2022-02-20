@@ -15,7 +15,9 @@ class Archives extends Component
     public $equipments;
 
     protected $listeners = [
-        'recover', 'delete',
+        'delete',
+        'recover',
+        'archives-accept' => 'accept',
     ];
 
     public function mount()
@@ -23,7 +25,15 @@ class Archives extends Component
         $this->equipments = Equipment::has('archive')->get();
     }
 
-    public function recover(EquipmentsArchivers $archiver, $index)
+    public function recover($index)
+    {
+        $this->emit('show-confirm-dialog', __('app.recover'), __('app.recover.message'), [
+            'emitter' => 'archives-accept',
+            'params' => [$index],
+        ]);
+    }
+
+    public function accept(EquipmentsArchivers $archiver, $index)
     {
         $archiver->recover(
             $this->equipments->pull($index)
