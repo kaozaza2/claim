@@ -59,7 +59,7 @@ class ClaimReport extends Component
                     ? Rule::exists('equipments', 'id')
                     : Rule::exists('equipments', 'id')
                         ->where('sub_department_id', $user->sub_department_id),
-                Rule::unique('pre_claims')->where('user_id', $user->id),
+                Rule::unique('pre_claims', 'equipment_id')->where('user_id', $user->id),
             ],
             'problem' => ['nullable'],
         ], [
