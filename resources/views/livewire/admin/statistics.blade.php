@@ -14,14 +14,23 @@
             </div>
         </x-layout-box>
 
-        <x-layout-box>
+        <x-layout-box x-data="{ active: 1 }">
             <div class="tabs">
-                <a class="tab tab-lifted tab-active">{{ __('app.reports.transfer') }}</a>
-                <a class="tab tab-lifted">{{ __('app.reports.claim') }}</a>
-                <a class="tab tab-lifted">{{ __('app.reports.claim-done') }}</a>
+                <a :class="{ 'tab-active': active === 1 }" @click="active=1" class="tab tab-lifted">
+                    {{ __('app.reports.transfer') }}
+                </a>
+                <a :class="{ 'tab-active': active === 2 }" @click="active=2" class="tab tab-lifted">
+                    {{ __('app.reports.claim') }}
+                </a>
             </div>
 
-            @livewire('admin.statistics.transfers')
+            <div :class="{'hidden': active !== 1}">
+                @livewire('admin.statistics.transfers')
+            </div>
+
+            <div :class="{'hidden': active !== 2}" class="hidden">
+                @livewire('admin.statistics.claims')
+            </div>
         </x-layout-box>
     </div>
 </div>

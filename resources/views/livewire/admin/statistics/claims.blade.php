@@ -4,8 +4,7 @@
         <tr>
             <th>{{ __('app.number') }}</th>
             <th>{{ __('app.equipment') }}</th>
-            <th>{{ __('app.transfers.from') }}</th>
-            <th>{{ __('app.transfers.to') }}</th>
+            <th>{{ __('app.claims.problem') }}</th>
             <th>{{ __('app.transfers.applicant') }}</th>
             <th>{{ __('app.transfers.recipient') }}</th>
             <th>{{ __('app.time') }}</th>
@@ -13,21 +12,20 @@
         </tr>
         </thead>
         <tbody>
-        @forelse ($transfers as $transfer)
+        @forelse ($claims as $claim)
             <tr>
                 <th>{{ $loop->iteration }}</th>
                 <td>
-                    <div wire:click="$emit('show-equipment-detail', {{ $transfer->equipment->id }})"
+                    <div wire:click="$emit('show-equipment-detail', {{ $claim->equipment->id }})"
                          class="px-1 my-0 rounded-sm btn btn-sm btn-ghost no-animation">
-                        {{ $transfer->equipment }}
+                        {{ $claim->equipment }}
                     </div>
                 </td>
-                <td>{{ $transfer->from }}</td>
-                <td>{{ $transfer->to }}</td>
-                <td>{{ $transfer->user }}</td>
-                <td>{{ $transfer->archive->archiver }}</td>
-                <td>{{ $transfer->archive->created_at->format('H:i') }}</td>
-                <td>{{ $transfer->archive->created_at->format('d-m-Y') }}</td>
+                <td>{{ $claim->problem }}</td>
+                <td>{{ $claim->user }}</td>
+                <td>{{ $claim->archive->archiver }}</td>
+                <td>{{ $claim->archive->created_at->format('H:i') }}</td>
+                <td>{{ $claim->archive->created_at->format('d-m-Y') }}</td>
             </tr>
         @empty
             <tr>

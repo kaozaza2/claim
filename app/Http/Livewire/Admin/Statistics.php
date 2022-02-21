@@ -22,11 +22,11 @@ class Statistics extends Component
             ], [
                 'name' => 'จำนวนครุภัณฑ์',
                 'desc' => '🖥️ จำนวนครุภัณฑ์ที่ลงทะเบียนแล้ว',
-                'count' => Equipment::all()->count()
+                'count' => Equipment::doesntHave('archive')->count()
             ], [
                 'name' => 'รายการที่รอดำเนินการ',
                 'desc' => '🔀 รายการแจ้งซ่อม/ย้ายที่รอดำเนินการ',
-                'count' => PreClaim::all()->count() + Transfer::all()->count()
+                'count' => PreClaim::doesntHave('archive')->count() + Transfer::doesntHave('archive')->count()
             ],
         ];
     }

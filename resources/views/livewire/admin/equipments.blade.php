@@ -30,7 +30,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($equipments as $key => $equipment)
+                    @forelse ($equipments as $key => $equipment)
                         <tr>
                             <th>{{ $equipment->id }}</th>
                             </td>
@@ -60,7 +60,11 @@
                                 </button>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7">{{ __('app.empty') }}</td>
+                        </tr>
+                    @endforelse
                     </tbody>
                 </table>
             </div>

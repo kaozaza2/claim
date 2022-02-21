@@ -128,8 +128,7 @@ class Equipments extends Component
             ]), [
             'emitter' => 'admin-equipment-delete-confirm',
             'params' => [$index],
-        ],
-        );
+        ]);
     }
 
     public function destroy(DeletesEquipments $deleter, int $index): void

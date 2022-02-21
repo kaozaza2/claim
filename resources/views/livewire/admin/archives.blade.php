@@ -45,7 +45,7 @@
                                     {{ __('app.recover') }}
                                 </button>
 
-                                <button class="btn btn-sm btn-error" wire:click="$emitSelf('delete', {{ $key }})">
+                                <button class="btn btn-sm btn-error" wire:click="$emitSelf('deletion', {{ $key }})">
                                     {{ __('app.full-delete') }}
                                 </button>
                             </td>

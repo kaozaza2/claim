@@ -2,22 +2,22 @@
 
 namespace App\Http\Livewire\Admin\Statistics;
 
-use App\Models\Transfer;
+use App\Models\PreClaim;
 use Livewire\Component;
 
-class Transfers extends Component
+class Claims extends Component
 {
-    public $transfers;
+    public $claims;
 
     public function mount()
     {
-        $this->transfers = Transfer::has('archive')
+        $this->claims = PreClaim::has('archive')
             ->orderByDesc('id')
             ->get();
     }
 
     public function render()
     {
-        return view('livewire.admin.statistics.transfers');
+        return view('livewire.admin.statistics.claims');
     }
 }

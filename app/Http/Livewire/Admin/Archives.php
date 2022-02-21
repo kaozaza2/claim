@@ -15,9 +15,10 @@ class Archives extends Component
     public $equipments;
 
     protected $listeners = [
-        'delete',
+        'deletion',
         'recover',
         'archives-accept' => 'accept',
+        'archives-delete' => 'delete',
     ];
 
     public function mount()
@@ -37,6 +38,21 @@ class Archives extends Component
     {
         $archiver->recover(
             $this->equipments->pull($index)
+        );
+    }
+
+    public function deletion($index)
+    {
+        $e = $this->equipments->get($index);
+
+        $this->emit(
+            'show-confirm-dialog',
+            __('app.modal.title-delete', ['name' => $e->name]),
+            __('app.modal.msg-delete', ['name' => $e->full_details,]),
+            [
+                'emitter' => 'archives-delete',
+                'params' => [$index],
+            ]
         );
     }
 

@@ -14,6 +14,6 @@ class UserCastor implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        return $value->id;
+        return is_numeric($value) ? $value : $value->id;
     }
 }
