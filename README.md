@@ -46,6 +46,7 @@
  * รันคำสั่ง
    ```shell
    $ php artisan migrate --seed
+   $ php artisan storage:link
    ```
  * เปิดไฟล์ .env แล้วตั้งค่า
    ```ini
