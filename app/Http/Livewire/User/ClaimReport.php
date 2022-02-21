@@ -7,21 +7,18 @@ use App\Models\Equipment;
 use App\Models\PreClaim;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Component;
 
 class ClaimReport extends Component
 {
+    public Collection $equipments;
+    public bool $showing = false;
+    public array $state = [];
     protected $listeners = [
         'user-claim-create' => 'dialog',
     ];
-
-    public Collection $equipments;
-
-    public bool $showing = false;
-
-    public array $state = [];
 
     public function mount(): void
     {
@@ -55,16 +52,24 @@ class ClaimReport extends Component
         $validated = validator($this->state, [
             'equipment' => [
                 'required',
-                $user->isAdmin()
-                    ? Rule::exists('equipments', 'id')
-                    : Rule::exists('equipments', 'id')
-                        ->where('sub_department_id', $user->sub_department_id),
-                Rule::unique('pre_claims', 'equipment_id')->where('user_id', $user->id),
+                Rule::exists('equipments', 'id')->where(function ($query) use ($user) {
+                    if (!$user->isAdmin()) {
+                        $query->where('sub_department_id', $user->sub_department_id);
+                    }
+                }),
+                Rule::notIn(
+                    PreClaim::doesntHave('archive')
+                        ->currentUser()
+                        ->get()
+                        ->map(function ($claim) {
+                            return $claim->equipment_id;
+                        })
+                ),
             ],
             'problem' => ['nullable'],
         ], [
             'equipment.exists' => __('app.validation.equipment.exists', ['eq' => $equipment->name]),
-            'equipment.unique' => __('app.validation.equipment.unique', ['eq' => $equipment->name]),
+            'equipment.not_in' => __('app.validation.equipment.unique', ['eq' => $equipment->name]),
         ])->validated();
 
         $claim = (new PreClaim)->forceFill([
@@ -79,11 +84,6 @@ class ClaimReport extends Component
         $this->sendMessage($claim);
     }
 
-    public function render(): View
-    {
-        return view('livewire.user.claim-report');
-    }
-
     private function sendMessage(PreClaim $claim): void
     {
         $message = sprintf(
@@ -95,5 +95,10 @@ class ClaimReport extends Component
         );
 
         SendLineNotify::dispatch($message);
+    }
+
+    public function render(): View
+    {
+        return view('livewire.user.claim-report');
     }
 }
