@@ -28,7 +28,7 @@ class UpdateEquipment implements UpdatesEquipments
         ])->validate();
 
         if (array_key_exists('picture', $input) && $input['picture'] instanceof UploadedFile) {
-            $equipment->updatePicture($picture);
+            $equipment->updatePicture($input['picture']);
         }
 
         $equipment->forceFill([
