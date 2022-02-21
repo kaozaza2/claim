@@ -7,7 +7,6 @@ use App\Models\Claim;
 use App\Models\Equipment;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Claims extends Component
@@ -19,6 +18,8 @@ class Claims extends Component
     public $claims;
 
     public $search = '';
+
+    public $user;
 
     public $showingClaimCreate = false;
 
@@ -34,20 +35,25 @@ class Claims extends Component
 
     public function mount(): void
     {
-        $this->claims = Claim::all()->sortByDesc('id');
+        $this->user = Auth::user();
+        $this->claims = Claim::doesntHave('archive')
+            ->get()
+            ->sortByDesc('id');
     }
 
     public function toggleCompleteState(int $index): void
     {
-        tap($this->claims->get($index), function ($claim) {
-            $claim->complete = !$claim->complete;
-            $claim->save();
-        });
+        $claim = $this->claims->get($index);
+        $claim->update([
+            'complete' => !$claim->complete,
+        ]);
     }
 
     public function updatedSearch()
     {
-        $claims = Claim::with(['equipment', 'user', 'admin'])->get();
+        $claims = Claim::with(['equipment', 'user', 'admin'])
+            ->doesntHave('archive')
+            ->get();
         if (filled($search = $this->search)) {
             $claims = $claims->filter(function ($item) use ($search) {
                 return $item->searchAuto($search);

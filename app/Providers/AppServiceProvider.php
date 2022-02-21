@@ -11,6 +11,7 @@ use App\Actions\DeleteDepartment;
 use App\Actions\DeleteEquipment;
 use App\Actions\DeleteSubDepartment;
 use App\Actions\DeleteUser;
+use App\Actions\EquipmentArchiver;
 use App\Actions\PreClaimAccepter;
 use App\Actions\PromoteUser;
 use App\Actions\TransferAccepter;
@@ -27,6 +28,7 @@ use App\Contracts\DeletesDepartments;
 use App\Contracts\DeletesEquipments;
 use App\Contracts\DeletesSubDepartments;
 use App\Contracts\DeletesUsers;
+use App\Contracts\EquipmentsArchivers;
 use App\Contracts\PreClaimsAccepter;
 use App\Contracts\PromotesUsers;
 use App\Contracts\TransfersAccepter;
@@ -95,6 +97,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(TransfersAccepter::class, TransferAccepter::class);
 
         $this->app->singleton(ClaimsManager::class, ClaimManager::class);
+        $this->app->singleton(EquipmentsArchivers::class, EquipmentArchiver::class);
     }
 
     /**
@@ -112,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
     {
         View::share('equipments', Equipment::all());
         View::share('users', User::all());
+        View::share('claim_status', ['กำลังดำเนินการ', 'รออะไหล่', 'ส่งซ่อมภายนอก', 'ซ่อมเสร็จ']);
     }
 
     private function bootMacros()

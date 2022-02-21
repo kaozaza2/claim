@@ -4,12 +4,11 @@ namespace App\Http\Livewire\Admin;
 
 use App\Contracts\CreatesEquipments;
 use App\Contracts\DeletesEquipments;
+use App\Contracts\EquipmentsArchivers;
 use App\Contracts\UpdatesEquipments;
 use App\Models\Equipment;
 use App\Models\SubDepartment;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -35,7 +34,9 @@ class Equipments extends Component
         'admin-equipment-create' => 'create',
         'admin-equipment-update' => 'show',
         'admin-equipment-delete' => 'delete',
+        'admin-equipment-archive' => 'showArchive',
         'admin-equipment-delete-confirm' => 'destroy',
+        'admin-equipment-archive-accept' => 'archive',
     ];
 
     public function render()
@@ -50,20 +51,20 @@ class Equipments extends Component
         $this->load();
     }
 
-    public function updatedSearch(): void
-    {
-        $this->load();
-    }
-
     public function load(): void
     {
-        $equipments = Equipment::all();
+        $equipments = Equipment::doesntHave('archive')->get();
         if (filled($search = $this->search)) {
             $equipments = $equipments->filter(function ($item) use ($search) {
                 return $item->searchAuto($search);
             });
         }
         $this->equipments = $equipments;
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->load();
     }
 
     public function create(): void
@@ -99,6 +100,21 @@ class Equipments extends Component
         $this->updating = false;
     }
 
+    public function showArchive($index)
+    {
+        $this->emit('show-confirm-dialog', __('app.retirement'), __('app.retirement.message'), [
+            'emitter' => 'admin-equipment-archive-accept',
+            'params' => [$index],
+        ]);
+    }
+
+    public function archive(EquipmentsArchivers $archiver, $index): void
+    {
+        $archiver->archive(
+            $this->equipments->pull($index)
+        );
+    }
+
     public function delete(int $index): void
     {
         $equipment = $this->equipments->get($index);
@@ -110,10 +126,9 @@ class Equipments extends Component
             __('app.modal.msg-delete', [
                 'name' => $equipment->full_details,
             ]), [
-                'emitter' => 'admin-equipment-delete-confirm',
-                'params' => [$index],
-            ],
-        );
+            'emitter' => 'admin-equipment-delete-confirm',
+            'params' => [$index],
+        ]);
     }
 
     public function destroy(DeletesEquipments $deleter, int $index): void

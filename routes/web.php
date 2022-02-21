@@ -25,10 +25,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('requests', Admin\UserRequest::class)->name('requests');
+            Route::get('statistics', Admin\Statistics::class)->name('statistics');
             Route::get('claims', Admin\Claims::class)->name('claims');
             Route::get('equipments', Admin\Equipments::class)->name('equipments');
             Route::get('departments', Admin\Departments::class)->name('departments');
             Route::get('accounts', Admin\Accounts::class)->name('accounts');
+            Route::get('archives', Admin\Archives::class)->name('archives');
         });
     });
 });

@@ -20,7 +20,7 @@ class ClaimSeeder extends Seeder
         foreach (User::member()->get() as $member) {
             $equipment = Equipment::factory()
                 ->for($member->subDepartment, 'subDepartment')
-                ->for($member->subDepartment, 'oldSubDepartment');
+                ->for($member->subDepartment, 'oldDepartment');
 
             $equipment->count(2)
                 ->has(PreClaim::factory()
@@ -35,8 +35,8 @@ class ClaimSeeder extends Seeder
             $equipment->count(2)
                 ->has(Transfer::factory()
                     ->for($member, 'user')
-                    ->for($member->subDepartment, 'fromSub')
-                    ->for($sub, 'toSub'))
+                    ->for($member->subDepartment, 'from')
+                    ->for($sub, 'to'))
                 ->create();
 
             foreach (User::admin()->get() as $admin) {

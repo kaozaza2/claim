@@ -21,7 +21,9 @@ class PreClaimAccepter implements PreClaimsAccepter
                 'complete' => false,
             ])->save();
 
-            $claim->delete();
+            $claim->archive()->create([
+                'archiver' => $who->id,
+            ]);
         });
     }
 }
