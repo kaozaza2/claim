@@ -12,7 +12,7 @@ class InClaimExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
-    protected $take, $start, $equipment;
+    protected $take, $equipment;
 
     public function query()
     {
