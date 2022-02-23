@@ -43,17 +43,17 @@ class TransferExport implements FromQuery, WithHeadings, WithMapping
         ];
     }
 
-    public function map($equip): array
+    public function map($claim): array
     {
         return [
-            $equip->id,
-            $equip->equipment->full_details,
-            $equip->from->name,
-            $equip->to->name,
-            $equip->user->fullname,
-            $equip->archive->archiver->fullname,
-            $equip->archive->created_at->format('H:i'),
-            $equip->archive->created_at->format('d-m-Y'),
+            $claim->id,
+            $claim->equipment->full_details,
+            $claim->from->name,
+            $claim->to->name,
+            $claim->user->fullname,
+            $claim->archive->archiver->fullname,
+            $claim->archive->created_at->format('H:i'),
+            $claim->archive->created_at->format('d-m-Y'),
         ];
     }
 }

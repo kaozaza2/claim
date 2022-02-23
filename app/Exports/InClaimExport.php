@@ -12,41 +12,65 @@ class InClaimExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
-    protected $take, $skip, $equipment;
+    protected $take, $start, $equipment;
 
     public function query()
     {
         return Claim::query()
             ->doesntHave('archive')
-            ->where('complete', false)
             ->when($this->equipment, fn($q, $e) => $q->where('equipment_id', $e))
-            ->when($this->take, fn($q, $t) => $q->take($t))
-            ->when($this->skip, fn($q, $s) => $q->skip($s));
+            ->when($this->take, fn($q, $t) => $q->take($t));
+    }
+
+    public function when($value, $callable)
+    {
+        return $value ? $this->{$callable}($value) : $this;
+    }
+
+    public function equipment($equipment)
+    {
+        $this->equipment = $equipment;
+
+        return $this;
+    }
+
+    public function take($size)
+    {
+        $this->take = $size;
+
+        return $this;
     }
 
     public function headings(): array
     {
         return [
-            'ลำดับ',
+            'เลขที่เคลม',
             'ครุภัณฑ์',
+            'เลขครุภัณฑ์',
             'อาการที่พบ',
-            'แจ้งโดย',
-            'รับเรื่องโดย',
-            'เวลา',
-            'วันที่',
+            'ผู้แจ้งเรื่อง',
+            'ผู้รับเรื่อง',
+            'สถานะ',
+            'ซ่อมแล้ว',
         ];
     }
 
-    public function map($equip): array
+    public function map($claim): array
     {
         return [
-            $equip->id,
-            $equip->equipment->full_details,
-            $equip->problem,
-            $equip->user->fullname,
-            $equip->archive->archiver->fullname,
-            $equip->archive->created_at->format('H:i'),
-            $equip->archive->created_at->format('d-m-Y'),
+            $claim->id,
+            collect([
+                $claim->equipment->id,
+                "[{$claim->equipment->category}]",
+                $claim->equipment->name,
+                $claim->equipment->brand,
+            ])->join(' '),
+            $claim->equipment->serial_number,
+            $claim->problem,
+            $claim->user->fullname,
+            $claim->admin->fullname,
+            $claim->status,
+            $claim->complete ? 'yes' : 'no',
         ];
     }
 }

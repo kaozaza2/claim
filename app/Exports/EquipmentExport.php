@@ -82,16 +82,16 @@ class EquipmentExport implements FromQuery, WithHeadings, WithMapping
         ];
     }
 
-    public function map($equip): array
+    public function map($claim): array
     {
         return [
-            $equip->id,
-            $equip->name,
-            $equip->brand,
-            $equip->category,
-            $equip->serial_number,
-            $equip->subDepartment->name,
-            $equip->archive ? 'จำหน่าย' : $equip->detail,
+            $claim->id,
+            $claim->name,
+            $claim->brand,
+            $claim->category,
+            $claim->serial_number,
+            $claim->subDepartment->name,
+            $claim->archive ? 'จำหน่าย' : $claim->detail,
         ];
     }
 }

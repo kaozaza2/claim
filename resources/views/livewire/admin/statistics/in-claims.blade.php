@@ -28,20 +28,6 @@
                         @class(['input', 'input-bordered', 'input-error' => $errors->has('state.take')])>
                 </div>
 
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">{{ __('app.skip') }}</span>
-                    </label>
-                    <input type="number" wire:model.defer="state.skip" min="0"
-                        @class(['input', 'input-bordered', 'input-error' => $errors->has('state.skip')])>
-                </div>
-
-                <div class="form-control">
-                    <label class="cursor-pointer label">
-                        <span x-text="$wire.get('state.latest') ? 'ใหม่สุด' : 'เก่าสุด'" class="label-text"></span>
-                        <input type="checkbox" wire:model.lazy="state.latest" class="toggle toggle-primary">
-                    </label>
-                </div>
             </form>
         </x-slot>
 
