@@ -22,10 +22,11 @@ class ClaimExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return PreClaim::whereHas('archive', function ($query) {
-            $query->where('created_at', '>=', $this->start)
-                ->where('created_at', '<=', $this->end);
-        });
+        return PreClaim::query()
+            ->whereHas('archive', function ($query) {
+                $query->where('created_at', '>=', $this->start)
+                    ->where('created_at', '<=', $this->end);
+            });
     }
 
     public function headings(): array

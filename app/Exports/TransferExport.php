@@ -22,10 +22,11 @@ class TransferExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Transfer::whereHas('archive', function ($query) {
-            $query->where('created_at', '>=', $this->start)
-                ->where('created_at', '<=', $this->end);
-        });
+        return Transfer::query()
+            ->whereHas('archive', function ($query) {
+                $query->where('created_at', '>=', $this->start)
+                    ->where('created_at', '<=', $this->end);
+            });
     }
 
     public function headings(): array
