@@ -17,6 +17,10 @@
                     <a href="{{ route('admin') }}" class="btn btn-ghost btn-sm rounded-btn">
                         {{ __('app.nav.control') }}
                     </a>
+
+                    <a href="{{ route('admin.statistics') }}" class="btn btn-ghost btn-sm rounded-btn">
+                        {{ __('app.tab.statistics') }}
+                    </a>
                 @endif
 
                 <div class="dropdown dropdown-end">

@@ -22,10 +22,11 @@ class TransferExport implements FromQuery, WithHeadings, WithMapping
 
     public function query()
     {
-        return Transfer::whereHas('archive', function ($query) {
-            $query->where('created_at', '>=', $this->start)
-                ->where('created_at', '<=', $this->end);
-        });
+        return Transfer::query()
+            ->whereHas('archive', function ($query) {
+                $query->where('created_at', '>=', $this->start)
+                    ->where('created_at', '<=', $this->end);
+            });
     }
 
     public function headings(): array
@@ -42,17 +43,17 @@ class TransferExport implements FromQuery, WithHeadings, WithMapping
         ];
     }
 
-    public function map($claim): array
+    public function map($equip): array
     {
         return [
-            $claim->id,
-            $claim->equipment->full_details,
-            $claim->from->name,
-            $claim->to->name,
-            $claim->user->fullname,
-            $claim->archive->archiver->fullname,
-            $claim->archive->created_at->format('H:i'),
-            $claim->archive->created_at->format('d-m-Y'),
+            $equip->id,
+            $equip->equipment->full_details,
+            $equip->from->name,
+            $equip->to->name,
+            $equip->user->fullname,
+            $equip->archive->archiver->fullname,
+            $equip->archive->created_at->format('H:i'),
+            $equip->archive->created_at->format('d-m-Y'),
         ];
     }
 }
