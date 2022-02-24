@@ -43,6 +43,7 @@ use App\Models\SubDepartment;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -105,10 +106,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->bootMacros();
-        $this->bootValidatorRules();
-        $this->bootShareVariables();
-        $this->bootBladeStringables();
+        if (!App::runningInConsole()) {
+            $this->bootMacros();
+            $this->bootValidatorRules();
+            $this->bootShareVariables();
+            $this->bootBladeStringables();
+        }
     }
 
     private function bootShareVariables()
